@@ -1,0 +1,274 @@
+[
+  {
+    "id": 1,
+    "title": "Scaffold BHVR project",
+    "description": "Create the initial Bun + Hono + Vite + React monorepo using Docker so Bun never touches the host.",
+    "details": "Run the Bun CLI from the official image, mount the working directory, and generate the template.",
+    "priority": "high",
+    "status": "done",
+    "dependencies": [],
+    "subtasks": [
+      {
+        "id": 101,
+        "title": "Generate BHVR template with Docker",
+        "description": "Execute `docker run --rm -it -v \"$PWD\":/app -w /app oven/bun:latest -- bun create bhvr@latest`.",
+        "dependencies": [],
+        "acceptanceCriteria": "A new folder structure (client, server, shared, package.json, bun.lock) exists on the host drive.",
+        "status": "done"
+      },
+      {
+        "id": 102,
+        "title": "Remove template placeholder code",
+        "description": "Delete sample components, tests, and logos from client/server to start with a clean slate.",
+        "dependencies": [101],
+        "acceptanceCriteria": "`git status` shows only essential starter files; dev server still builds.",
+        "status": "done"
+      }
+    ],
+    "testStrategy": "Run `docker run … bun run dev`; hit http://localhost:5173 and http://localhost:3000 to confirm both front- and backend compile."
+  },
+  {
+    "id": 2,
+    "title": "Set up SQLite + Drizzle ORM",
+    "description": "Add persistence layer for links and click counters.",
+    "details": "Use Drizzle for Bun with SQLite; commit schema and migration scripts.",
+    "priority": "high",
+    "status": "done",
+    "dependencies": [1],
+    "subtasks": [
+      {
+        "id": 201,
+        "title": "Install Drizzle & SQLite packages",
+        "description": "Inside server workspace run `bun add drizzle-orm drizzle-kit`.",
+        "dependencies": [],
+        "acceptanceCriteria": "Dependencies appear in server/package.json and `bun install` completes.",
+        "status": "done"
+      },
+      {
+        "id": 202,
+        "title": "Create schema.ts with links table",
+        "description": "Define `links` table (id, target, clicks, createdAt) using Drizzle DSL.",
+        "dependencies": [201],
+        "acceptanceCriteria": "Type-safe schema compiles with `bun test` or `tsc`.",
+        "status": "done"
+      },
+      {
+        "id": 203,
+        "title": "Generate & apply initial migration",
+        "description": "Run `drizzle-kit generate` then execute migration via Bun script.",
+        "dependencies": [202],
+        "acceptanceCriteria": "`links` table exists in dev.sqlite and migration file is committed.",
+        "status": "done"
+      }
+    ],
+    "testStrategy": "Run a Bun REPL in Docker and query `SELECT * FROM links` to ensure table exists without errors."
+  },
+  {
+    "id": 3,
+    "title": "Implement Hono backend routes",
+    "description": "Expose API and redirect endpoints.",
+    "details": "Three routes: POST /links, GET /:id, GET /links (list).",
+    "priority": "high",
+    "status": "done",
+    "dependencies": [2],
+    "subtasks": [
+      {
+        "id": 301,
+        "title": "POST /links – create short code",
+        "description": "Insert row into links table; return full short URL.",
+        "dependencies": [203],
+        "acceptanceCriteria": "Curl POST returns JSON `{ id, shortUrl }` and row exists in DB.",
+        "status": "done"
+      },
+      {
+        "id": 302,
+        "title": "GET /:id – redirect & increment clicks",
+        "description": "Look up target, `UPDATE clicks = clicks + 1`, respond 302.",
+        "dependencies": [301],
+        "acceptanceCriteria": "Visiting short URL redirects and increments clicks count.",
+        "status": "done"
+      },
+      {
+        "id": 303,
+        "title": "GET /links – list all links",
+        "description": "Return JSON array with id, target, clicks, createdAt.",
+        "dependencies": [301],
+        "acceptanceCriteria": "`/links` responds 200 with array matching DB rows.",
+        "status": "done"
+      },
+      {
+        "id": 304,
+        "title": "Add error-handling middleware",
+        "description": "Return 404 for unknown codes and 500 for unhandled errors.",
+        "dependencies": [302,303],
+        "acceptanceCriteria": "Invalid code returns 404 JSON `{error}`; server never crashes.",
+        "status": "done"
+      }
+    ],
+    "testStrategy": "Use Postman/Newman collection covering happy + error paths; assert DB side-effects via SELECT."
+  },
+  {
+    "id": 4,
+    "title": "Build React dashboard",
+    "description": "Front-end SPA for managing and viewing links.",
+    "details": "Uses Vite, React, MUI fetches `/links` and renders a table with copy button.",
+    "priority": "high",
+    "status": "done",
+    "dependencies": [3],
+    "subtasks": [
+      {
+        "id": 401,
+        "title": "Configure API base URL",
+        "description": "Add `VITE_API_URL` env and helper `api.ts` for fetch wrappers.",
+        "dependencies": [],
+        "acceptanceCriteria": "Changing env switches endpoints without code changes.",
+        "status": "done"
+      },
+      {
+        "id": 402,
+        "title": "Create LinksTable component",
+        "description": "Render rows with id, target, click count, created date.",
+        "dependencies": [401],
+        "acceptanceCriteria": "On load, table shows existing links from DB.",
+        "status": "done"
+      },
+      {
+        "id": 403,
+        "title": "Add copy-to-clipboard button",
+        "description": "Uses `navigator.clipboard.writeText` to copy short URL.",
+        "dependencies": [402],
+        "acceptanceCriteria": "Toast confirms link copied; clipboard value matches.",
+        "status": "done"
+      },
+      {
+        "id": 404,
+        "title": "Minimal styling with Tailwind/CSS",
+        "description": "Ensure table is responsive and buttons look clean.",
+        "dependencies": [403],
+        "acceptanceCriteria": "UI passes Lighthouse accessibility audit > 90.",
+        "status": "done"
+      }
+    ],
+    "testStrategy": "Run Cypress component test to assert table renders rows and copy button triggers clipboard stub."
+  },
+  {
+    "id": 5,
+    "title": "Add click analytics chart",
+    "description": "Visualize click counts per link.",
+    "details": "Integrate Chart.js bar chart in dashboard.",
+    "priority": "medium",
+    "status": "done",
+    "dependencies": [4],
+    "subtasks": [
+      {
+        "id": 501,
+        "title": "Install Chart.js & wrapper",
+        "description": "`bun add chart.js react-chartjs-2` in client workspace.",
+        "dependencies": [],
+        "acceptanceCriteria": "Packages appear in client/package.json; dev server compiles.",
+        "status": "done"
+      },
+      {
+        "id": 502,
+        "title": "Render bar chart of clicks",
+        "description": "Map `/links` data into labels & datasets; update on fetch.",
+        "dependencies": [501],
+        "acceptanceCriteria": "Chart displays bars whose values equal DB click counts.",
+        "status": "done"
+      }
+    ],
+    "testStrategy": "Jest DOM test ensures canvas renders; mock API returns predictable dataset and bar heights match."
+  },
+  {
+    "id": 6,
+    "title": "Add JWT-based authentication (optional)",
+    "description": "Protect API and dashboard behind a single-user login.",
+    "details": "Use hono/jwt middleware and simple email+password form.",
+    "priority": "low",
+    "status": "todo",
+    "dependencies": [3],
+    "subtasks": [
+      {
+        "id": 601,
+        "title": "Integrate hono/jwt middleware",
+        "description": "Create `/login` issuing token; protect /links* & /:id routes.",
+        "dependencies": [],
+        "acceptanceCriteria": "Unauthenticated requests return 401; valid JWT passes.",
+        "status": "todo"
+      },
+      {
+        "id": 602,
+        "title": "Add login UI in React",
+        "description": "Simple form that stores JWT in localStorage and sets auth header.",
+        "dependencies": [601],
+        "acceptanceCriteria": "Login succeeds and dashboard fetches authorised data.",
+        "status": "todo"
+      }
+    ],
+    "testStrategy": "Playwright e2e: attempt to access dashboard without token (redirect to login) then with valid creds."
+  },
+  {
+    "id": 7,
+    "title": "Build & deploy binary",
+    "description": "Produce a single Bun binary and deploy via Docker on Fly.io.",
+    "details": "Use `bun build --compile`, multi-stage Dockerfile, fly.toml.",
+    "priority": "high",
+    "status": "done",
+    "dependencies": [4,5],
+    "subtasks": [
+      {
+        "id": 701,
+        "title": "Compile Bun binary",
+        "description": "Run `bun build src/index.ts --compile --minify --outfile app`.",
+        "dependencies": [],
+        "acceptanceCriteria": "`./app` runs locally and serves routes.",
+        "status": "done"
+      },
+      {
+        "id": 702,
+        "title": "Write production Dockerfile",
+        "description": "Scratch/alpine image copying compiled binary and static assets.",
+        "dependencies": [701],
+        "acceptanceCriteria": "`docker build .` produces image <50 MB that runs `./app`.",
+        "status": "done"
+      },
+      {
+        "id": 703,
+        "title": "Deploy to Fly.io",
+        "description": "Create Fly app, set secrets, `fly deploy`.",
+        "dependencies": [702],
+        "acceptanceCriteria": "Public URL redirects and dashboard loads over HTTPS.",
+        "status": "done"
+      }
+    ],
+    "testStrategy": "Fly health checks green; run integration tests against deployed URL in CI."
+  },
+  {
+    "id": 8,
+    "title": "Add cron job to prune expired links",
+    "description": "Scheduled cleanup keeps DB small.",
+    "details": "Use `Bun.cron` to delete links older than configurable TTL.",
+    "priority": "medium",
+    "status": "done",
+    "dependencies": [2],
+    "subtasks": [
+      {
+        "id": 801,
+        "title": "Implement Bun.cron task",
+        "description": "Every 24 h run DELETE FROM links WHERE createdAt < now-TTL.",
+        "dependencies": [],
+        "acceptanceCriteria": "Running cron manually deletes stale rows; log output shows count.",
+        "status": "done"
+      },
+      {
+        "id": 802,
+        "title": "Make TTL configurable via env",
+        "description": "Read `LINK_TTL_DAYS` env; default 90 days.",
+        "dependencies": [801],
+        "acceptanceCriteria": "Changing env value alters deletion threshold on next run.",
+        "status": "done"
+      }
+    ],
+    "testStrategy": "Unit test cron handler with fake timers; assert deletion query called with correct cutoff."
+  }
+]
