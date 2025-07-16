@@ -1,0 +1,28 @@
+{
+  "name": "server",
+  "version": "0.0.1",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "dev": "bun run src/index.ts",
+    "start": "bun run dist/index.js",
+    "preview": "bun run dist/index.js",
+    "db:generate": "bun drizzle-kit generate",
+    "db:migrate": "bun run migrate.ts",
+    "db:push": "bun drizzle-kit push",
+    "db:studio": "bun drizzle-kit studio"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.44.3",
+    "hono": "^4.7.11",
+    "nanoid": "^5.1.5",
+    "shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.18",
+    "drizzle-kit": "^0.31.4"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}
