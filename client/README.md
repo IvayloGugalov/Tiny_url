@@ -80,7 +80,7 @@ bun test --coverage
 
 ### Core Dependencies
 
-- **React 18**: Modern React with hooks and concurrent features
+- **React 19**: Modern React with hooks and concurrent features
 - **Vite**: Fast build tool and dev server
 - **TypeScript**: Type safety throughout the application
 - **Chart.js**: Beautiful charts for analytics
