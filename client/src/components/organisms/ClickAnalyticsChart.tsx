@@ -9,7 +9,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { fetchLinks } from '../api';
+import { fetchLinks } from '../../api';
 
 ChartJS.register(
   CategoryScale,

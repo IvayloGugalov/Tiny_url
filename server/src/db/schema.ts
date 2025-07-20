@@ -12,5 +12,5 @@ export const links = sqliteTable('links', {
   clicks: integer('clicks').notNull().default(0),
   createdAt: integer('createdAt', { mode: 'timestamp' })
     .notNull()
-    .default(sql`(CURRENT_TIMESTAMP)`),
+    .default(sql`CURRENT_TIMESTAMP`),
 });
