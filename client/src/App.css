@@ -11,258 +11,110 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: var(--ant-color-bg-base);
+  color: var(--ant-color-text-base);
+  transition: all 0.2s ease;
+  min-block-size: 100dvh;
 }
 
-.app {
-  min-height: 100vh;
+.header {
+  background: linear-gradient(135deg, var(--ant-color-primary) 0%, color-mix(in srgb, var(--ant-color-primary) 90%, black) 100%);
+  color: var(--ant-color-text-light-solid);
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  box-shadow: var(--ant-box-shadow);
+
+  .header-content {
+    flex: 1;
+    text-align: center;
+  }
+
+  .title {
+    color: var(--ant-color-text-light-solid);
+    font-size: var(--ant-font-size-heading-1);
+    margin-block-end: 0;
+    font-weight: 700;
+  }
+
+  .desc {
+    color: var(--ant-color-text-light-solid);
+    opacity: 0.9;
+    font-size: 1.1rem;
+    margin-block-end: 0;
+  }
 }
 
-.app-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 2rem 1rem;
-  text-align: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.app-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  font-weight: 700;
-}
-
-.app-header p {
-  font-size: 1.1rem;
-  opacity: 0.9;
-}
-
-.app-main {
+.content {
+  max-inline-size: 75rem;
+  margin-inline: auto;
+  width: 100%;
+  padding-block: 2rem;
+  padding-inline: 1rem;
   flex: 1;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-  width: 100%;
 }
 
-/* Form styles */
-.create-link-form {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
-}
-
-.create-link-form h2 {
-  margin-bottom: 1.5rem;
-  color: #333;
-  font-size: 1.5rem;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: #555;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 2px solid #e1e5e9;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.2s ease;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.form-group input:disabled {
-  background-color: #f8f9fa;
-  cursor: not-allowed;
-}
-
-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.theme-toggle {
+  background: rgba(255 255 255 / 0.2);
+  border: 2px solid rgba(255 255 255 / 0.3);
   color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 0.75rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  min-width: 120px;
-}
+  font-size: 1.2rem;
+  inline-size: 3rem;
+  block-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
 
-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
+  &:hover {
+    background: rgba(255 255 255 / 0.3);
+    border-color: rgba(255 255 255 / 0.5);
+    transform: scale(1.05);
+  }
 
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-button.copied {
-  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-}
-
-/* Table styles */
-.links-table {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow-x: auto;
-}
-
-.links-table h2 {
-  margin-bottom: 1.5rem;
-  color: #333;
-  font-size: 1.5rem;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-
-th {
-  background-color: #f8f9fa;
-  padding: 1rem 0.75rem;
-  text-align: left;
-  font-weight: 600;
-  color: #555;
-  border-bottom: 2px solid #e1e5e9;
-}
-
-td {
-  padding: 1rem 0.75rem;
-  border-bottom: 1px solid #e1e5e9;
-  vertical-align: middle;
-}
-
-tr:hover {
-  background-color: #f8f9fa;
-}
-
-code {
-  background-color: #f1f3f4;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 0.85rem;
-  color: #d73a49;
-}
-
-td a {
-  color: #667eea;
-  text-decoration: none;
-  word-break: break-all;
-}
-
-td a:hover {
-  text-decoration: underline;
-}
-
-/* Status messages */
-.loading, .error, .empty, .success {
-  padding: 1rem;
-  border-radius: 8px;
-  margin: 1rem 0;
-  text-align: center;
-}
-
-.loading {
-  background-color: #e3f2fd;
-  color: #1976d2;
-}
-
-.error {
-  background-color: #ffebee;
-  color: #c62828;
-  border: 1px solid #ffcdd2;
-}
-
-.empty {
-  background-color: #f3e5f5;
-  color: #7b1fa2;
-  border: 1px solid #e1bee7;
-}
-
-.success {
-  background-color: #e8f5e8;
-  color: #2e7d32;
-  border: 1px solid #c8e6c9;
-}
-
-/* Dashboard grid layout */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.dashboard-section {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.1875rem rgba(255 255 255 / 0.3);
+  }
 }
 
 .click-analytics-chart {
   width: 100%;
 }
 
-/* Responsive design */
-@media (max-width: 1024px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+@media (width < 1024px) {
+  .content {
+    padding-inline: 0.5rem;
   }
 }
 
-@media (max-width: 768px) {
-  .app-header h1 {
-    font-size: 2rem;
+@media (width < 768px) {
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    padding-block: 1.5rem;
+    padding-inline: 1rem;
+
+    .title {
+      font-size: 2rem;
+    }
   }
 
-  .app-main {
-    padding: 1rem;
+  .theme-toggle {
+    position: absolute;
+    inset-block-start: 1rem;
+    inset-inline-end: 1rem;
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    font-size: 1rem;
   }
 
-  .create-link-form,
-  .links-table,
-  .dashboard-section {
-    padding: 1rem;
-  }
-
-  table {
-    font-size: 0.8rem;
-  }
-
-  th, td {
-    padding: 0.5rem 0.25rem;
-  }
-
-  .links-table {
-    overflow-x: auto;
+  .content {
+    padding-block: 1rem;
   }
 }

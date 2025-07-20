@@ -2,14 +2,12 @@ import type { Link } from 'shared';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
-export async function fetchLinks(): Promise<Link[]> {
-  const response = await fetch(`${API_BASE_URL}/api/links`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch links: ${response.statusText}`);
-  }
-  return response.json();
+function getAuthHeaders(): HeadersInit | undefined {
+  const jwt = localStorage.getItem('jwt')
+  return jwt ? { Authorization: `Bearer ${jwt}` } : undefined
 }
 
+// Public function - no auth required
 export async function createShortLink(target: string): Promise<{ id: string; shortUrl: string }> {
   const response = await fetch(`${API_BASE_URL}/api/links`, {
     method: 'POST',
@@ -24,6 +22,19 @@ export async function createShortLink(target: string): Promise<{ id: string; sho
     throw new Error(error.error || 'Failed to create short link');
   }
 
+  return response.json();
+}
+
+// Protected function - requires auth for analytics
+export async function fetchLinks(): Promise<Link[]> {
+  const response = await fetch(`${API_BASE_URL}/api/links`, {
+    headers: {
+      ...getAuthHeaders(),
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch links: ${response.statusText}`);
+  }
   return response.json();
 }
 

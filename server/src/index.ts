@@ -1,4 +1,4 @@
-import { Hono } from 'hono'
+import { Hono, type Context, type Next } from 'hono'
 import { cors } from 'hono/cors'
 import { serveStatic } from 'hono/bun'
 import type { ApiResponse } from 'shared/dist'
@@ -6,6 +6,7 @@ import { drizzle } from 'drizzle-orm/bun-sqlite';
 import { Database } from 'bun:sqlite';
 import { links } from './db/schema';
 import { eq, lt } from 'drizzle-orm';
+import { jwtVerify, SignJWT } from 'jose'
 
 const app = new Hono()
 app.use(cors())
@@ -56,7 +57,42 @@ app.get('/api/hello', async (c) => {
   return c.json(data, { status: 200 })
 })
 
-// POST /api/links – create short code
+// JWT config
+const JWT_SECRET = (process.env.JWT_SECRET || 'supersecret').padEnd(32, '0').slice(0, 32)
+const JWT_SECRET_KEY = new TextEncoder().encode(JWT_SECRET)
+const DEFAULT_EMAIL = 'admin@admin.net'
+const DEFAULT_PASSWORD = 'admin'
+
+// JWT auth middleware
+async function requireAuth(c: Context, next: Next) {
+  const auth = c.req.header('Authorization')
+  if (!auth || !auth.startsWith('Bearer ')) {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+  const token = auth.slice(7)
+  try {
+    await jwtVerify(token, JWT_SECRET_KEY)
+    return await next()
+  } catch {
+    return c.json({ error: 'Invalid token' }, 401)
+  }
+}
+
+// Login route
+app.post('/api/login', async (c) => {
+  const { email, password } = await c.req.json()
+  if (email !== DEFAULT_EMAIL || password !== DEFAULT_PASSWORD) {
+    return c.json({ error: 'Invalid credentials' }, 401)
+  }
+  const jwt = await new SignJWT({ email })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('7d')
+    .sign(JWT_SECRET_KEY)
+  return c.json({ token: jwt })
+})
+
+// POST /api/links – create short code (PUBLIC - no auth required)
 app.post('/api/links', async (c) => {
   try {
     const body = await c.req.json();
@@ -81,23 +117,26 @@ app.post('/api/links', async (c) => {
   }
 });
 
-// GET /:id – redirect & increment clicks
+// GET /:id – redirect & increment clicks (PUBLIC - no auth required)
 app.get('/:id', async (c) => {
   try {
     const { id } = c.req.param();
-    const link = await db.select().from(links).where(eq(links.id, id)).get();
+    if (!id) {
+      return c.json({ error: 'Missing id parameter' }, 400);
+    }
+    const link = await db.select().from(links).where(eq(links.id, id as string)).get();
     if (!link) {
       return c.json({ error: 'Not found' }, 404);
     }
-    await db.update(links).set({ clicks: (link.clicks || 0) + 1 }).where(eq(links.id, id)).run();
+    await db.update(links).set({ clicks: (link.clicks || 0) + 1 }).where(eq(links.id, id as string)).run();
     return c.redirect(link.target, 302);
   } catch (err) {
     return c.json({ error: 'Failed to redirect' }, 500);
   }
 });
 
-// GET /api/links – list all links
-app.get('/api/links', async (c) => {
+// GET /api/links – list all links (PROTECTED - requires auth for analytics)
+app.get('/api/links', requireAuth, async (c) => {
   try {
     const allLinks = await db.select().from(links).all();
     return c.json(allLinks);

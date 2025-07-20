@@ -1,37 +1,102 @@
-import { useState } from 'react';
-import { LinksTable } from './components/LinksTable';
-import { CreateLinkForm } from './components/CreateLinkForm';
-import { ClickAnalyticsChart } from './components/ClickAnalyticsChart';
-import './App.css';
+import { useState } from 'react'
+import { ConfigProvider, theme as antdTheme } from 'antd'
+import './App.css'
+import { LoginForm } from './components'
+import { PublicHomePage } from './pages/PublicHomePage'
+import { AnalyticsPage } from './pages/AnalyticsPage'
+
+const BRAND_TOKENS = {
+  colorPrimary: '#e86222', // orange
+  colorInfo: '#5d7bee', // accent blue
+  colorSuccess: '#80f2e6', // secondary mint
+  colorTextBase: '#1b0b03', // text for light
+  colorBgBase: '#fef6f3', // background for light
+  fontSize: 16, // 1rem
+  fontSizeHeading1: 40, // 2.5rem
+  fontSizeHeading2: 24, // 1.5rem
+}
+
+const BRAND_TOKENS_DARK = {
+  colorPrimary: '#de5617', // orange dark
+  colorInfo: '#112ea2', // accent dark blue
+  colorSuccess: '#0d7d71', // secondary dark teal
+  colorTextBase: '#fcece3', // text for dark
+  colorBgBase: '#0e0501', // background for dark
+  fontSize: 16, // 1rem
+  fontSizeHeading1: 40, // 2.5rem
+  fontSizeHeading2: 24, // 1.5rem
+}
+
+type AppView = 'home' | 'login' | 'analytics'
 
 function App() {
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [theme, setTheme] = useState<'light' | 'dark'>((localStorage.getItem('theme') as 'light' | 'dark') || 'light')
+  const [currentView, setCurrentView] = useState<AppView>('home')
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('jwt'))
 
-  function handleLinkCreated() {
-    setRefreshKey(prev => prev + 1);
+  const isDark = theme === 'dark'
+
+  function handleLoginSuccess() {
+    setIsAuthenticated(true)
+    setCurrentView('analytics')
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('jwt')
+    setIsAuthenticated(false)
+    setCurrentView('home')
+  }
+
+  function handleGoToAnalytics() {
+    if (isAuthenticated) {
+      setCurrentView('analytics')
+    } else {
+      setCurrentView('login')
+    }
+  }
+
+  function handleGoHome() {
+    setCurrentView('home')
+  }
+
+  function handleShowLogin() {
+    setCurrentView('login')
   }
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>🔗 TinyURL Dashboard</h1>
-        <p>Create and manage your short links</p>
-      </header>
+    <ConfigProvider
+      theme={{
+        algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
+        token: isDark ? BRAND_TOKENS_DARK : BRAND_TOKENS,
+        cssVar: { key: 'app' },
+      }}
+    >
+      {/* Show login form if user is on login view */}
+      {currentView === 'login' && (
+        <LoginForm onLoginSuccess={handleLoginSuccess} />
+      )}
 
-      <main className="app-main">
-        <CreateLinkForm onLinkCreated={handleLinkCreated} />
+      {/* Show analytics page if authenticated and on analytics view */}
+      {currentView === 'analytics' && isAuthenticated && (
+        <AnalyticsPage
+          theme={theme}
+          setTheme={setTheme}
+          onLogout={handleLogout}
+          onGoHome={handleGoHome}
+        />
+      )}
 
-        <div className="dashboard-grid">
-          <div className="dashboard-section">
-            <ClickAnalyticsChart refreshKey={refreshKey} />
-          </div>
-          <div className="dashboard-section">
-            <LinksTable key={refreshKey} />
-          </div>
-        </div>
-      </main>
-    </div>
-  );
+      {/* Show public home page by default */}
+      {currentView === 'home' && (
+        <PublicHomePage
+          theme={theme}
+          setTheme={setTheme}
+          onLogin={handleShowLogin}
+          onGoToAnalytics={handleGoToAnalytics}
+        />
+      )}
+    </ConfigProvider>
+  )
 }
 
-export default App;
+export default App
