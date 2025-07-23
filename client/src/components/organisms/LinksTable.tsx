@@ -1,13 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Table, Spin, Empty, Tag, Space, Tooltip, message } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
-import type { ColumnsType } from 'antd/es/table';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { Box, Typography, Button, Chip, Link, Alert, CircularProgress } from '@mui/material';
+import { Refresh as RefreshIcon } from '@mui/icons-material';
 import { fetchLinks, getShortUrl } from '../../api';
-import { Title } from '../atoms/Typography';
-import { Link } from '../atoms/Typography';
-import { Button } from '../atoms/Button';
 import { CopyButton } from '../molecules/CopyButton';
-import { Alert } from '../molecules/Alert';
+import { linksTableStyles } from './LinksTable.styles';
 
 interface Link {
   id: string;
@@ -17,7 +14,6 @@ interface Link {
 }
 
 const MAX_URL_DISPLAY_LENGTH = 50;
-const DEFAULT_PAGE_SIZE = 10;
 
 export function LinksTable() {
   const [links, setLinks] = useState<Link[]>([]);
@@ -33,7 +29,6 @@ export function LinksTable() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load links';
       setError(errorMessage);
-      message.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -53,62 +48,59 @@ export function LinksTable() {
     });
   }, []);
 
-  const columns: ColumnsType<Link> = useMemo(
+  const columns: GridColDef[] = useMemo(
     () => [
       {
-        title: 'Short Code',
-        dataIndex: 'id',
-        key: 'id',
+        field: 'id',
+        headerName: 'Short Code',
         width: 120,
-        render: (id: string) => (
-          <Tag color='blue' style={{ fontFamily: 'monospace' }}>
-            {id}
-          </Tag>
+        renderCell: (params) => (
+          <Chip label={params.value} color="primary" size="small" />
         ),
       },
       {
-        title: 'Target URL',
-        dataIndex: 'target',
-        key: 'target',
-        ellipsis: true,
-        render: (target: string) => (
-          <Tooltip title={target} placement='topLeft'>
-            <Link
-              href={target}
-              target='_blank'
-              rel='noopener noreferrer'
-              style={{ maxWidth: '100%' }}
-            >
-              {formatUrl(target)}
-            </Link>
-          </Tooltip>
+        field: 'target',
+        headerName: 'Target URL',
+        flex: 1,
+        minWidth: 300,
+        renderCell: (params) => (
+          <Link
+            href={params.value}
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={linksTableStyles.link}
+          >
+            {formatUrl(params.value)}
+          </Link>
         ),
       },
       {
-        title: 'Clicks',
-        dataIndex: 'clicks',
-        key: 'clicks',
+        field: 'clicks',
+        headerName: 'Clicks',
         width: 120,
-        sorter: (a, b) => a.clicks - b.clicks,
-        render: (clicks: number) => (
-          <Tag color={clicks > 0 ? 'green' : 'default'}>{clicks.toLocaleString()}</Tag>
+        type: 'number',
+        renderCell: (params) => (
+          <Chip
+            label={params.value.toLocaleString()}
+            color={params.value > 0 ? 'success' : 'default'}
+            size="small"
+          />
         ),
       },
       {
-        title: 'Created',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
+        field: 'createdAt',
+        headerName: 'Created',
         width: 150,
-        render: (dateString: string) => formatDate(dateString),
-        sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-        defaultSortOrder: 'descend',
+        valueGetter: (params: { value?: string } | null) =>
+          params?.value ? formatDate(params.value) : '',
       },
       {
-        title: 'Action',
-        key: 'action',
+        field: 'actions',
+        headerName: 'Actions',
         width: 120,
-        render: (_, record) => (
-          <CopyButton text={getShortUrl(record.id)} />
+        sortable: false,
+        renderCell: (params) => (
+          <CopyButton text={getShortUrl(params.row.id)} />
         ),
       },
     ],
@@ -121,59 +113,59 @@ export function LinksTable() {
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: '50px' }}>
-        <Spin size='large' tip='Loading links...' />
-      </div>
+      <Box sx={linksTableStyles.loadingContainer}>
+        <CircularProgress />
+      </Box>
     );
   }
 
   if (error) {
     return (
       <Alert
-        message='Error Loading Links'
-        description={error}
-        type='error'
+        severity="error"
         action={
-          <Button size='small' icon={<ReloadOutlined />} onClick={loadLinks}>
+          <Button size="small" startIcon={<RefreshIcon />} onClick={loadLinks}>
             Retry
           </Button>
         }
-      />
+      >
+        {error}
+      </Alert>
     );
   }
 
   return (
-    <Space direction='vertical' style={{ width: '100%' }} size='large'>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Title level={2} style={{ margin: 0 }}>
+    <Box>
+      <Box sx={linksTableStyles.headerContainer}>
+        <Typography variant="h5" sx={linksTableStyles.title}>
           Your Short Links ({links.length})
-        </Title>
-        <Button icon={<ReloadOutlined />} onClick={loadLinks} disabled={loading}>
+        </Typography>
+        <Button
+          startIcon={<RefreshIcon />}
+          onClick={loadLinks}
+          disabled={loading}
+          size="small"
+          sx={linksTableStyles.refreshButton}
+        >
           Refresh
         </Button>
-      </div>
+      </Box>
 
-      <Table
-        columns={columns}
-        dataSource={links}
-        rowKey='id'
-        pagination={{
-          pageSize: DEFAULT_PAGE_SIZE,
-          showSizeChanger: true,
-          showQuickJumper: true,
-          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} links`,
-        }}
-        locale={{
-          emptyText: (
-            <Empty
-              description='No links created yet. Create your first short link!'
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-            />
-          ),
-        }}
-        scroll={{ x: 600 }}
-        size='middle'
-      />
-    </Space>
+      <Box sx={linksTableStyles.dataGridContainer}>
+        <DataGrid
+          rows={links}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 10 },
+            },
+          }}
+          pageSizeOptions={[5, 10, 25]}
+          disableRowSelectionOnClick
+          density="compact"
+          sx={linksTableStyles.dataGrid}
+        />
+      </Box>
+    </Box>
   );
 }

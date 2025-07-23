@@ -1,0 +1,132 @@
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  Container,
+  Typography,
+  Button,
+  IconButton,
+  useTheme,
+  useMediaQuery
+} from '@mui/material'
+import { ReactNode } from 'react'
+import { Brightness4, Brightness7 } from '@mui/icons-material'
+import { publicLayoutStyles } from './PublicLayout.styles'
+
+interface PublicLayoutProps {
+  title: string
+  theme: 'light' | 'dark'
+  setTheme: (theme: 'light' | 'dark') => void
+  onLogin: () => void
+  onGoToAnalytics: () => void
+  children: ReactNode
+  headerActions?: ReactNode
+}
+
+export function PublicLayout({
+  title,
+  theme,
+  setTheme,
+  onLogin,
+  onGoToAnalytics,
+  children,
+  headerActions,
+}: PublicLayoutProps) {
+  const themeHook = useTheme()
+  const isMobile = useMediaQuery(themeHook.breakpoints.down('md'))
+
+  const handleThemeToggle = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light'
+    setTheme(newTheme)
+    document.documentElement.setAttribute('data-theme', newTheme)
+    localStorage.setItem('theme', newTheme)
+  }
+
+  return (
+    <Box sx={publicLayoutStyles.root}>
+      <AppBar position="static">
+        <Toolbar sx={publicLayoutStyles.toolbar}>
+          {/* Title */}
+          <Box sx={publicLayoutStyles.titleContainer}>
+            <Typography
+              variant="h4"
+              component="h1"
+              sx={publicLayoutStyles.title}
+            >
+              {title}
+            </Typography>
+          </Box>
+
+          {/* Desktop Actions */}
+          {!isMobile && (
+            <Box sx={publicLayoutStyles.desktopActions}>
+              {headerActions}
+              <Button
+                onClick={onGoToAnalytics}
+                variant="outlined"
+                size="small"
+                sx={publicLayoutStyles.outlinedButton}
+              >
+                Analytics
+              </Button>
+              <Button
+                variant="contained"
+                onClick={onLogin}
+                size="small"
+              >
+                Login
+              </Button>
+              <IconButton
+                onClick={handleThemeToggle}
+                color="inherit"
+                aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+                size="medium"
+              >
+                {theme === 'light' ? <Brightness4 /> : <Brightness7 />}
+              </IconButton>
+            </Box>
+          )}
+
+          {/* Mobile Actions */}
+          {isMobile && (
+            <Box sx={publicLayoutStyles.mobileActions}>
+              {headerActions}
+              <Button
+                onClick={onGoToAnalytics}
+                variant="outlined"
+                size="small"
+                sx={publicLayoutStyles.mobileOutlinedButton}
+              >
+                Analytics
+              </Button>
+              <Button
+                variant="contained"
+                onClick={onLogin}
+                size="small"
+                sx={publicLayoutStyles.mobileContainedButton}
+              >
+                Login
+              </Button>
+              <IconButton
+                onClick={handleThemeToggle}
+                color="inherit"
+                aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+                size="medium"
+              >
+                {theme === 'light' ? <Brightness4 /> : <Brightness7 />}
+              </IconButton>
+            </Box>
+          )}
+        </Toolbar>
+      </AppBar>
+
+      {/* Main Content */}
+      <Container
+        component="main"
+        sx={publicLayoutStyles.mainContent}
+      >
+        {children}
+      </Container>
+    </Box>
+  )
+}
