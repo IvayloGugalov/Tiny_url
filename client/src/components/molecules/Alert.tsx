@@ -1,7 +1,8 @@
-import { Alert as AntAlert, AlertProps as AntAlertProps } from 'antd';
+import { Alert as MuiAlert, AlertProps as MuiAlertProps } from '@mui/material';
 import { ReactNode } from 'react';
+import { alertStyles } from './Alert.styles';
 
-export interface AlertProps extends Omit<AntAlertProps, 'message'> {
+export interface AlertProps extends Omit<MuiAlertProps, 'message'> {
   message: ReactNode;
   description?: ReactNode;
   showIcon?: boolean;
@@ -15,16 +16,22 @@ export function Alert({
   showIcon = true,
   closable = false,
   onClose,
+  severity = 'info',
   ...props
 }: AlertProps) {
   return (
-    <AntAlert
-      message={message}
-      description={description}
-      showIcon={showIcon}
-      closable={closable}
-      onClose={onClose}
+    <MuiAlert
+      severity={severity}
+      onClose={closable ? onClose : undefined}
+      icon={showIcon ? undefined : false}
       {...props}
-    />
+    >
+      {message}
+      {description && (
+        <div style={alertStyles.description}>
+          {description}
+        </div>
+      )}
+    </MuiAlert>
   );
 }

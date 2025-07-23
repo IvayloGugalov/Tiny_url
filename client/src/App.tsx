@@ -1,101 +1,76 @@
-import { useState } from 'react'
-import { ConfigProvider, theme as antdTheme } from 'antd'
+import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 import { LoginForm } from './components'
 import { PublicHomePage } from './pages/PublicHomePage'
 import { AnalyticsPage } from './pages/AnalyticsPage'
-
-const BRAND_TOKENS = {
-  colorPrimary: '#e86222', // orange
-  colorInfo: '#5d7bee', // accent blue
-  colorSuccess: '#80f2e6', // secondary mint
-  colorTextBase: '#1b0b03', // text for light
-  colorBgBase: '#fef6f3', // background for light
-  fontSize: 16, // 1rem
-  fontSizeHeading1: 40, // 2.5rem
-  fontSizeHeading2: 24, // 1.5rem
-}
-
-const BRAND_TOKENS_DARK = {
-  colorPrimary: '#de5617', // orange dark
-  colorInfo: '#112ea2', // accent dark blue
-  colorSuccess: '#0d7d71', // secondary dark teal
-  colorTextBase: '#fcece3', // text for dark
-  colorBgBase: '#0e0501', // background for dark
-  fontSize: 16, // 1rem
-  fontSizeHeading1: 40, // 2.5rem
-  fontSizeHeading2: 24, // 1.5rem
-}
-
-type AppView = 'home' | 'login' | 'analytics'
+import { BasicLayout } from './layouts/BasicLayout'
 
 function App() {
-  const [theme, setTheme] = useState<'light' | 'dark'>((localStorage.getItem('theme') as 'light' | 'dark') || 'light')
-  const [currentView, setCurrentView] = useState<AppView>('home')
-  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('jwt'))
+  const [theme, setTheme] = useState<'light' | 'dark'>(
+    (localStorage.getItem('theme') as 'light' | 'dark') || 'light',
+  )
+  const [isAuthenticated, setIsAuthenticated] = useState(() =>
+    !!localStorage.getItem('jwt')
+  )
 
-  const isDark = theme === 'dark'
+  // Update theme in localStorage and document when it changes
+  useEffect(() => {
+    localStorage.setItem('theme', theme)
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
 
   function handleLoginSuccess() {
     setIsAuthenticated(true)
-    setCurrentView('analytics')
   }
 
   function handleLogout() {
     localStorage.removeItem('jwt')
     setIsAuthenticated(false)
-    setCurrentView('home')
-  }
-
-  function handleGoToAnalytics() {
-    if (isAuthenticated) {
-      setCurrentView('analytics')
-    } else {
-      setCurrentView('login')
-    }
-  }
-
-  function handleGoHome() {
-    setCurrentView('home')
-  }
-
-  function handleShowLogin() {
-    setCurrentView('login')
   }
 
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
-        token: isDark ? BRAND_TOKENS_DARK : BRAND_TOKENS,
-        cssVar: { key: 'app' },
-      }}
-    >
-      {/* Show login form if user is on login view */}
-      {currentView === 'login' && (
-        <LoginForm onLoginSuccess={handleLoginSuccess} />
-      )}
-
-      {/* Show analytics page if authenticated and on analytics view */}
-      {currentView === 'analytics' && isAuthenticated && (
-        <AnalyticsPage
-          theme={theme}
-          setTheme={setTheme}
-          onLogout={handleLogout}
-          onGoHome={handleGoHome}
-        />
-      )}
-
-      {/* Show public home page by default */}
-      {currentView === 'home' && (
-        <PublicHomePage
-          theme={theme}
-          setTheme={setTheme}
-          onLogin={handleShowLogin}
-          onGoToAnalytics={handleGoToAnalytics}
-        />
-      )}
-    </ConfigProvider>
+    <BasicLayout theme={theme}>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <PublicHomePage
+                theme={theme}
+                setTheme={setTheme}
+                isAuthenticated={isAuthenticated}
+              />
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              isAuthenticated ? (
+                <Navigate to="/analytics" replace />
+              ) : (
+                <LoginForm onLoginSuccess={handleLoginSuccess} />
+              )
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              isAuthenticated ? (
+                <AnalyticsPage
+                  theme={theme}
+                  setTheme={setTheme}
+                  onLogout={handleLogout}
+                />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </BasicLayout>
   )
 }
 

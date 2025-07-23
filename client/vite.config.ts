@@ -18,5 +18,12 @@ export default defineConfig({
       "@server": path.resolve(__dirname, "../server/src"),
       "@shared": path.resolve(__dirname, "../shared/src")
     }
-  }
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+      },
+    },
+  },
 })
