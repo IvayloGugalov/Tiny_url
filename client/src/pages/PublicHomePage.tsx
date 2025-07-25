@@ -3,6 +3,7 @@ import { Paper, Stack, Typography, Button, Box, Card, CardContent } from '@mui/m
 import { PublicLayout } from '../layouts/PublicLayout'
 import { CreateLinkForm } from '../components/organisms/CreateLinkForm'
 import { Alert } from '../components/molecules/Alert'
+import { useAuthStore, useThemeStore } from '../stores'
 import { publicHomePageStyles } from './PublicHomePage.styles'
 import {
   FlashOn as Zap,
@@ -11,13 +12,11 @@ import {
   Smartphone as Smartphone
 } from '@mui/icons-material'
 
-interface PublicHomePageProps {
-  theme: 'light' | 'dark'
-  setTheme: (theme: 'light' | 'dark') => void
-  isAuthenticated: boolean
-}
-
-export function PublicHomePage({ theme, setTheme, isAuthenticated }: PublicHomePageProps) {
+export function PublicHomePage() {
+  const theme = useThemeStore((state) => state.theme)
+  const setTheme = useThemeStore((state) => state.setTheme)
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const logout = useAuthStore((state) => state.logout)
   const navigate = useNavigate()
 
   const handleLogin = () => {
@@ -32,13 +31,19 @@ export function PublicHomePage({ theme, setTheme, isAuthenticated }: PublicHomeP
     }
   }
 
+  const handleRegister = () => {
+    navigate('/register')
+  }
+
   return (
     <PublicLayout
       title='🔗 TinyURL'
       theme={theme}
       setTheme={setTheme}
       onLogin={handleLogin}
+      onLogout={logout}
       onGoToAnalytics={handleGoToAnalytics}
+      isAuthenticated={isAuthenticated}
     >
       <CreateLinkForm onLinkCreated={() => {}} />
 
@@ -148,16 +153,25 @@ export function PublicHomePage({ theme, setTheme, isAuthenticated }: PublicHomeP
         </Box>
       </Box>
 
-      <Alert
-        message='Want to track your links?'
-        description='Login to access detailed analytics, view click statistics, and manage your links.'
-        severity='info'
-        action={
-          <Button size='small' variant='contained' onClick={handleLogin}>
-            Login Now
-          </Button>
-        }
-      />
+      {!isAuthenticated && (
+        <>
+          <Alert
+            message='Ready to unlock powerful analytics?'
+            description='Create a free account to track your links, view detailed statistics, and manage all your URLs in one place.'
+            severity='success'
+            action={
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button size='small' variant='contained' onClick={handleRegister}>
+                  Create Account
+                </Button>
+                <Button size='small' variant='outlined' onClick={handleLogin}>
+                  Sign In
+                </Button>
+              </Box>
+            }
+          />
+        </>
+      )}
     </PublicLayout>
   )
 }

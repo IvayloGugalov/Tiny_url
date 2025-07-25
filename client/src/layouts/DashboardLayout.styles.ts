@@ -19,13 +19,10 @@ export const dashboardLayoutStyles = {
     minWidth: 0, // Allow text to shrink
   },
   title: {
-    fontSize: TYPOGRAPHY_SIZES.h6,
+    color: 'white',
+    margin: 0,
+    fontSize: TYPOGRAPHY_SIZES.h4,
     lineHeight: 1.2,
-  },
-  description: {
-    opacity: 0.8,
-    fontSize: TYPOGRAPHY_SIZES.body2,
-    display: { xs: 'none', sm: 'block' },
   },
   desktopActions: {
     display: 'flex',
@@ -47,5 +44,20 @@ export const dashboardLayoutStyles = {
     py: LAYOUT.containerPadding,
     px: LAYOUT.containerPadding,
     maxWidth: '100%',
+  },
+  outlinedButton: {
+    color: 'white',
+    borderColor: 'white',
+    '&:hover': {
+      borderColor: 'white',
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    },
+  },
+  containedButton: {
+    backgroundColor: 'white',
+    color: 'primary.main',
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    },
   },
 } as const

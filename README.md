@@ -102,7 +102,7 @@ TinyURL/
 
 ### Database
 
-The application uses SQLite with automatic migrations. The database file is created automatically at `server/dev.sqlite`.
+The application uses SQLite with automatic migrations. The database file is created automatically at `server/tiny_url.sqlite`.
 
 ## 📊 API Endpoints
 
