@@ -1,24 +1,21 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Paper } from '@mui/material'
+import { Box, Paper, Typography } from '@mui/material'
 import { DashboardLayout } from '../layouts/DashboardLayout'
 import { CreateLinkForm } from '../components/organisms/CreateLinkForm'
 import { ClickAnalyticsChart } from '../components/organisms/ClickAnalyticsChart'
 import { LinksTable } from '../components/organisms/LinksTable'
+import { useAuthStore, useThemeStore, useLinksStore } from '../stores'
 import { analyticsPageStyles } from './AnalyticsPage.styles'
 
-interface AnalyticsPageProps {
-  theme: 'light' | 'dark'
-  setTheme: (theme: 'light' | 'dark') => void
-  onLogout: () => void
-}
-
-export function AnalyticsPage({ theme, setTheme, onLogout }: AnalyticsPageProps) {
-  const [refreshKey, setRefreshKey] = useState(0)
+export function AnalyticsPage() {
+  const theme = useThemeStore((state) => state.theme)
+  const setTheme = useThemeStore((state) => state.setTheme)
+  const logout = useAuthStore((state) => state.logout)
   const navigate = useNavigate()
+  const { fetchLinks } = useLinksStore()
 
-  function handleLinkCreated() {
-    setRefreshKey((prev) => prev + 1)
+  const handleLinkCreated = async () => {
+    await fetchLinks()
   }
 
   const handleGoHome = () => {
@@ -26,27 +23,34 @@ export function AnalyticsPage({ theme, setTheme, onLogout }: AnalyticsPageProps)
   }
 
   const handleLogout = () => {
-    onLogout()
+    logout()
     navigate('/')
   }
 
   return (
     <DashboardLayout
-      title='📊 Analytics Dashboard'
-      description='View and manage your short links'
       theme={theme}
       setTheme={setTheme}
       onLogout={handleLogout}
       onGoHome={handleGoHome}
     >
+      <Box sx={analyticsPageStyles.pageHeader}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          📊 Analytics Dashboard
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+          View and manage your short links
+        </Typography>
+      </Box>
+
       <CreateLinkForm onLinkCreated={handleLinkCreated} />
 
       <Box sx={analyticsPageStyles.gridContainer}>
         <Paper sx={analyticsPageStyles.chartPaper}>
-          <ClickAnalyticsChart refreshKey={refreshKey} />
+          <ClickAnalyticsChart />
         </Paper>
         <Paper sx={analyticsPageStyles.tablePaper}>
-          <LinksTable key={refreshKey} />
+          <LinksTable />
         </Paper>
       </Box>
     </DashboardLayout>

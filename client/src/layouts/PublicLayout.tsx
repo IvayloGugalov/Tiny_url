@@ -18,9 +18,11 @@ interface PublicLayoutProps {
   theme: 'light' | 'dark'
   setTheme: (theme: 'light' | 'dark') => void
   onLogin: () => void
+  onLogout?: () => void
   onGoToAnalytics: () => void
   children: ReactNode
   headerActions?: ReactNode
+  isAuthenticated?: boolean
 }
 
 export function PublicLayout({
@@ -28,9 +30,11 @@ export function PublicLayout({
   theme,
   setTheme,
   onLogin,
+  onLogout,
   onGoToAnalytics,
   children,
   headerActions,
+  isAuthenticated = false,
 }: PublicLayoutProps) {
   const themeHook = useTheme()
   const isMobile = useMediaQuery(themeHook.breakpoints.down('md'))
@@ -69,13 +73,23 @@ export function PublicLayout({
               >
                 Analytics
               </Button>
-              <Button
-                variant="contained"
-                onClick={onLogin}
-                size="small"
-              >
-                Login
-              </Button>
+              {isAuthenticated ? (
+                <Button
+                  variant="contained"
+                  onClick={onLogout}
+                  size="small"
+                >
+                  Log out
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  onClick={onLogin}
+                  size="small"
+                >
+                  Login
+                </Button>
+              )}
               <IconButton
                 onClick={handleThemeToggle}
                 color="inherit"
@@ -99,14 +113,25 @@ export function PublicLayout({
               >
                 Analytics
               </Button>
-              <Button
-                variant="contained"
-                onClick={onLogin}
-                size="small"
-                sx={publicLayoutStyles.mobileContainedButton}
-              >
-                Login
-              </Button>
+              {isAuthenticated ? (
+                <Button
+                  variant="contained"
+                  onClick={onLogout}
+                  size="small"
+                  sx={publicLayoutStyles.mobileContainedButton}
+                >
+                  Log out
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  onClick={onLogin}
+                  size="small"
+                  sx={publicLayoutStyles.mobileContainedButton}
+                >
+                  Login
+                </Button>
+              )}
               <IconButton
                 onClick={handleThemeToggle}
                 color="inherit"

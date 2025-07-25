@@ -1,155 +1,96 @@
-import { Hono, type Context, type Next } from 'hono'
+import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { serveStatic } from 'hono/bun'
-import type { ApiResponse } from 'shared/dist'
-import { drizzle } from 'drizzle-orm/bun-sqlite';
-import { Database } from 'bun:sqlite';
-import { links } from './db/schema';
-import { eq, lt } from 'drizzle-orm';
-import { jwtVerify, SignJWT } from 'jose'
+import { logger as honoLogger } from 'hono/logger'
 
+// Import configuration and services
+import { config } from './config'
+import { logger } from './services/logger'
+import { container } from './container'
+import { SchedulerService } from './services/scheduler'
+
+// Import middleware
+import { requestLoggingMiddleware } from './middleware/logging'
+import { createAuthMiddleware } from './middleware/auth'
+import { globalErrorHandler, notFoundHandler } from './middleware/errorHandler'
+
+// Initialize Hono app
 const app = new Hono()
-app.use(cors())
 
-// Set up Drizzle ORM with Bun's SQLite
-const sqlite = new Database(process.env.DB_FILE_NAME || 'dev.sqlite');
-const db = drizzle({ client: sqlite });
+// Setup CORS
+app.use(
+  cors({
+    origin: config.cors.origins,
+    credentials: config.cors.credentials,
+    allowMethods: config.cors.allowMethods,
+    allowHeaders: config.cors.allowHeaders,
+  }),
+)
 
-// Configuration
-const LINK_TTL_DAYS = parseInt(process.env.LINK_TTL_DAYS || '90', 10);
+// Setup Hono's built-in logger
+app.use(
+  honoLogger((message) => {
+    logger.info(`HTTP Request: ${message}`)
+  }),
+)
 
-function generateShortId(length = 6) {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
+// Setup custom request/response logging middleware
+app.use('*', requestLoggingMiddleware)
 
-// Cron job to prune expired links (runs daily at 2 AM)
-// Note: Bun.cron is experimental, using setInterval as fallback
-const CRON_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+// Initialize services and controllers
+const authService = container.authService
+const authMiddleware = createAuthMiddleware(authService)
+const schedulerService = new SchedulerService(container.linkService)
 
-setInterval(async () => {
-  try {
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - LINK_TTL_DAYS);
-
-    await db.delete(links)
-      .where(lt(links.createdAt, cutoffDate))
-      .run();
-
-    console.log(`Pruned expired links (older than ${LINK_TTL_DAYS} days)`);
-  } catch (error) {
-    console.error('Error pruning expired links:', error);
-  }
-}, CRON_INTERVAL);
+// Start scheduled jobs
+schedulerService.startLinkCleanupJob()
 
 // Serve static files (React app)
 app.use('/*', serveStatic({ root: './public' }))
 
-app.get('/api/hello', async (c) => {
-  const data: ApiResponse = {
-    message: "Hello BHVR!",
-    success: true
-  }
-  return c.json(data, { status: 200 })
+// API Routes
+// Health check endpoint
+app.get('/api/health', container.healthController.healthCheck)
+
+// Authentication routes
+app.post('/api/login', container.authController.login)
+app.post('/api/auth/register', container.authController.register)
+
+// Link routes
+app.post('/api/links', container.linkController.createLink)
+app.get('/api/links', authMiddleware, container.linkController.getAllLinks)
+app.get('/:id', container.linkController.redirectToTarget)
+
+// Error handlers
+app.notFound(notFoundHandler)
+app.onError(globalErrorHandler)
+
+// Start the server
+const server = Bun.serve({
+  port: config.server.port,
+  hostname: config.server.host,
+  fetch: app.fetch,
+  error(error) {
+    logger.error('Server error', error)
+    return new Response('Internal Server Error', { status: 500 })
+  },
 })
 
-// JWT config
-const JWT_SECRET = (process.env.JWT_SECRET || 'supersecret').padEnd(32, '0').slice(0, 32)
-const JWT_SECRET_KEY = new TextEncoder().encode(JWT_SECRET)
-const DEFAULT_EMAIL = 'admin@admin.net'
-const DEFAULT_PASSWORD = 'admin'
-
-// JWT auth middleware
-async function requireAuth(c: Context, next: Next) {
-  const auth = c.req.header('Authorization')
-  if (!auth || !auth.startsWith('Bearer ')) {
-    return c.json({ error: 'Unauthorized' }, 401)
-  }
-  const token = auth.slice(7)
-  try {
-    await jwtVerify(token, JWT_SECRET_KEY)
-    return await next()
-  } catch {
-    return c.json({ error: 'Invalid token' }, 401)
-  }
-}
-
-// Login route
-app.post('/api/login', async (c) => {
-  const { email, password } = await c.req.json()
-  if (email !== DEFAULT_EMAIL || password !== DEFAULT_PASSWORD) {
-    return c.json({ error: 'Invalid credentials' }, 401)
-  }
-  const jwt = await new SignJWT({ email })
-    .setProtectedHeader({ alg: 'HS256' })
-    .setIssuedAt()
-    .setExpirationTime('7d')
-    .sign(JWT_SECRET_KEY)
-  return c.json({ token: jwt })
+// Server startup logging
+logger.info('🚀 TinyURL Server starting...', {
+  port: config.server.port,
+  host: config.server.host,
+  environment: config.server.nodeEnv,
+  url: `http://${config.server.host}:${config.server.port}`,
 })
 
-// POST /api/links – create short code (PUBLIC - no auth required)
-app.post('/api/links', async (c) => {
-  try {
-    const body = await c.req.json();
-    const { target } = body;
-    if (!target || typeof target !== 'string') {
-      return c.json({ error: 'Missing or invalid target URL' }, 400);
-    }
-    // Generate unique short id
-    let id;
-    let exists = true;
-    do {
-      id = generateShortId();
-      const found = await db.select().from(links).where(eq(links.id, id)).get();
-      exists = !!found;
-    } while (exists);
-    // Insert into DB
-    await db.insert(links).values({ id, target }).run();
-    const shortUrl = `${c.req.url.replace(/\/api\/links$/, '')}/${id}`;
-    return c.json({ id, shortUrl });
-  } catch (err) {
-    return c.json({ error: 'Failed to create short link' }, 500);
-  }
-});
-
-// GET /:id – redirect & increment clicks (PUBLIC - no auth required)
-app.get('/:id', async (c) => {
-  try {
-    const { id } = c.req.param();
-    if (!id) {
-      return c.json({ error: 'Missing id parameter' }, 400);
-    }
-    const link = await db.select().from(links).where(eq(links.id, id as string)).get();
-    if (!link) {
-      return c.json({ error: 'Not found' }, 404);
-    }
-    await db.update(links).set({ clicks: (link.clicks || 0) + 1 }).where(eq(links.id, id as string)).run();
-    return c.redirect(link.target, 302);
-  } catch (err) {
-    return c.json({ error: 'Failed to redirect' }, 500);
-  }
-});
-
-// GET /api/links – list all links (PROTECTED - requires auth for analytics)
-app.get('/api/links', requireAuth, async (c) => {
-  try {
-    const allLinks = await db.select().from(links).all();
-    return c.json(allLinks);
-  } catch (err) {
-    return c.json({ error: 'Failed to fetch links' }, 500);
-  }
-});
-
-// Error-handling middleware
-app.notFound((c) => c.json({ error: 'Not Found' }, 404))
-app.onError((err, c) => {
-  console.error(err)
-  return c.json({ error: 'Internal Server Error' }, 500)
+logger.info('📊 Available endpoints:', {
+  health: `http://${config.server.host}:${config.server.port}/api/health`,
+  login: `http://${config.server.host}:${config.server.port}/api/login`,
+  register: `http://${config.server.host}:${config.server.port}/api/auth/register`,
+  links: `http://${config.server.host}:${config.server.port}/api/links`,
 })
+
+logger.info('✅ Server is running and ready to accept connections')
 
 export default app

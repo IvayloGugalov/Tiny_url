@@ -1,40 +1,9 @@
-import { useEffect, useState } from 'react'
 import { BarChart } from '@mui/x-charts/BarChart'
-import { fetchLinks } from '../../api'
 import { Box, Typography, CircularProgress, Alert } from '@mui/material'
+import { useLinksStore } from '../../stores'
 
-interface Link {
-  id: string
-  target: string
-  clicks: number
-  createdAt: string
-}
-
-interface ClickAnalyticsChartProps {
-  refreshKey: number
-}
-
-export function ClickAnalyticsChart({ refreshKey }: ClickAnalyticsChartProps) {
-  const [links, setLinks] = useState<Link[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    loadLinks()
-  }, [refreshKey])
-
-  async function loadLinks() {
-    try {
-      setLoading(true)
-      const data = await fetchLinks()
-      setLinks(data)
-      setError(null)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load links')
-    } finally {
-      setLoading(false)
-    }
-  }
+export function ClickAnalyticsChart() {
+  const { links, loading, error } = useLinksStore()
 
   if (loading) {
     return (

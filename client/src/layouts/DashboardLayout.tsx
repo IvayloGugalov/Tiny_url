@@ -28,8 +28,6 @@ import {
 } from '@mui/icons-material'
 
 interface DashboardLayoutProps {
-  title: string
-  description: string
   theme: 'light' | 'dark'
   setTheme: (theme: 'light' | 'dark') => void
   onLogout: () => void
@@ -39,8 +37,6 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({
-  title,
-  description,
   theme,
   setTheme,
   onLogout,
@@ -96,20 +92,13 @@ export function DashboardLayout({
             </IconButton>
           )}
 
-          {/* Title and Description */}
           <Box sx={dashboardLayoutStyles.titleContainer}>
             <Typography
-              variant="h6"
+              variant="h4"
               component="h1"
               sx={dashboardLayoutStyles.title}
             >
-              {title}
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={dashboardLayoutStyles.description}
-            >
-              {description}
+              🔗 TinyURL
             </Typography>
           </Box>
 
@@ -121,6 +110,7 @@ export function DashboardLayout({
                 onClick={handleGoHome}
                 variant="outlined"
                 size="small"
+                sx={dashboardLayoutStyles.outlinedButton}
               >
                 Home
               </Button>
@@ -134,8 +124,9 @@ export function DashboardLayout({
               </IconButton>
               <Button
                 onClick={handleLogout}
-                variant="text"
+                variant="contained"
                 size="small"
+                sx={dashboardLayoutStyles.containedButton}
               >
                 Logout
               </Button>

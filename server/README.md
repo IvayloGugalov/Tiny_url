@@ -42,7 +42,7 @@ curl -L http://localhost:3000/abc123
 
 ## 🗄️ Database
 
-The server uses SQLite with Drizzle ORM. The database file is automatically created at `dev.sqlite`.
+The server uses SQLite with Drizzle ORM. The database file is automatically created at `tiny_url.sqlite`.
 
 ### Schema
 
