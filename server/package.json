@@ -3,25 +3,33 @@
   "version": "0.0.1",
   "main": "src/index.ts",
   "scripts": {
-    "build": "bun build src/index.ts --outdir dist --target bun",
-    "dev": "bun run src/index.ts",
+    "build": "bun build src/main.ts --outdir dist --target bun",
+    "dev": "bun run src/main.ts",
     "start": "bun run dist/index.js",
     "preview": "bun run dist/index.js",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
     "db:generate": "bun drizzle-kit generate",
     "db:migrate": "bun run migrate.ts",
     "db:push": "bun drizzle-kit push",
     "db:studio": "bun drizzle-kit studio"
   },
   "dependencies": {
+    "@evyweb/ioctopus": "^1.2.0",
     "drizzle-orm": "^0.44.3",
-    "hono": "^4.7.11",
+    "hono": "^4.8.7",
     "jose": "^6.0.12",
     "nanoid": "^5.1.5",
-    "shared": "workspace:*"
+    "shared": "workspace:*",
+    "zod": "^4.0.10"
   },
   "devDependencies": {
-    "@types/bun": "^1.2.18",
-    "drizzle-kit": "^0.31.4"
+    "@eslint/js": "^9.31.0",
+    "@types/bun": "^1.2.19",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
+    "drizzle-kit": "^0.31.4",
+    "eslint": "^9.31.0"
   },
   "engines": {
     "bun": ">=1.0.0"
