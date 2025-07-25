@@ -1,0 +1,1 @@
+export { ShortLinkIdGenerator } from './LinkIdGenerator'

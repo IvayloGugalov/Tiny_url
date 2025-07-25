@@ -28,7 +28,8 @@
   ],
   "devDependencies": {
     "bun-types": "latest",
-    "concurrently": "^9.2.0"
+    "concurrently": "^9.2.0",
+    "eslint-plugin-boundaries": "^5.0.1"
   },
   "peerDependencies": {
     "typescript": "^5.8.3"
