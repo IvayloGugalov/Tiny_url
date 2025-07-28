@@ -1,7 +1,8 @@
-import { UserDomain } from '../../domain/entities/User'
-import { EmailDomain } from '../../domain/value-objects/Email'
-import { DuplicateEmailError } from '../../domain/errors'
-import type { IUserRepository, IAuthService } from '../interfaces'
+import { UserDomain } from 'domain/entities/User'
+import { EmailDomain } from 'domain/value-objects/Email'
+import { DuplicateEmailError } from 'domain/errors'
+import type { IUserRepository } from 'application/interfaces/IUserRepository'
+import type { IAuthService } from 'application/interfaces/IAuthService'
 
 export interface RegisterRequest {
   email: string

@@ -1,8 +1,0 @@
-export { EmailSchema, EmailDomain } from './Email'
-export { UrlSchema, UrlDomain } from './Url'
-export { LinkIdSchema, LinkIdDomain } from './LinkId'
-export { UserIdSchema, UserIdDomain } from './UserId'
-export type { Email } from './Email'
-export type { Url } from './Url'
-export type { LinkId } from './LinkId'
-export type { UserId } from './UserId'

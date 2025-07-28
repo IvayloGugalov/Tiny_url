@@ -1,11 +1,11 @@
 import { createModule } from '@evyweb/ioctopus'
-import { DI_SYMBOLS, type DI_RETURN_TYPES } from '../symbols'
-import { CreateLinkUseCase } from '../../application/use-cases/CreateLinkUseCase'
-import { GetAllLinksUseCase } from '../../application/use-cases/GetAllLinksUseCase'
-import { RedirectToTargetUseCase } from '../../application/use-cases/RedirectToTargetUseCase'
-import { AuthenticateUserUseCase } from '../../application/use-cases/AuthenticateUserUseCase'
-import { RegisterUserUseCase } from '../../application/use-cases/RegisterUserUseCase'
-import { CleanupExpiredLinksUseCase } from '../../application/use-cases/CleanupExpiredLinksUseCase'
+import { DI_SYMBOLS, type DI_RETURN_TYPES } from 'di/symbols'
+import { CreateLinkUseCase } from 'application/use-cases/CreateLinkUseCase'
+import { GetAllLinksUseCase } from 'application/use-cases/GetAllLinksUseCase'
+import { RedirectToTargetUseCase } from 'application/use-cases/RedirectToTargetUseCase'
+import { AuthenticateUserUseCase } from 'application/use-cases/AuthenticateUserUseCase'
+import { RegisterUserUseCase } from 'application/use-cases/RegisterUserUseCase'
+import { CleanupExpiredLinksUseCase } from 'application/use-cases/CleanupExpiredLinksUseCase'
 
 export const createApplicationModule = (getInjection: <K extends keyof DI_RETURN_TYPES>(symbol: K) => DI_RETURN_TYPES[K]) => {
   const module = createModule()

@@ -1,9 +1,9 @@
 import { createContainer } from '@evyweb/ioctopus'
-import { DI_SYMBOLS, type DI_RETURN_TYPES } from './symbols'
-import { createInfrastructureModule } from './modules/infrastructure.module'
-import { createDomainModule } from './modules/domain.module'
-import { createApplicationModule } from './modules/application.module'
-import { createInterfaceAdaptersModule } from './modules/interface-adapters.module'
+import { DI_SYMBOLS, type DI_RETURN_TYPES } from 'di/symbols'
+import { createInfrastructureModule } from 'di/modules/infrastructure.module'
+import { createDomainModule } from 'di/modules/domain.module'
+import { createApplicationModule } from 'di/modules/application.module'
+import { createInterfaceAdaptersModule } from 'di/modules/interface-adapters.module'
 
 export interface AppConfig {
   server: {
@@ -48,13 +48,12 @@ const config = createConfig()
 
 ApplicationContainer.bind(DI_SYMBOLS.Config).toValue(config)
 
-ApplicationContainer.load(Symbol('InfrastructureModule'), createInfrastructureModule(config))
-ApplicationContainer.load(Symbol('DomainModule'), createDomainModule())
-
 export function getInjection<K extends keyof typeof DI_SYMBOLS>(symbol: K): DI_RETURN_TYPES[K] {
   return ApplicationContainer.get(DI_SYMBOLS[symbol]) as DI_RETURN_TYPES[K]
 }
 
+ApplicationContainer.load(Symbol('InfrastructureModule'), createInfrastructureModule(config, getInjection))
+ApplicationContainer.load(Symbol('DomainModule'), createDomainModule())
 ApplicationContainer.load(Symbol('ApplicationModule'), createApplicationModule(getInjection))
 ApplicationContainer.load(
   Symbol('InterfaceAdaptersModule'),

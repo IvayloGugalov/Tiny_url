@@ -1,5 +1,6 @@
-import type { User } from '../../domain/entities/User'
-import type { UserId, Email } from '../../domain/value-objects'
+import type { User } from 'domain/entities/User'
+import type { UserId } from 'domain/value-objects/UserId'
+import type { Email } from 'domain/value-objects/Email'
 
 export interface IUserRepository {
   save(user: User): Promise<void>

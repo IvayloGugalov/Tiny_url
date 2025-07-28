@@ -20,8 +20,17 @@
     // Module resolution
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": false,
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "domain/*": ["src/domain/*"],
+      "application/*": ["src/application/*"],
+      "infrastructure/*": ["src/infrastructure/*"],
+      "interface-adapters/*": ["src/interface-adapters/*"],
+      "di/*": ["src/di/*"]
+    }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "tests/**/*"],
   "exclude": ["node_modules", "dist"]
 }

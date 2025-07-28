@@ -1,12 +1,16 @@
 import { SignJWT, jwtVerify } from 'jose'
-import type { UserId, Email } from '../../domain/value-objects'
-import { UserIdDomain, EmailDomain } from '../../domain/value-objects'
-import { IAuthService, AuthToken } from '../../application/interfaces/IAuthService'
+import { type UserId, UserIdDomain } from 'domain/value-objects/UserId'
+import { type Email, EmailDomain } from 'domain/value-objects/Email'
+import { IAuthService, AuthToken } from 'application/interfaces/IAuthService'
+import type { IUserRepository } from 'application/interfaces/IUserRepository'
 
 export class JwtAuthService implements IAuthService {
   private readonly jwtSecretKey: Uint8Array
 
-  constructor(jwtSecret: string) {
+  constructor(
+    jwtSecret: string,
+    private userRepository: IUserRepository
+  ) {
     this.jwtSecretKey = new TextEncoder().encode(jwtSecret)
   }
 
@@ -22,7 +26,7 @@ export class JwtAuthService implements IAuthService {
 
     return {
       value: token,
-      expiresAt
+      expiresAt,
     }
   }
 
@@ -31,12 +35,15 @@ export class JwtAuthService implements IAuthService {
 
     return {
       userId: UserIdDomain.create(payload.userId as string),
-      email: EmailDomain.create(payload.email as string)
+      email: EmailDomain.create(payload.email as string),
     }
   }
 
-  async validateCredentials(_email: Email, _password: string): Promise<boolean> {
-    // TODO: Implement actual credential validation
-    return true
+  async validateCredentials(email: Email, password: string): Promise<boolean> {
+    // Check if a user with this email exists in the database
+    const user = await this.userRepository.findByEmail(email)
+
+    console.log(user)
+    return user !== null
   }
 }

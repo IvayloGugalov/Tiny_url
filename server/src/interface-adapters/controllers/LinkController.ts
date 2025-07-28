@@ -1,7 +1,9 @@
 import type { Context } from 'hono'
 import { BaseController } from './BaseController'
-import { CreateLinkUseCase, GetAllLinksUseCase, RedirectToTargetUseCase } from '../../application'
-import { LinkPresenter } from '../presenters'
+import { CreateLinkUseCase } from 'application/use-cases/CreateLinkUseCase'
+import { GetAllLinksUseCase } from 'application/use-cases/GetAllLinksUseCase'
+import { RedirectToTargetUseCase } from 'application/use-cases/RedirectToTargetUseCase'
+import { LinkPresenter } from '../presenters/LinkPresenter'
 
 export class LinkController extends BaseController {
   constructor(
@@ -17,7 +19,7 @@ export class LinkController extends BaseController {
     return this.handleRequest(c, async () => {
       const body = await this.parseJsonBody<{ target: string }>(c)
       const baseUrl = this.getBaseUrl(c)
-      
+
       const result = await this.createLinkUseCase.execute(body, baseUrl)
       return result
     }, 201)
@@ -38,7 +40,7 @@ export class LinkController extends BaseController {
       }
 
       const targetUrl = await this.redirectToTargetUseCase.execute(id, this.linkTtlDays)
-      
+
       return c.redirect(targetUrl, 302)
     })
   }

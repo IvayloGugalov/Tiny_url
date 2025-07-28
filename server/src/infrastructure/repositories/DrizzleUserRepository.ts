@@ -1,30 +1,25 @@
 import { eq } from 'drizzle-orm'
-import { User, UserDomain } from '../../domain/entities/User'
-import type { UserId, Email } from '../../domain/value-objects'
-import { IUserRepository } from '../../application/interfaces/IUserRepository'
-import { DatabaseConnection } from '../database/connection'
-import { users } from '../database/schema'
+import { User, UserDomain } from 'domain/entities/User'
+import type { Email } from 'domain/value-objects/Email'
+import type { UserId } from 'domain/value-objects/UserId'
+import { IUserRepository } from 'application/interfaces/IUserRepository'
+import { DatabaseConnection } from 'infrastructure/database/connection'
+import { users } from 'infrastructure/database/schema'
 
 export class DrizzleUserRepository implements IUserRepository {
   private db = DatabaseConnection.getInstance().db
 
   async save(user: User): Promise<void> {
-    await this.db
-      .insert(users)
-      .values({
-        id: user.id,
-        email: user.email,
-        name: user.name || null,
-        createdAt: user.createdAt,
-      })
+    await this.db.insert(users).values({
+      id: user.id,
+      email: user.email,
+      name: user.name || null,
+      createdAt: user.createdAt,
+    })
   }
 
   async findById(id: UserId): Promise<User | null> {
-    const result = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.id, id))
-      .limit(1)
+    const result = await this.db.select().from(users).where(eq(users.id, id)).limit(1)
 
     if (result.length === 0) {
       return null
@@ -40,11 +35,7 @@ export class DrizzleUserRepository implements IUserRepository {
   }
 
   async findByEmail(email: Email): Promise<User | null> {
-    const result = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1)
+    const result = await this.db.select().from(users).where(eq(users.email, email)).limit(1)
 
     if (result.length === 0) {
       return null

@@ -1,5 +1,4 @@
-import type { LinkId } from '../value-objects'
-import { LinkIdDomain } from '../value-objects'
+import { type LinkId, LinkIdDomain } from '../value-objects/LinkId'
 
 export class ShortLinkIdGenerator {
   private readonly alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'

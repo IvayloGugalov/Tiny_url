@@ -1,6 +1,6 @@
-import { EmailDomain } from '../../domain/value-objects/Email'
-import { InvalidCredentialsError } from '../../domain/errors'
-import type { IAuthService } from '../interfaces'
+import { EmailDomain } from 'domain/value-objects/Email'
+import { InvalidCredentialsError } from 'domain/errors'
+import type { IAuthService } from 'application/interfaces/IAuthService'
 
 export interface LoginRequest {
   email: string
@@ -25,7 +25,7 @@ export class AuthenticateUserUseCase {
     const authToken = await this.authService.generateToken('admin', email)
 
     return {
-      token: authToken.value
+      token: authToken.value,
     }
   }
 }

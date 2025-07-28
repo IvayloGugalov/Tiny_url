@@ -1,5 +1,5 @@
-import type { Link } from '../../domain/entities/Link'
-import type { LinkId } from '../../domain/value-objects/LinkId'
+import type { Link } from 'domain/entities/Link'
+import type { LinkId } from 'domain/value-objects/LinkId'
 
 export interface ILinkRepository {
   save(link: Link): Promise<void>

@@ -1,4 +1,5 @@
-import type { UserId, Email } from '../../domain/value-objects'
+import type { UserId } from '@/domain/value-objects/UserId'
+import type { Email } from '@/domain/value-objects/Email'
 
 export interface AuthToken {
   value: string
