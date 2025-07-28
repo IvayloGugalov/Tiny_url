@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { LinkExpiredError } from '../errors'
-import { LinkIdSchema, UrlSchema } from '../value-objects'
+import { LinkIdSchema, LinkIdDomain } from '../value-objects/LinkId'
+import { UrlSchema, UrlDomain } from '../value-objects/Url'
 
 export const LinkSchema = z.object({
   id: LinkIdSchema,
@@ -13,12 +14,15 @@ export type Link = z.infer<typeof LinkSchema>
 
 export const LinkDomain = {
   create: (id: string, target: string): Link => {
-    return LinkSchema.parse({
-      id,
-      target,
+    const validId = LinkIdDomain.create(id)
+    const validTarget = UrlDomain.create(target)
+
+    return {
+      id: validId,
+      target: validTarget,
       clicks: 0,
       createdAt: new Date()
-    })
+    }
   },
 
   fromPersistence: (data: unknown): Link => {

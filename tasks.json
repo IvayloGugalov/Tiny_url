@@ -57,7 +57,7 @@
         "title": "Generate & apply initial migration",
         "description": "Run `drizzle-kit generate` then execute migration via Bun script.",
         "dependencies": [202],
-        "acceptanceCriteria": "`links` table exists in dev.sqlite and migration file is committed.",
+        "acceptanceCriteria": "`links` table exists in tiny_url.sqlite and migration file is committed.",
         "status": "done"
       }
     ],

@@ -1,7 +1,7 @@
-import { LinkDomain } from '../../domain/entities/Link'
-import { UrlDomain } from '../../domain/value-objects/Url'
-import { ShortLinkIdGenerator } from '../../domain/services/LinkIdGenerator'
-import { ILinkRepository } from '../interfaces'
+import { LinkDomain } from 'domain/entities/Link'
+import { UrlDomain } from 'domain/value-objects/Url'
+import { ShortLinkIdGenerator } from 'domain/services/LinkIdGenerator'
+import { ILinkRepository } from 'application/interfaces/ILinkRepository'
 
 export interface CreateLinkRequest {
   target: string

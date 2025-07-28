@@ -1,4 +1,4 @@
-import type { Link } from '../../domain/entities/Link'
+import type { Link } from 'domain/entities/Link'
 
 export interface LinkResponse {
   id: string

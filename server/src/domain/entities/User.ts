@@ -1,5 +1,6 @@
 import { z } from 'zod'
-import { UserIdSchema, EmailSchema } from '../value-objects'
+import { UserIdSchema, UserIdDomain } from '../value-objects/UserId'
+import { EmailSchema, EmailDomain } from '../value-objects/Email'
 
 export const UserSchema = z.object({
   id: UserIdSchema,
@@ -12,12 +13,15 @@ export type User = z.infer<typeof UserSchema>
 
 export const UserDomain = {
   create: (id: string, email: string, name?: string): User => {
-    return UserSchema.parse({
-      id,
-      email,
+    const validId = UserIdDomain.create(id)
+    const validEmail = EmailDomain.create(email)
+
+    return {
+      id: validId,
+      email: validEmail,
       name: name?.trim() || undefined,
       createdAt: new Date()
-    })
+    }
   },
 
   fromPersistence: (data: unknown): User => {

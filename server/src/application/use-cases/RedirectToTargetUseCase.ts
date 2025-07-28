@@ -1,7 +1,7 @@
-import { LinkDomain } from '../../domain/entities/Link'
-import { LinkIdDomain } from '../../domain/value-objects/LinkId'
-import { LinkNotFoundError } from '../../domain/errors'
-import { ILinkRepository } from '../interfaces'
+import { LinkDomain } from 'domain/entities/Link'
+import { LinkIdDomain } from 'domain/value-objects/LinkId'
+import { LinkNotFoundError } from 'domain/errors'
+import { ILinkRepository } from 'application/interfaces/ILinkRepository'
 
 export class RedirectToTargetUseCase {
   constructor(private linkRepository: ILinkRepository) {}

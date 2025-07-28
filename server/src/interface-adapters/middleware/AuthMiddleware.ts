@@ -1,6 +1,6 @@
 import type { Context, Next } from 'hono'
-import type { IAuthService } from '../../application'
-import { ApiPresenter } from '../presenters'
+import type { IAuthService } from 'application/interfaces/IAuthService'
+import { ApiPresenter } from '../presenters/ApiPresenter'
 
 export class AuthMiddleware {
   constructor(private authService: IAuthService) {}

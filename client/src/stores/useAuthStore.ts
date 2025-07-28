@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { checkServerHealth, registerUser } from '../api'
+import { fetchLinks, registerUser } from '../api'
 
 interface AuthState {
   isAuthenticated: boolean
@@ -71,21 +71,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         return
       }
 
-      // Verify the token is still valid by making an authenticated request
-      // We'll use the server health check for now, but in a real app you'd have a dedicated auth check endpoint
-      await checkServerHealth()
+      await fetchLinks()
 
       set({
         isAuthenticated: true,
         isLoading: false
       })
     } catch (error) {
-      // If the request fails, the token might be invalid
       localStorage.removeItem('jwt')
       set({
         isAuthenticated: false,
-        isLoading: false,
-        error: error instanceof Error ? error.message : 'Authentication check failed'
+        isLoading: false
       })
     }
   },
@@ -95,5 +91,4 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   }
 }))
 
-// Initialize auth check when the store is created (following the article's pattern)
 useAuthStore.getState().checkAuthStatus()

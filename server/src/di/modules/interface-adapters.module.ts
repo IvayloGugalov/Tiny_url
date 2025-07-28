@@ -1,12 +1,12 @@
 import { createModule } from '@evyweb/ioctopus'
-import { DI_SYMBOLS, type DI_RETURN_TYPES } from '../symbols'
-import { LinkController } from '../../interface-adapters/controllers/LinkController'
-import { AuthController } from '../../interface-adapters/controllers/AuthController'
-import { HealthController } from '../../interface-adapters/controllers/HealthController'
-import { AuthMiddleware } from '../../interface-adapters/middleware/AuthMiddleware'
-import { ErrorMiddleware } from '../../interface-adapters/middleware/ErrorMiddleware'
-import { LoggingMiddleware } from '../../interface-adapters/middleware/LoggingMiddleware'
-import type { AppConfig } from '../container'
+import { DI_SYMBOLS, type DI_RETURN_TYPES } from 'di/symbols'
+import { LinkController } from 'interface-adapters/controllers/LinkController'
+import { AuthController } from 'interface-adapters/controllers/AuthController'
+import { HealthController } from 'interface-adapters/controllers/HealthController'
+import { AuthMiddleware } from 'interface-adapters/middleware/AuthMiddleware'
+import { ErrorMiddleware } from 'interface-adapters/middleware/ErrorMiddleware'
+import { LoggingMiddleware } from 'interface-adapters/middleware/LoggingMiddleware'
+import type { AppConfig } from 'di/container'
 
 export const createInterfaceAdaptersModule = (getInjection: <K extends keyof DI_RETURN_TYPES>(symbol: K) => DI_RETURN_TYPES[K], config: AppConfig) => {
   const module = createModule()

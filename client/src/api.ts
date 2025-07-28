@@ -49,7 +49,7 @@ async function handleApiResponse<T>(response: Response, endpoint: string): Promi
   }
 
   apiLog.info(`Success from ${endpoint}`, data)
-  return data
+  return data.data
 }
 
 export async function createShortLink(target: string): Promise<{ id: string; shortUrl: string }> {

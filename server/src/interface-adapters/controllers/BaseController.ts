@@ -1,6 +1,6 @@
 import type { Context } from 'hono'
-import { DomainError } from '../../domain/errors'
-import { ApiPresenter } from '../presenters'
+import { DomainError } from 'domain/errors'
+import { ApiPresenter } from '../presenters/ApiPresenter'
 
 export abstract class BaseController {
   protected async handleRequest<T>(
@@ -10,7 +10,11 @@ export abstract class BaseController {
   ): Promise<Response> {
     try {
       const result = await handler()
-      return c.json(ApiPresenter.success(result), successStatus)
+      if (successStatus === 201) {
+        return c.json(ApiPresenter.success(result), 201)
+      } else {
+        return c.json(ApiPresenter.success(result), 200)
+      }
     } catch (error) {
       return this.handleError(c, error)
     }
@@ -30,8 +34,22 @@ export abstract class BaseController {
 
   private handleError(c: Context, error: unknown): Response {
     if (error instanceof DomainError) {
-      const statusCode = this.getStatusCodeForDomainError(error.code)
-      return c.json(ApiPresenter.error(error.message, error.code), statusCode)
+      switch (error.code) {
+        case 'INVALID_URL':
+        case 'INVALID_EMAIL':
+          return c.json(ApiPresenter.error(error.message, error.code), 400)
+        case 'LINK_NOT_FOUND':
+        case 'USER_NOT_FOUND':
+          return c.json(ApiPresenter.error(error.message, error.code), 404)
+        case 'DUPLICATE_EMAIL':
+          return c.json(ApiPresenter.error(error.message, error.code), 409)
+        case 'INVALID_CREDENTIALS':
+          return c.json(ApiPresenter.error(error.message, error.code), 401)
+        case 'LINK_EXPIRED':
+          return c.json(ApiPresenter.error(error.message, error.code), 410)
+        default:
+          return c.json(ApiPresenter.error(error.message, error.code), 400)
+      }
     }
 
     if (error instanceof Error) {
@@ -39,24 +57,5 @@ export abstract class BaseController {
     }
 
     return c.json(ApiPresenter.error('Internal server error'), 500)
-  }
-
-  private getStatusCodeForDomainError(code: string): number {
-    switch (code) {
-      case 'INVALID_URL':
-      case 'INVALID_EMAIL':
-        return 400
-      case 'LINK_NOT_FOUND':
-      case 'USER_NOT_FOUND':
-        return 404
-      case 'DUPLICATE_EMAIL':
-        return 409
-      case 'INVALID_CREDENTIALS':
-        return 401
-      case 'LINK_EXPIRED':
-        return 410
-      default:
-        return 400
-    }
   }
 }

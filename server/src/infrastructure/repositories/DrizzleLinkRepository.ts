@@ -1,9 +1,9 @@
 import { eq, lt } from 'drizzle-orm'
-import { Link, LinkDomain } from '../../domain/entities/Link'
-import { ILinkRepository } from '../../application/interfaces/ILinkRepository'
-import { DatabaseConnection } from '../database/connection'
-import { links } from '../database/schema'
-import { LinkId } from '@server/domain/value-objects'
+import { Link, LinkDomain } from 'domain/entities/Link'
+import { LinkId } from 'domain/value-objects/LinkId'
+import { ILinkRepository } from 'application/interfaces/ILinkRepository'
+import { DatabaseConnection } from 'infrastructure/database/connection'
+import { links } from 'infrastructure/database/schema'
 
 export class DrizzleLinkRepository implements ILinkRepository {
   private db = DatabaseConnection.getInstance().db
