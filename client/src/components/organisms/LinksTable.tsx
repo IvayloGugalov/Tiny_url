@@ -9,11 +9,7 @@ import { useLinksStore } from '../../stores'
 
 const MAX_URL_DISPLAY_LENGTH = 50
 
-interface LinksTableProps {
-  onRefresh?: () => void
-}
-
-export function LinksTable({ onRefresh }: LinksTableProps) {
+export function LinksTable() {
   const { links, loading, error, fetchLinks } = useLinksStore()
 
   useEffect(() => {
@@ -22,8 +18,7 @@ export function LinksTable({ onRefresh }: LinksTableProps) {
 
   const handleRefresh = useCallback(async () => {
     await fetchLinks()
-    onRefresh?.()
-  }, [fetchLinks, onRefresh])
+  }, [fetchLinks])
 
   const formatUrl = useCallback((url: string) => {
     return url.length > MAX_URL_DISPLAY_LENGTH
@@ -42,8 +37,7 @@ export function LinksTable({ onRefresh }: LinksTableProps) {
       {
         field: 'target',
         headerName: 'Target URL',
-        flex: 1,
-        minWidth: 300,
+        flex: 0.5,
         renderCell: (params) => (
           <Link
             href={params.value}
@@ -58,7 +52,7 @@ export function LinksTable({ onRefresh }: LinksTableProps) {
       {
         field: 'clicks',
         headerName: 'Clicks',
-        width: 120,
+        flex: 0.1,
         type: 'number',
         renderCell: (params) => (
           <Chip
@@ -71,7 +65,7 @@ export function LinksTable({ onRefresh }: LinksTableProps) {
       {
         field: 'createdAt',
         headerName: 'Created',
-        width: 150,
+        flex: 0.2,
         valueGetter: (params: string) => new Date(params),
       },
       {

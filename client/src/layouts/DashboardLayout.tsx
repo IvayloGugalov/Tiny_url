@@ -24,7 +24,6 @@ import {
   Menu as MenuIcon,
   Home as HomeIcon,
   Logout as LogoutIcon,
-  Dashboard as DashboardIcon
 } from '@mui/icons-material'
 
 interface DashboardLayoutProps {
@@ -72,7 +71,6 @@ export function DashboardLayout({
 
   const mobileMenuItems = [
     { text: 'Home', icon: <HomeIcon />, onClick: handleGoHome },
-    { text: 'Dashboard', icon: <DashboardIcon />, onClick: () => {} },
     { text: 'Logout', icon: <LogoutIcon />, onClick: handleLogout },
   ]
 

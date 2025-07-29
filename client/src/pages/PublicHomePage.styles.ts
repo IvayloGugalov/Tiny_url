@@ -26,7 +26,6 @@ export const publicHomePageStyles = {
   whyChooseTitle: {
     fontSize: { xs: '1.875rem', sm: '2.25rem', md: '2.5rem' },
     fontWeight: 700,
-    mb: 2,
   },
   whyChooseSubtitle: {
     fontSize: { xs: '1.125rem', sm: '1.25rem' },

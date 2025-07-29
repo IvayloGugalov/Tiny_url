@@ -1,15 +1,6 @@
 import { HEIGHTS, RESPONSIVE } from '../styles/constants'
 
 export const analyticsPageStyles = {
-  pageHeader: {
-    mb: 3,
-  },
-  gridContainer: {
-    display: 'grid',
-    gridTemplateColumns: { xs: '1fr', lg: '1fr 1fr' },
-    gap: RESPONSIVE.gap,
-    mt: RESPONSIVE.margin,
-  },
   chartPaper: {
     p: RESPONSIVE.padding,
     height: 'fit-content',

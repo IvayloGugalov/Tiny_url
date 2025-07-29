@@ -43,7 +43,6 @@ export class JwtAuthService implements IAuthService {
     // Check if a user with this email exists in the database
     const user = await this.userRepository.findByEmail(email)
 
-    console.log(user)
     return user !== null
   }
 }
