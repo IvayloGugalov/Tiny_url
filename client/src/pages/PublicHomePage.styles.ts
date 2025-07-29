@@ -2,8 +2,7 @@ import { TYPOGRAPHY_SIZES, RESPONSIVE } from '../styles/constants'
 
 export const publicHomePageStyles = {
   featuresPaper: {
-    p: RESPONSIVE.padding,
-    mt: RESPONSIVE.margin,
+    padding: RESPONSIVE.padding,
   },
   featuresTitle: {
     fontSize: TYPOGRAPHY_SIZES.h5,
