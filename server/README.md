@@ -20,9 +20,11 @@ bun run dev
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/api/links` | Create a new short link |
-| `GET` | `/api/links` | Get all links with analytics |
+| `POST` | `/api/links` | Create a new short link (anonymous or authenticated) |
+| `GET` | `/api/links` | Get user-specific links with analytics (requires auth) |
 | `GET` | `/:id` | Redirect to target URL (increments clicks) |
+| `POST` | `/api/auth/register` | Register new user |
+| `POST` | `/api/login` | Authenticate user |
 | `GET` | `/api/hello` | Health check endpoint |
 
 ### Example Usage
@@ -75,12 +77,28 @@ bun run drizzle-kit migrate
 
 ## 🧪 Testing
 
+### Unit Tests
 ```bash
 # Run tests
 bun test
 
 # Run with coverage
 bun test --coverage
+```
+
+### Integration Test Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `test-redirect.js` | Tests URL shortening and redirect functionality |
+| `test-user-links.js` | Tests user authentication and user-specific link analytics |
+| `test-login-debug.js` | Debug script for authentication token validation |
+
+```bash
+# Run integration tests (server must be running)
+node test-redirect.js
+node test-user-links.js
+node test-login-debug.js
 ```
 
 ## 📁 Project Structure

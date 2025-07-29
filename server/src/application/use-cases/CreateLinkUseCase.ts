@@ -18,7 +18,7 @@ export class CreateLinkUseCase {
     private linkIdGenerator: ShortLinkIdGenerator
   ) {}
 
-  async execute(request: CreateLinkRequest, baseUrl: string): Promise<CreateLinkResponse> {
+  async execute(request: CreateLinkRequest, baseUrl: string, userId?: string): Promise<CreateLinkResponse> {
     const targetUrl = UrlDomain.create(request.target)
 
     let linkId = this.linkIdGenerator.generate()
@@ -34,7 +34,7 @@ export class CreateLinkUseCase {
       throw new Error('Failed to generate unique link ID')
     }
 
-    const link = LinkDomain.create(linkId, targetUrl)
+    const link = LinkDomain.create(linkId, targetUrl, userId)
     await this.linkRepository.save(link)
 
     const shortUrl = `${baseUrl.replace(/\/api\/links$/, '')}/${linkId}`

@@ -2,6 +2,7 @@ import { createModule } from '@evyweb/ioctopus'
 import { DI_SYMBOLS, type DI_RETURN_TYPES } from 'di/symbols'
 import { CreateLinkUseCase } from 'application/use-cases/CreateLinkUseCase'
 import { GetAllLinksUseCase } from 'application/use-cases/GetAllLinksUseCase'
+import { GetUserLinksUseCase } from 'application/use-cases/GetUserLinksUseCase'
 import { RedirectToTargetUseCase } from 'application/use-cases/RedirectToTargetUseCase'
 import { AuthenticateUserUseCase } from 'application/use-cases/AuthenticateUserUseCase'
 import { RegisterUserUseCase } from 'application/use-cases/RegisterUserUseCase'
@@ -21,6 +22,11 @@ export const createApplicationModule = (getInjection: <K extends keyof DI_RETURN
     return new GetAllLinksUseCase(linkRepository)
   })
 
+  module.bind(DI_SYMBOLS.GetUserLinksUseCase).toFactory(() => {
+    const linkRepository = getInjection('ILinkRepository')
+    return new GetUserLinksUseCase(linkRepository)
+  })
+
   module.bind(DI_SYMBOLS.RedirectToTargetUseCase).toFactory(() => {
     const linkRepository = getInjection('ILinkRepository')
     return new RedirectToTargetUseCase(linkRepository)
@@ -28,7 +34,8 @@ export const createApplicationModule = (getInjection: <K extends keyof DI_RETURN
 
   module.bind(DI_SYMBOLS.AuthenticateUserUseCase).toFactory(() => {
     const authService = getInjection('IAuthService')
-    return new AuthenticateUserUseCase(authService)
+    const userRepository = getInjection('IUserRepository')
+    return new AuthenticateUserUseCase(authService, userRepository)
   })
 
   module.bind(DI_SYMBOLS.RegisterUserUseCase).toFactory(() => {

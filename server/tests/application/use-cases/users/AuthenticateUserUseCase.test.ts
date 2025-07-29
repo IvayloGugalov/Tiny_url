@@ -1,15 +1,18 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { AuthenticateUserUseCase } from 'application/use-cases/AuthenticateUserUseCase'
-import { MockAuthService } from '../../mocks'
+import { MockAuthService, MockUserRepository } from '../../mocks'
 import { TestData, TestHelpers } from '../../../utils'
 
 describe('AuthenticateUserUseCase', () => {
   let useCase: AuthenticateUserUseCase
   let mockAuthService: MockAuthService
+  let mockUserRepository: MockUserRepository
 
   beforeEach(() => {
     mockAuthService = new MockAuthService()
-    useCase = new AuthenticateUserUseCase(mockAuthService)
+    mockUserRepository = new MockUserRepository()
+    mockUserRepository.clear()
+    useCase = new AuthenticateUserUseCase(mockAuthService, mockUserRepository)
   })
 
   describe('execute', () => {
@@ -19,13 +22,19 @@ describe('AuthenticateUserUseCase', () => {
         password: 'validpassword'
       }
 
+      const user = TestData.createUser({
+        id: 'user123',
+        email: 'test@example.com'
+      })
+      await mockUserRepository.save(user)
+
       mockAuthService.setValidCredentials('test@example.com', 'validpassword')
 
       const result = await useCase.execute(request)
 
       expect(result.token).toBeDefined()
       expect(typeof result.token).toBe('string')
-      expect(result.token).toContain('mock-token-admin-')
+      expect(result.token).toContain('mock-token-user123-')
     })
 
     it('should throw InvalidCredentialsError for invalid password', async () => {
@@ -79,6 +88,12 @@ describe('AuthenticateUserUseCase', () => {
           password: 'validpassword'
         }
 
+        const user = TestData.createUser({
+          id: `user-${email.replace(/[^a-zA-Z0-9]/g, '')}`,
+          email
+        })
+        await mockUserRepository.save(user)
+
         mockAuthService.clear()
         mockAuthService.setValidCredentials(email, 'validpassword')
 
@@ -87,11 +102,17 @@ describe('AuthenticateUserUseCase', () => {
       }
     })
 
-    it('should generate token with admin user ID', async () => {
+    it('should generate token with correct user ID', async () => {
       const request = {
         email: 'test@example.com',
         password: 'validpassword'
       }
+
+      const user = TestData.createUser({
+        id: 'testuser456',
+        email: 'test@example.com'
+      })
+      await mockUserRepository.save(user)
 
       mockAuthService.setValidCredentials('test@example.com', 'validpassword')
 
@@ -99,7 +120,7 @@ describe('AuthenticateUserUseCase', () => {
 
       // Verify token was generated with correct parameters
       const tokenData = await mockAuthService.verifyToken(result.token)
-      expect(tokenData.userId).toBe('admin')
+      expect(tokenData.userId).toBe('testuser456')
       expect(tokenData.email).toBe('test@example.com')
     })
 
@@ -125,6 +146,12 @@ describe('AuthenticateUserUseCase', () => {
         password: 'password123'
       }
 
+      const user = TestData.createUser({
+        id: 'caseuser',
+        email: 'test@example.com'
+      })
+      await mockUserRepository.save(user)
+
       mockAuthService.setValidCredentials('test@example.com', 'Password123')
 
       // Correct case should work
@@ -144,6 +171,12 @@ describe('AuthenticateUserUseCase', () => {
         password: 'P@ssw0rd!#$%^&*()'
       }
 
+      const user = TestData.createUser({
+        id: 'specialuser',
+        email: 'test@example.com'
+      })
+      await mockUserRepository.save(user)
+
       mockAuthService.setValidCredentials('test@example.com', 'P@ssw0rd!#$%^&*()')
 
       const result = await useCase.execute(request)
@@ -156,6 +189,12 @@ describe('AuthenticateUserUseCase', () => {
         email: 'test@example.com',
         password: longPassword
       }
+
+      const user = TestData.createUser({
+        id: 'longuser',
+        email: 'test@example.com'
+      })
+      await mockUserRepository.save(user)
 
       mockAuthService.setValidCredentials('test@example.com', longPassword)
 

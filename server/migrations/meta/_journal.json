@@ -15,6 +15,13 @@
       "when": 1753436612981,
       "tag": "0001_friendly_stranger",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1753810076535,
+      "tag": "0002_loving_impossible_man",
+      "breakpoints": true
     }
   ]
 }

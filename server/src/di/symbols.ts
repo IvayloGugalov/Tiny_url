@@ -9,6 +9,7 @@ import type { IUserRepository } from 'application/interfaces/IUserRepository'
 // Use Cases
 import type { CreateLinkUseCase } from 'application/use-cases/CreateLinkUseCase'
 import type { GetAllLinksUseCase } from 'application/use-cases/GetAllLinksUseCase'
+import type { GetUserLinksUseCase } from 'application/use-cases/GetUserLinksUseCase'
 import type { RedirectToTargetUseCase } from 'application/use-cases/RedirectToTargetUseCase'
 import type { AuthenticateUserUseCase } from 'application/use-cases/AuthenticateUserUseCase'
 import type { RegisterUserUseCase } from 'application/use-cases/RegisterUserUseCase'
@@ -49,6 +50,7 @@ export const DI_SYMBOLS = {
   // Use Cases
   CreateLinkUseCase: Symbol.for('CreateLinkUseCase'),
   GetAllLinksUseCase: Symbol.for('GetAllLinksUseCase'),
+  GetUserLinksUseCase: Symbol.for('GetUserLinksUseCase'),
   RedirectToTargetUseCase: Symbol.for('RedirectToTargetUseCase'),
   AuthenticateUserUseCase: Symbol.for('AuthenticateUserUseCase'),
   RegisterUserUseCase: Symbol.for('RegisterUserUseCase'),
@@ -86,6 +88,7 @@ export interface DI_RETURN_TYPES {
   // Use Cases
   CreateLinkUseCase: CreateLinkUseCase
   GetAllLinksUseCase: GetAllLinksUseCase
+  GetUserLinksUseCase: GetUserLinksUseCase
   RedirectToTargetUseCase: RedirectToTargetUseCase
   AuthenticateUserUseCase: AuthenticateUserUseCase
   RegisterUserUseCase: RegisterUserUseCase
