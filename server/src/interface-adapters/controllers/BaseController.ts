@@ -32,7 +32,7 @@ export abstract class BaseController {
     return c.req.url
   }
 
-  private handleError(c: Context, error: unknown): Response {
+  protected handleError(c: Context, error: unknown): Response {
     if (error instanceof DomainError) {
       switch (error.code) {
         case 'INVALID_URL':

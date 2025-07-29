@@ -1,0 +1,1 @@
+ALTER TABLE `links` ADD `userId` text REFERENCES users(id);

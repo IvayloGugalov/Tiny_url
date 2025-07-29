@@ -1,6 +1,7 @@
 import type { ILinkRepository } from 'application/interfaces/ILinkRepository'
 import type { Link } from 'domain/entities/Link'
 import type { LinkId } from 'domain/value-objects/LinkId'
+import type { UserId } from 'domain/value-objects/UserId'
 
 export class MockLinkRepository implements ILinkRepository {
   private links: Map<string, Link> = new Map()
@@ -16,6 +17,12 @@ export class MockLinkRepository implements ILinkRepository {
 
   async findAll(): Promise<Link[]> {
     return Array.from(this.links.values()).map(link => ({ ...link }))
+  }
+
+  async findByUserId(userId: UserId): Promise<Link[]> {
+    return Array.from(this.links.values())
+      .filter(link => link.userId === userId)
+      .map(link => ({ ...link }))
   }
 
   async existsById(id: LinkId): Promise<boolean> {

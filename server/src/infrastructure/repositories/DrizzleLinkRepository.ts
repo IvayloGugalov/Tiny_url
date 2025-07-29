@@ -1,6 +1,7 @@
 import { eq, lt } from 'drizzle-orm'
 import { Link, LinkDomain } from 'domain/entities/Link'
 import { LinkId } from 'domain/value-objects/LinkId'
+import { UserId } from 'domain/value-objects/UserId'
 import { ILinkRepository } from 'application/interfaces/ILinkRepository'
 import { DatabaseConnection } from 'infrastructure/database/connection'
 import { links } from 'infrastructure/database/schema'
@@ -15,6 +16,7 @@ export class DrizzleLinkRepository implements ILinkRepository {
         id: link.id,
         target: link.target,
         clicks: link.clicks,
+        userId: link.userId,
         createdAt: link.createdAt,
       })
   }
@@ -35,6 +37,7 @@ export class DrizzleLinkRepository implements ILinkRepository {
       id: row.id,
       target: row.target,
       clicks: row.clicks,
+      userId: row.userId,
       createdAt: row.createdAt,
     })
   }
@@ -47,6 +50,24 @@ export class DrizzleLinkRepository implements ILinkRepository {
         id: row.id,
         target: row.target,
         clicks: row.clicks,
+        userId: row.userId,
+        createdAt: row.createdAt,
+      })
+    )
+  }
+
+  async findByUserId(userId: UserId): Promise<Link[]> {
+    const result = await this.db
+      .select()
+      .from(links)
+      .where(eq(links.userId, userId))
+
+    return result.map(row =>
+      LinkDomain.fromPersistence({
+        id: row.id,
+        target: row.target,
+        clicks: row.clicks,
+        userId: row.userId,
         createdAt: row.createdAt,
       })
     )

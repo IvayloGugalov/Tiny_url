@@ -13,9 +13,9 @@ export const createInterfaceAdaptersModule = (getInjection: <K extends keyof DI_
 
   module.bind(DI_SYMBOLS.LinkController).toFactory(() => {
     const createLinkUseCase = getInjection('CreateLinkUseCase')
-    const getAllLinksUseCase = getInjection('GetAllLinksUseCase')
+    const getUserLinksUseCase = getInjection('GetUserLinksUseCase')
     const redirectToTargetUseCase = getInjection('RedirectToTargetUseCase')
-    return new LinkController(createLinkUseCase, getAllLinksUseCase, redirectToTargetUseCase, config.links.ttlDays)
+    return new LinkController(createLinkUseCase, getUserLinksUseCase, redirectToTargetUseCase, config.links.ttlDays)
   })
 
   module.bind(DI_SYMBOLS.AuthController).toFactory(() => {

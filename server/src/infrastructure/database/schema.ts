@@ -16,6 +16,7 @@ export const links = sqliteTable('links', {
     .$defaultFn(() => generateId()),
   target: text('target').notNull(),
   clicks: integer('clicks').notNull().default(0),
+  userId: text('userId').references(() => users.id),
   createdAt: integer('createdAt', { mode: 'timestamp' })
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),

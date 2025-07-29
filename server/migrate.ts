@@ -2,7 +2,7 @@ import 'bun:dotenv';
 import { Database } from 'bun:sqlite';
 import { drizzle } from 'drizzle-orm/bun-sqlite';
 import { migrate } from 'drizzle-orm/bun-sqlite/migrator';
-import { links, users } from './src/db/schema';
+import { links, users } from './src/infrastructure/database/schema';
 
 const sqlite = new Database(process.env.DB_FILE_NAME);
 const db = drizzle(sqlite);
