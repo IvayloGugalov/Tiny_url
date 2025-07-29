@@ -7,7 +7,7 @@ import {
   Button,
   IconButton,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
 } from '@mui/material'
 import { ReactNode } from 'react'
 import { Brightness4, Brightness7 } from '@mui/icons-material'
@@ -48,15 +48,11 @@ export function PublicLayout({
 
   return (
     <Box sx={publicLayoutStyles.root}>
-      <AppBar position="static">
+      <AppBar position='static' sx={{ borderRadius: '0 0 12px 12px' }}>
         <Toolbar sx={publicLayoutStyles.toolbar}>
           {/* Title */}
           <Box sx={publicLayoutStyles.titleContainer}>
-            <Typography
-              variant="h4"
-              component="h1"
-              sx={publicLayoutStyles.title}
-            >
+            <Typography variant='h4' component='h1' sx={publicLayoutStyles.title}>
               {title}
             </Typography>
           </Box>
@@ -67,34 +63,26 @@ export function PublicLayout({
               {headerActions}
               <Button
                 onClick={onGoToAnalytics}
-                variant="outlined"
-                size="small"
+                variant='outlined'
+                size='small'
                 sx={publicLayoutStyles.outlinedButton}
               >
                 Analytics
               </Button>
               {isAuthenticated ? (
-                <Button
-                  variant="contained"
-                  onClick={onLogout}
-                  size="small"
-                >
+                <Button variant='contained' onClick={onLogout} size='small'>
                   Log out
                 </Button>
               ) : (
-                <Button
-                  variant="contained"
-                  onClick={onLogin}
-                  size="small"
-                >
+                <Button variant='contained' onClick={onLogin} size='small'>
                   Login
                 </Button>
               )}
               <IconButton
                 onClick={handleThemeToggle}
-                color="inherit"
+                color='inherit'
                 aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-                size="medium"
+                size='medium'
               >
                 {theme === 'light' ? <Brightness4 /> : <Brightness7 />}
               </IconButton>
@@ -107,26 +95,26 @@ export function PublicLayout({
               {headerActions}
               <Button
                 onClick={onGoToAnalytics}
-                variant="outlined"
-                size="small"
+                variant='outlined'
+                size='small'
                 sx={publicLayoutStyles.mobileOutlinedButton}
               >
                 Analytics
               </Button>
               {isAuthenticated ? (
                 <Button
-                  variant="contained"
+                  variant='contained'
                   onClick={onLogout}
-                  size="small"
+                  size='small'
                   sx={publicLayoutStyles.mobileContainedButton}
                 >
                   Log out
                 </Button>
               ) : (
                 <Button
-                  variant="contained"
+                  variant='contained'
                   onClick={onLogin}
-                  size="small"
+                  size='small'
                   sx={publicLayoutStyles.mobileContainedButton}
                 >
                   Login
@@ -134,9 +122,9 @@ export function PublicLayout({
               )}
               <IconButton
                 onClick={handleThemeToggle}
-                color="inherit"
+                color='inherit'
                 aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-                size="medium"
+                size='medium'
               >
                 {theme === 'light' ? <Brightness4 /> : <Brightness7 />}
               </IconButton>
@@ -146,10 +134,7 @@ export function PublicLayout({
       </AppBar>
 
       {/* Main Content */}
-      <Container
-        component="main"
-        sx={publicLayoutStyles.mainContent}
-      >
+      <Container component='main' sx={publicLayoutStyles.mainContent}>
         {children}
       </Container>
     </Box>

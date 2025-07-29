@@ -1,15 +1,16 @@
 import { useNavigate } from 'react-router-dom'
-import { Paper, Stack, Typography, Button, Box, Card, CardContent } from '@mui/material'
+import { Paper, Stack, Typography, Button, Box, CardContent } from '@mui/material'
 import { PublicLayout } from '../layouts/PublicLayout'
 import { CreateLinkForm } from '../components/organisms/CreateLinkForm'
 import { Alert } from '../components/molecules/Alert'
+import { BlurText, SpotlightCard, AnimatedIcon } from '../components'
 import { useAuthStore, useThemeStore } from '../stores'
 import { publicHomePageStyles } from './PublicHomePage.styles'
 import {
   FlashOn as Zap,
   BarChart as BarChart3,
   Security as Shield,
-  Smartphone as Smartphone
+  Smartphone as Smartphone,
 } from '@mui/icons-material'
 
 export function PublicHomePage() {
@@ -48,37 +49,29 @@ export function PublicHomePage() {
       <CreateLinkForm onLinkCreated={() => {}} />
 
       <Paper sx={publicHomePageStyles.featuresPaper}>
-        <Typography
-          variant="h5"
-          gutterBottom
-          sx={publicHomePageStyles.featuresTitle}
-        >
+        <Typography variant='h5' gutterBottom sx={publicHomePageStyles.featuresTitle}>
           Why use TinyURL?
         </Typography>
         <Stack spacing={1} sx={publicHomePageStyles.featuresList}>
-          <Typography
-            variant="body1"
-            sx={publicHomePageStyles.featureItem}
-          >
-            ✅ <strong>Instant:</strong> Create short links in seconds
+          <Typography variant='body1' sx={publicHomePageStyles.featureItem}>
+            <BlurText text='✅ Instant ' animateBy='character' delay={0.5} fontWeight='bold' />
+            <BlurText text='Create short links in seconds' animateBy='word' delay={0.55} />
           </Typography>
-          <Typography
-            variant="body1"
-            sx={publicHomePageStyles.featureItem}
-          >
-            ✅ <strong>Free:</strong> No registration required
+          <Typography variant='body1' sx={publicHomePageStyles.featureItem}>
+            <BlurText text='✅ Free: ' animateBy='character' delay={0.6} fontWeight='bold' />
+            <BlurText text='No registration required' animateBy='word' delay={0.65} />
           </Typography>
-          <Typography
-            variant="body1"
-            sx={publicHomePageStyles.featureItem}
-          >
-            ✅ <strong>Analytics:</strong> Track clicks and performance (with login)
+          <Typography variant='body1' sx={publicHomePageStyles.featureItem}>
+            <BlurText text='✅ Analytics: ' animateBy='character' delay={0.7} fontWeight='bold' />
+            <BlurText
+              text='Track clicks and performance (with login)'
+              animateBy='word'
+              delay={0.75}
+            />
           </Typography>
-          <Typography
-            variant="body1"
-            sx={publicHomePageStyles.featureItem}
-          >
-            ✅ <strong>Secure:</strong> Built with modern web technologies
+          <Typography variant='body1' sx={publicHomePageStyles.featureItem}>
+            <BlurText text='✅ Secure: ' animateBy='character' delay={0.8} fontWeight='bold' />
+            <BlurText text='Built with modern web technologies' animateBy='word' delay={0.85} />
           </Typography>
         </Stack>
       </Paper>
@@ -86,70 +79,129 @@ export function PublicHomePage() {
       {/* Why Choose TinyURL Section */}
       <Box sx={publicHomePageStyles.whyChooseSection}>
         <Box sx={publicHomePageStyles.whyChooseHeader}>
-          <Typography variant="h2" sx={publicHomePageStyles.whyChooseTitle}>
-            Why Choose TinyURL?
+          <Typography variant='h2' sx={publicHomePageStyles.whyChooseTitle}>
+            <BlurText text='Why Choose TinyURL?' animateBy='character' delay={1} />
           </Typography>
-          <Typography variant="h6" sx={publicHomePageStyles.whyChooseSubtitle}>
-            More than just a URL shortener - get powerful analytics and insights
+          <Typography variant='h6' sx={publicHomePageStyles.whyChooseSubtitle}>
+            <BlurText
+              text='More than just a URL shortener - get powerful analytics and insights'
+              animateBy='word'
+              delay={1.1}
+            />
           </Typography>
         </Box>
 
         <Box sx={publicHomePageStyles.whyChooseGrid}>
-          <Card sx={publicHomePageStyles.featureCard}>
-            <Box sx={{ ...publicHomePageStyles.iconContainer, ...publicHomePageStyles.iconContainerBlue }}>
-              <Zap sx={{ fontSize: 24, color: 'primary.main' }} />
-            </Box>
-            <Typography variant="h6" sx={publicHomePageStyles.cardTitle}>
-              Lightning Fast
+          <SpotlightCard
+            sx={publicHomePageStyles.featureCard}
+            spotlightColor='rgba(232, 98, 34, 0.4)'
+          >
+            <AnimatedIcon delay={0.5}>
+              <Box
+                sx={{
+                  ...publicHomePageStyles.iconContainer,
+                  ...publicHomePageStyles.iconContainerBlue,
+                }}
+              >
+                <Zap sx={{ fontSize: 24, color: 'primary.main' }} />
+              </Box>
+            </AnimatedIcon>
+            <Typography variant='h6' sx={publicHomePageStyles.cardTitle}>
+              <BlurText text='Lightning Fast' animateBy='character' delay={1.2} />
             </Typography>
-            <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+            <CardContent sx={publicHomePageStyles.cardContentContainer}>
               <Typography sx={publicHomePageStyles.cardContent}>
-                Create short links instantly with our high-performance infrastructure
+                <BlurText
+                  text='Create short links instantly with our high-performance infrastructure'
+                  animateBy='word'
+                  delay={1.2}
+                />
               </Typography>
             </CardContent>
-          </Card>
+          </SpotlightCard>
 
-          <Card sx={publicHomePageStyles.featureCard}>
-            <Box sx={{ ...publicHomePageStyles.iconContainer, ...publicHomePageStyles.iconContainerPurple }}>
-              <BarChart3 sx={{ fontSize: 24, color: 'secondary.main' }} />
-            </Box>
-            <Typography variant="h6" sx={publicHomePageStyles.cardTitle}>
-              Detailed Analytics
+          <SpotlightCard
+            sx={publicHomePageStyles.featureCard}
+            spotlightColor='rgba(14, 134, 74, 0.35)'
+          >
+            <AnimatedIcon delay={0.7}>
+              <Box
+                sx={{
+                  ...publicHomePageStyles.iconContainer,
+                  ...publicHomePageStyles.iconContainerPurple,
+                }}
+              >
+                <BarChart3 sx={{ fontSize: 24, color: 'secondary.main' }} />
+              </Box>
+            </AnimatedIcon>
+            <Typography variant='h6' sx={publicHomePageStyles.cardTitle}>
+              <BlurText text='Detailed Analytics' animateBy='character' delay={1.4} />
             </Typography>
-            <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+            <CardContent sx={publicHomePageStyles.cardContentContainer}>
               <Typography sx={publicHomePageStyles.cardContent}>
-                Track clicks, locations, devices, and more with beautiful charts
+                <BlurText
+                  text='Track clicks, locations, devices, and more with beautiful charts'
+                  animateBy='word'
+                  delay={1.4}
+                />
               </Typography>
             </CardContent>
-          </Card>
+          </SpotlightCard>
 
-          <Card sx={publicHomePageStyles.featureCard}>
-            <Box sx={{ ...publicHomePageStyles.iconContainer, ...publicHomePageStyles.iconContainerGreen }}>
-              <Shield sx={{ fontSize: 24, color: 'success.main' }} />
-            </Box>
-            <Typography variant="h6" sx={publicHomePageStyles.cardTitle}>
-              Secure & Reliable
+          <SpotlightCard
+            sx={publicHomePageStyles.featureCard}
+            spotlightColor='rgba(17, 127, 167, 0.4)'
+          >
+            <AnimatedIcon delay={0.9}>
+              <Box
+                sx={{
+                  ...publicHomePageStyles.iconContainer,
+                  ...publicHomePageStyles.iconContainerGreen,
+                }}
+              >
+                <Shield sx={{ fontSize: 24, color: 'success.main' }} />
+              </Box>
+            </AnimatedIcon>
+            <Typography variant='h6' sx={publicHomePageStyles.cardTitle}>
+              <BlurText text='Secure & Reliable' animateBy='character' delay={1.6} />
             </Typography>
-            <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+            <CardContent sx={publicHomePageStyles.cardContentContainer}>
               <Typography sx={publicHomePageStyles.cardContent}>
-                Enterprise-grade security with 99.9% uptime guarantee
+                <BlurText
+                  text='Enterprise-grade security with 99.9% uptime guarantee'
+                  animateBy='word'
+                  delay={1.6}
+                />
               </Typography>
             </CardContent>
-          </Card>
+          </SpotlightCard>
 
-          <Card sx={publicHomePageStyles.featureCard}>
-            <Box sx={{ ...publicHomePageStyles.iconContainer, ...publicHomePageStyles.iconContainerOrange }}>
+          <SpotlightCard
+            sx={publicHomePageStyles.featureCard}
+            spotlightColor='rgba(222, 86, 23, 0.3)'
+          >
+            <AnimatedIcon
+              delay={1.1}
+              containerStyles={{
+                ...publicHomePageStyles.iconContainer,
+                ...publicHomePageStyles.iconContainerOrange,
+              }}
+            >
               <Smartphone sx={{ fontSize: 24, color: 'warning.main' }} />
-            </Box>
-            <Typography variant="h6" sx={publicHomePageStyles.cardTitle}>
-              Mobile Optimized
+            </AnimatedIcon>
+            <Typography variant='h6' sx={publicHomePageStyles.cardTitle}>
+              <BlurText text='Mobile Optimized' animateBy='character' delay={1.8} />
             </Typography>
-            <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+            <CardContent sx={publicHomePageStyles.cardContentContainer}>
               <Typography sx={publicHomePageStyles.cardContent}>
-                Perfect experience across all devices and screen sizes
+                <BlurText
+                  text='Perfect experience across all devices and screen sizes'
+                  animateBy='word'
+                  delay={1.8}
+                />
               </Typography>
             </CardContent>
-          </Card>
+          </SpotlightCard>
         </Box>
       </Box>
 
@@ -158,7 +210,6 @@ export function PublicHomePage() {
           <Alert
             message='Ready to unlock powerful analytics?'
             description='Create a free account to track your links, view detailed statistics, and manage all your URLs in one place.'
-            severity='success'
             action={
               <Box sx={{ display: 'flex', gap: 1 }}>
                 <Button size='small' variant='contained' onClick={handleRegister}>
