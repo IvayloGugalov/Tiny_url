@@ -61,70 +61,72 @@ export function PublicHomePage() {
       isAuthenticated={isAuthenticated}
     >
       <AnimatedSection delay={ANIMATION_TIMING.CREATE_LINK_FORM}>
-        <CreateLinkForm onLinkCreated={() => {}} />
-      </AnimatedSection>
+        <Stack spacing={4} direction={'row'}>
+          <CreateLinkForm />
 
-      <AnimatedSection delay={ANIMATION_TIMING.FEATURES_PAPER}>
-        <Paper
-          sx={{
-            ...publicHomePageStyles.featuresPaper,
-            boxShadow: 'none',
-            background: 'transparent',
-          }}
-        >
-          <Stack spacing={3} alignItems='center'>
-            <AnimatedSection
-              delay={ANIMATION_TIMING.FEATURES_TITLE - ANIMATION_TIMING.FEATURES_PAPER}
+          <AnimatedSection delay={ANIMATION_TIMING.FEATURES_PAPER}>
+            <Paper
+              sx={{
+                ...publicHomePageStyles.featuresPaper,
+                boxShadow: 'none',
+                background: 'transparent',
+              }}
             >
-              <Typography
-                variant='h4'
-                gutterBottom
-                sx={{
-                  ...publicHomePageStyles.featuresTitle,
-                  textAlign: 'center',
-                  fontWeight: 700,
-                  background: 'linear-gradient(135deg, #e86222 0%, #de5617 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                Why Choose TinyURL?
-              </Typography>
-            </AnimatedSection>
+              <Stack spacing={3} alignItems='center'>
+                <AnimatedSection
+                  delay={ANIMATION_TIMING.FEATURES_TITLE - ANIMATION_TIMING.FEATURES_PAPER}
+                >
+                  <Typography
+                    variant='h4'
+                    gutterBottom
+                    sx={{
+                      ...publicHomePageStyles.featuresTitle,
+                      textAlign: 'center',
+                      fontWeight: 700,
+                      background: 'linear-gradient(135deg, #e86222 0%, #de5617 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  >
+                    Why Choose TinyURL?
+                  </Typography>
+                </AnimatedSection>
 
-            <StaggeredContainer
-              delay={ANIMATION_TIMING.FEATURES_LIST - ANIMATION_TIMING.FEATURES_PAPER}
-              staggerChildren={0.1}
-            >
-              <Stack spacing={2} sx={{ width: '100%', maxWidth: 600 }}>
-                <FeatureItem
-                  icon={<AccessTime />}
-                  title='Instant'
-                  description='Create short links in seconds with our lightning-fast infrastructure'
-                  delay={FEATURE_ITEM_DELAYS.INSTANT}
-                />
-                <FeatureItem
-                  icon={<MoneyOff />}
-                  title='Free'
-                  description='No registration required - start shortening links immediately'
-                  delay={FEATURE_ITEM_DELAYS.FREE}
-                />
-                <FeatureItem
-                  icon={<BarChart />}
-                  title='Analytics'
-                  description='Track clicks, locations, devices, and performance with detailed charts'
-                  delay={FEATURE_ITEM_DELAYS.ANALYTICS}
-                />
-                <FeatureItem
-                  icon={<Security />}
-                  title='Secure'
-                  description='Built with modern web technologies and enterprise-grade security'
-                  delay={FEATURE_ITEM_DELAYS.SECURE}
-                />
+                <StaggeredContainer
+                  delay={ANIMATION_TIMING.FEATURES_LIST - ANIMATION_TIMING.FEATURES_PAPER}
+                  staggerChildren={0.1}
+                >
+                  <Stack spacing={2} sx={{ width: '100%', maxWidth: 600 }}>
+                    <FeatureItem
+                      icon={<AccessTime />}
+                      title='Instant'
+                      description='Create short links in seconds with our lightning-fast infrastructure'
+                      delay={FEATURE_ITEM_DELAYS.INSTANT}
+                    />
+                    <FeatureItem
+                      icon={<MoneyOff />}
+                      title='Free'
+                      description='No registration required - start shortening links immediately'
+                      delay={FEATURE_ITEM_DELAYS.FREE}
+                    />
+                    <FeatureItem
+                      icon={<BarChart />}
+                      title='Analytics'
+                      description='Track clicks, locations, devices, and performance with detailed charts'
+                      delay={FEATURE_ITEM_DELAYS.ANALYTICS}
+                    />
+                    <FeatureItem
+                      icon={<Security />}
+                      title='Secure'
+                      description='Built with modern web technologies and enterprise-grade security'
+                      delay={FEATURE_ITEM_DELAYS.SECURE}
+                    />
+                  </Stack>
+                </StaggeredContainer>
               </Stack>
-            </StaggeredContainer>
-          </Stack>
-        </Paper>
+            </Paper>
+          </AnimatedSection>
+        </Stack>
       </AnimatedSection>
 
       <AnimatedSection delay={ANIMATION_TIMING.WHY_CHOOSE_HEADER}>

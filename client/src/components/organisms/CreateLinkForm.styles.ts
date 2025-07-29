@@ -1,38 +1,35 @@
+import { Theme } from '@mui/material/styles'
 import { TYPOGRAPHY_SIZES } from '../../styles/constants'
 
 export const createLinkFormStyles = {
   container: {
-    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%)',
+    background: 'transparent',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    justifyContent: 'center',
     backdropFilter: 'blur(10px)',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    borderRadius: 3,
+    boxShadow: 'none',
     p: 4,
     maxWidth: 600,
     mx: 'auto',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-    transition: 'all 0.3s ease',
-    '&:hover': {
-      boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
-      transform: 'translateY(-2px)',
-    },
   },
   header: {
     textAlign: 'center',
     mb: 4,
   },
   title: {
-    fontSize: TYPOGRAPHY_SIZES.h4,
     fontWeight: 700,
-    background: 'linear-gradient(135deg, #e86222 0%, #de5617 100%)',
+    textAlign: 'left',
+    background: (theme: Theme) => `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     mb: 1,
   },
   description: {
-    fontSize: TYPOGRAPHY_SIZES.body1,
+    textAlign: 'left',
     color: 'text.secondary',
     maxWidth: 400,
-    mx: 'auto',
   },
   inputField: {
     mb: 2,
@@ -85,9 +82,8 @@ export const createLinkFormStyles = {
     transition: 'all 0.3s ease',
   },
   helperText: {
-    fontSize: '0.875rem',
     color: 'text.secondary',
-    textAlign: 'center',
+    textAlign: 'left',
     mt: 1,
     fontStyle: 'italic',
   },

@@ -1,7 +1,9 @@
 import { ReactNode } from 'react'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
+import { Box } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
-import { createBasicLayoutTheme } from './BasicLayout.styles'
+import { createBasicLayoutTheme, basicLayoutStyles } from './BasicLayout.styles'
+import { Footer } from '../components/organisms'
 
 interface BasicLayoutProps {
   children: ReactNode
@@ -17,7 +19,12 @@ export function BasicLayout({ children, theme }: BasicLayoutProps) {
   return (
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
-      {children}
+      <Box sx={basicLayoutStyles.root}>
+        <Box component="main" sx={{ flex: 1 }}>
+          {children}
+        </Box>
+        <Footer />
+      </Box>
     </ThemeProvider>
   )
 }

@@ -23,15 +23,11 @@ import {
 } from '@mui/icons-material'
 import { createLinkFormStyles } from './CreateLinkForm.styles'
 
-interface CreateLinkFormProps {
-  onLinkCreated: () => void
-}
-
 interface FormData {
   targetUrl: string
 }
 
-export function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
+export function CreateLinkForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [shortUrl, setShortUrl] = useState<string | null>(null)
@@ -65,7 +61,6 @@ export function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
       setShortUrl(result.shortUrl)
       setShowSuccess(true)
       reset()
-      onLinkCreated()
 
       setTimeout(() => setShowSuccess(false), 3000)
     } catch (err) {
@@ -95,8 +90,8 @@ export function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
   return (
     <Paper elevation={4} sx={createLinkFormStyles.container}>
       <Box sx={createLinkFormStyles.header}>
-        <Typography variant='h4' gutterBottom sx={createLinkFormStyles.title}>
-          Create New Short Link
+        <Typography variant='h2' gutterBottom sx={createLinkFormStyles.title}>
+          Create a short link
         </Typography>
         <Typography variant='body1' sx={createLinkFormStyles.description}>
           Transform long URLs into short, shareable links instantly.
@@ -106,133 +101,150 @@ export function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
         </Typography>
       </Box>
 
-      <form onSubmit={handleSubmit(onFinish)}>
-        <Controller
-          name='targetUrl'
-          control={control}
-          rules={{
-            required: 'Please enter a URL',
-            pattern: {
-              value: /^https?:\/\/.+/,
-              message: 'Please enter a valid URL (including http:// or https://)',
-            },
-          }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              inputRef={inputRef}
-              label='Target URL'
-              placeholder='https://example.com/very-long-url'
-              disabled={loading}
-              error={!!errors.targetUrl}
-              helperText={errors.targetUrl?.message || 'Paste any long URL here'}
-              variant='outlined'
-              fullWidth
-              autoFocus
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <LinkIcon color='action' />
-                  </InputAdornment>
-                ),
-              }}
-              sx={createLinkFormStyles.inputField}
-            />
-          )}
-        />
+      <Box
+        sx={{
+          px: 3,
+          py: 4,
+          background:
+            'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%)',
+          transition: 'all 0.3s ease',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          borderRadius: 3,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+          '&:hover': {
+            boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
+            transform: 'translateY(-2px)',
+          },
+        }}
+      >
+        <form onSubmit={handleSubmit(onFinish)}>
+          <Controller
+            name='targetUrl'
+            control={control}
+            rules={{
+              required: 'Please enter a URL',
+              pattern: {
+                value: /^https?:\/\/.+/,
+                message: 'Please enter a valid URL (including http:// or https://)',
+              },
+            }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                inputRef={inputRef}
+                label='Target URL'
+                placeholder='https://example.com/very-long-url'
+                disabled={loading}
+                error={!!errors.targetUrl}
+                helperText={errors.targetUrl?.message}
+                variant='outlined'
+                fullWidth
+                autoFocus
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <LinkIcon color='action' />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={createLinkFormStyles.inputField}
+              />
+            )}
+          />
 
-        <AnimatePresence>
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Alert message={error} severity='error' sx={createLinkFormStyles.alert} />
-            </motion.div>
-          )}
-        </AnimatePresence>
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Alert message={error} severity='error' sx={createLinkFormStyles.alert} />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        <AnimatePresence>
-          {shortUrl && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-            >
-              <Box sx={createLinkFormStyles.resultContainer}>
-                {showSuccess && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                    style={createLinkFormStyles.successAnimation}
-                  >
-                    <CheckCircleIcon fontSize='inherit' />
-                  </motion.div>
-                )}
-                <Typography
-                  variant='body2'
-                  color='success.main'
-                  gutterBottom
-                  sx={{ textAlign: 'center', fontWeight: 600 }}
-                >
-                  Your short link is ready!
-                </Typography>
-                <Box display='flex' alignItems='center' gap={1}>
-                  <TextField
-                    value={shortUrl}
-                    InputProps={{
-                      readOnly: true,
-                      sx: { backgroundColor: 'white', borderRadius: 1 },
-                    }}
-                    variant='outlined'
-                    fullWidth
-                    size='small'
-                  />
-                  <Tooltip title={copied ? 'Copied!' : 'Copy to clipboard'}>
-                    <IconButton
-                      onClick={handleCopy}
-                      sx={createLinkFormStyles.copyButton}
-                      color={copied ? 'success' : 'primary'}
+          <AnimatePresence>
+            {shortUrl && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+              >
+                <Box sx={createLinkFormStyles.resultContainer}>
+                  {showSuccess && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      style={createLinkFormStyles.successAnimation}
                     >
-                      {copied ? <CheckCircleIcon /> : <ContentCopyIcon />}
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-                {copied && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 5 }}
+                      <CheckCircleIcon fontSize='inherit' />
+                    </motion.div>
+                  )}
+                  <Typography
+                    variant='body2'
+                    color='success.main'
+                    gutterBottom
+                    sx={{ textAlign: 'center', fontWeight: 600 }}
                   >
-                    <Chip
-                      icon={<SparkleIcon />}
-                      label='Copied to clipboard!'
-                      color='success'
+                    Your short link is ready!
+                  </Typography>
+                  <Box display='flex' alignItems='center' gap={1}>
+                    <TextField
+                      value={shortUrl}
+                      InputProps={{
+                        readOnly: true,
+                        sx: { backgroundColor: 'white', borderRadius: 1 },
+                      }}
+                      variant='outlined'
+                      fullWidth
                       size='small'
-                      sx={{ mt: 1, mx: 'auto', display: 'flex', width: 'fit-content' }}
                     />
-                  </motion.div>
-                )}
-              </Box>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                    <Tooltip title={copied ? 'Copied!' : 'Copy to clipboard'}>
+                      <IconButton
+                        onClick={handleCopy}
+                        sx={createLinkFormStyles.copyButton}
+                        color={copied ? 'success' : 'primary'}
+                      >
+                        {copied ? <CheckCircleIcon /> : <ContentCopyIcon />}
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                  {copied && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 5 }}
+                    >
+                      <Chip
+                        icon={<SparkleIcon />}
+                        label='Copied to clipboard!'
+                        color='success'
+                        size='small'
+                        sx={{ mt: 1, mx: 'auto', display: 'flex', width: 'fit-content' }}
+                      />
+                    </motion.div>
+                  )}
+                </Box>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        <Button
-          variant='contained'
-          type='submit'
-          disabled={loading}
-          size='large'
-          sx={createLinkFormStyles.submitButton}
-          startIcon={loading ? <CircularProgress size={20} color='inherit' /> : <SparkleIcon />}
-        >
-          {loading ? 'Creating...' : 'Create Short Link'}
-        </Button>
-      </form>
+          <Button
+            variant='contained'
+            type='submit'
+            disabled={loading}
+            size='large'
+            sx={createLinkFormStyles.submitButton}
+            startIcon={loading ? <CircularProgress size={20} color='inherit' /> : <SparkleIcon />}
+          >
+            {loading ? 'Shortening...' : 'Shorten URL'}
+          </Button>
+        </form>
+      </Box>
     </Paper>
   )
 }
