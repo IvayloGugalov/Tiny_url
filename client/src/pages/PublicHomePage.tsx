@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { Paper, Stack, Typography, Button, Box, CardContent } from '@mui/material'
+import { AccessTime, MoneyOff, BarChart, Security } from '@mui/icons-material'
 import { PublicLayout } from '../layouts/PublicLayout'
 import { CreateLinkForm } from '../components/organisms/CreateLinkForm'
-import { Alert } from '../components/molecules/Alert'
+import { Alert, FeatureItem } from '../components/molecules'
 import {
   BlurText,
   AnimatedIcon,
@@ -17,6 +18,7 @@ import {
   FEATURE_CARD_DELAYS,
   ICON_DELAYS,
   BLUR_TEXT_DELAYS,
+  FEATURE_ITEM_DELAYS,
 } from '../constants/animations'
 import {
   FlashOn as Zap,
@@ -63,31 +65,64 @@ export function PublicHomePage() {
       </AnimatedSection>
 
       <AnimatedSection delay={ANIMATION_TIMING.FEATURES_PAPER}>
-        <Paper sx={publicHomePageStyles.featuresPaper}>
-          <Typography variant='h5' gutterBottom sx={publicHomePageStyles.featuresTitle}>
-            Why use TinyURL?
-          </Typography>
-          <Stack spacing={1} sx={publicHomePageStyles.featuresList}>
-            <Typography variant='body1' sx={publicHomePageStyles.featureItem}>
-              <BlurText text='✅ Instant ' animateBy='character' delay={0.5} fontWeight='bold' />
-              <BlurText text='Create short links in seconds' animateBy='word' delay={0.55} />
-            </Typography>
-            <Typography variant='body1' sx={publicHomePageStyles.featureItem}>
-              <BlurText text='✅ Free: ' animateBy='character' delay={0.6} fontWeight='bold' />
-              <BlurText text='No registration required' animateBy='word' delay={0.65} />
-            </Typography>
-            <Typography variant='body1' sx={publicHomePageStyles.featureItem}>
-              <BlurText text='✅ Analytics: ' animateBy='character' delay={0.7} fontWeight='bold' />
-              <BlurText
-                text='Track clicks and performance (with login)'
-                animateBy='word'
-                delay={0.75}
-              />
-            </Typography>
-            <Typography variant='body1' sx={publicHomePageStyles.featureItem}>
-              <BlurText text='✅ Secure: ' animateBy='character' delay={0.8} fontWeight='bold' />
-              <BlurText text='Built with modern web technologies' animateBy='word' delay={0.85} />
-            </Typography>
+        <Paper
+          sx={{
+            ...publicHomePageStyles.featuresPaper,
+            boxShadow: 'none',
+            background: 'transparent',
+          }}
+        >
+          <Stack spacing={3} alignItems='center'>
+            <AnimatedSection
+              delay={ANIMATION_TIMING.FEATURES_TITLE - ANIMATION_TIMING.FEATURES_PAPER}
+            >
+              <Typography
+                variant='h4'
+                gutterBottom
+                sx={{
+                  ...publicHomePageStyles.featuresTitle,
+                  textAlign: 'center',
+                  fontWeight: 700,
+                  background: 'linear-gradient(135deg, #e86222 0%, #de5617 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                Why Choose TinyURL?
+              </Typography>
+            </AnimatedSection>
+
+            <StaggeredContainer
+              delay={ANIMATION_TIMING.FEATURES_LIST - ANIMATION_TIMING.FEATURES_PAPER}
+              staggerChildren={0.1}
+            >
+              <Stack spacing={2} sx={{ width: '100%', maxWidth: 600 }}>
+                <FeatureItem
+                  icon={<AccessTime />}
+                  title='Instant'
+                  description='Create short links in seconds with our lightning-fast infrastructure'
+                  delay={FEATURE_ITEM_DELAYS.INSTANT}
+                />
+                <FeatureItem
+                  icon={<MoneyOff />}
+                  title='Free'
+                  description='No registration required - start shortening links immediately'
+                  delay={FEATURE_ITEM_DELAYS.FREE}
+                />
+                <FeatureItem
+                  icon={<BarChart />}
+                  title='Analytics'
+                  description='Track clicks, locations, devices, and performance with detailed charts'
+                  delay={FEATURE_ITEM_DELAYS.ANALYTICS}
+                />
+                <FeatureItem
+                  icon={<Security />}
+                  title='Secure'
+                  description='Built with modern web technologies and enterprise-grade security'
+                  delay={FEATURE_ITEM_DELAYS.SECURE}
+                />
+              </Stack>
+            </StaggeredContainer>
           </Stack>
         </Paper>
       </AnimatedSection>
@@ -224,7 +259,12 @@ export function PublicHomePage() {
                   <Smartphone sx={{ fontSize: 24, color: 'warning.main' }} />
                 </AnimatedIcon>
                 <Typography variant='h6' sx={publicHomePageStyles.cardTitle}>
-                  <BlurText text='Mobile Optimized' animateBy='character' delay={BLUR_TEXT_DELAYS.MOBILE_OPTIMIZED} fontWeight="bold" />
+                  <BlurText
+                    text='Mobile Optimized'
+                    animateBy='character'
+                    delay={BLUR_TEXT_DELAYS.MOBILE_OPTIMIZED}
+                    fontWeight='bold'
+                  />
                 </Typography>
                 <CardContent sx={publicHomePageStyles.cardContentContainer}>
                   <Typography sx={publicHomePageStyles.cardContent}>
