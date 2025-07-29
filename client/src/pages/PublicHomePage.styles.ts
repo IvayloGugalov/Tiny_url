@@ -1,3 +1,4 @@
+import { Theme } from '@mui/material/styles'
 import { TYPOGRAPHY_SIZES, RESPONSIVE } from '../styles/constants'
 
 export const publicHomePageStyles = {
@@ -30,7 +31,7 @@ export const publicHomePageStyles = {
     fontSize: { xs: '1.125rem', sm: '1.25rem' },
     maxWidth: '48rem',
     mx: 'auto',
-    color: 'text.secondary',
+    color: (theme: Theme) => theme.palette.text.secondary,
   },
   whyChooseGrid: {
     display: 'grid',
@@ -41,7 +42,7 @@ export const publicHomePageStyles = {
     textAlign: 'center',
     border: 0,
     boxShadow: 3,
-    bgcolor: 'background.paper',
+    bgcolor: (theme: Theme) => theme.palette.background.paper,
     backdropFilter: 'blur(8px)',
     borderRadius: 2,
     p: 3,
@@ -57,16 +58,16 @@ export const publicHomePageStyles = {
     gridRow: 1,
   },
   iconContainerBlue: {
-    bgcolor: 'primary.50',
+    bgcolor: (theme: Theme) => theme.palette.primary.light,
   },
   iconContainerPurple: {
-    bgcolor: 'secondary.50',
+    bgcolor: (theme: Theme) => theme.palette.secondary.light,
   },
   iconContainerGreen: {
-    bgcolor: 'success.50',
+    bgcolor: (theme: Theme) => theme.palette.success.light,
   },
   iconContainerOrange: {
-    bgcolor: 'warning.50',
+    bgcolor: (theme: Theme) => theme.palette.warning.light,
   },
   cardTitle: {
     fontSize: '1.125rem',
@@ -76,7 +77,7 @@ export const publicHomePageStyles = {
     alignSelf: 'center',
   },
   cardContent: {
-    color: 'text.secondary',
+    color: (theme: Theme) => theme.palette.text.secondary,
     fontSize: TYPOGRAPHY_SIZES.body2,
   },
   cardContentContainer: {

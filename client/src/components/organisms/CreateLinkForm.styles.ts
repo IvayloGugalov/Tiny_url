@@ -28,7 +28,7 @@ export const createLinkFormStyles = {
   },
   description: {
     textAlign: 'left',
-    color: 'text.secondary',
+    color: (theme: Theme) => theme.palette.text.secondary,
     maxWidth: 400,
   },
   inputField: {
@@ -36,13 +36,13 @@ export const createLinkFormStyles = {
     '& .MuiOutlinedInput-root': {
       transition: 'all 0.3s ease',
       '&:hover': {
-        boxShadow: '0 4px 12px rgba(232, 98, 34, 0.1)',
+        boxShadow: (theme: Theme) => `0 4px 12px ${theme.palette.primary.main}1A`,
       },
       '&.Mui-focused': {
-        boxShadow: '0 4px 16px rgba(232, 98, 34, 0.2)',
+        boxShadow: (theme: Theme) => `0 4px 16px ${theme.palette.primary.main}33`,
       },
       '&.Mui-error': {
-        boxShadow: '0 4px 12px rgba(244, 67, 54, 0.2)',
+        boxShadow: (theme: Theme) => `0 4px 12px ${theme.palette.error.main}33`,
       },
     },
   },
@@ -53,10 +53,10 @@ export const createLinkFormStyles = {
     py: 1.5,
     borderRadius: 2,
     textTransform: 'none',
-    boxShadow: '0 4px 14px rgba(232, 98, 34, 0.3)',
+    boxShadow: (theme: Theme) => `0 4px 14px ${theme.palette.primary.main}4D`,
     '&:hover': {
       transform: 'translateY(-1px)',
-      boxShadow: '0 6px 20px rgba(232, 98, 34, 0.4)',
+      boxShadow: (theme: Theme) => `0 6px 20px ${theme.palette.primary.main}66`,
     },
     '&:disabled': {
       transform: 'none',
@@ -68,21 +68,21 @@ export const createLinkFormStyles = {
     mb: 2,
     p: 2,
     borderRadius: 2,
-    background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%)',
-    border: '1px solid rgba(76, 175, 80, 0.2)',
+    background: (theme: Theme) => `linear-gradient(135deg, ${theme.palette.success.main}1A 0%, ${theme.palette.success.main}0D 100%)`,
+    border: (theme: Theme) => `1px solid ${theme.palette.success.main}33`,
   },
   copyButton: {
     borderRadius: 1.5,
     minWidth: 'auto',
     px: 2,
     '&:hover': {
-      backgroundColor: 'success.main',
+      backgroundColor: (theme: Theme) => theme.palette.success.main,
       color: 'white',
     },
     transition: 'all 0.3s ease',
   },
   helperText: {
-    color: 'text.secondary',
+    color: (theme: Theme) => theme.palette.text.secondary,
     textAlign: 'left',
     mt: 1,
     fontStyle: 'italic',
@@ -95,7 +95,7 @@ export const createLinkFormStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: 'success.main',
+    color: (theme: Theme) => theme.palette.success.main,
     fontSize: '2rem',
     mb: 1,
   },

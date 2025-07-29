@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Paper, Stack, Typography, Button, Box, CardContent } from '@mui/material'
+import { Paper, Stack, Typography, Button, Box, CardContent, useTheme } from '@mui/material'
 import { AccessTime, MoneyOff, BarChart, Security } from '@mui/icons-material'
 import { PublicLayout } from '../layouts/PublicLayout'
 import { CreateLinkForm } from '../components/organisms/CreateLinkForm'
@@ -33,6 +33,7 @@ export function PublicHomePage() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
   const logout = useAuthStore((state) => state.logout)
   const navigate = useNavigate()
+  const muiTheme = useTheme()
 
   const handleLogin = () => {
     navigate('/login')
@@ -161,7 +162,7 @@ export function PublicHomePage() {
                       ...publicHomePageStyles.iconContainerBlue,
                     }}
                   >
-                    <Zap sx={{ fontSize: 24, color: 'primary.main' }} />
+                    <Zap sx={{ fontSize: 24, color: muiTheme.palette.primary.main }} />
                   </Box>
                 </AnimatedIcon>
                 <Typography variant='h6' sx={publicHomePageStyles.cardTitle}>
@@ -195,7 +196,7 @@ export function PublicHomePage() {
                       ...publicHomePageStyles.iconContainerPurple,
                     }}
                   >
-                    <BarChart3 sx={{ fontSize: 24, color: 'secondary.main' }} />
+                    <BarChart3 sx={{ fontSize: 24, color: muiTheme.palette.secondary.main }} />
                   </Box>
                 </AnimatedIcon>
                 <Typography variant='h6' sx={publicHomePageStyles.cardTitle}>
@@ -229,7 +230,7 @@ export function PublicHomePage() {
                       ...publicHomePageStyles.iconContainerGreen,
                     }}
                   >
-                    <Shield sx={{ fontSize: 24, color: 'success.main' }} />
+                    <Shield sx={{ fontSize: 24, color: muiTheme.palette.success.main }} />
                   </Box>
                 </AnimatedIcon>
                 <Typography variant='h6' sx={publicHomePageStyles.cardTitle}>
@@ -258,7 +259,7 @@ export function PublicHomePage() {
                     ...publicHomePageStyles.iconContainerOrange,
                   }}
                 >
-                  <Smartphone sx={{ fontSize: 24, color: 'warning.main' }} />
+                  <Smartphone sx={{ fontSize: 24, color: muiTheme.palette.warning.main }} />
                 </AnimatedIcon>
                 <Typography variant='h6' sx={publicHomePageStyles.cardTitle}>
                   <BlurText

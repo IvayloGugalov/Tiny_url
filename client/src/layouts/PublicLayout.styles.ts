@@ -1,3 +1,4 @@
+import { Theme } from '@mui/material/styles'
 import { TYPOGRAPHY_SIZES, LAYOUT, RESPONSIVE, COMMON_SX } from '../styles/constants'
 
 export const publicLayoutStyles = {
@@ -17,7 +18,7 @@ export const publicLayoutStyles = {
     minWidth: 0, // Allow text to shrink
   },
   title: {
-    color: 'white',
+    color: (theme: Theme) => theme.palette.common.white,
     margin: 0,
     fontSize: TYPOGRAPHY_SIZES.h4,
     lineHeight: 1.2,
@@ -35,12 +36,12 @@ export const publicLayoutStyles = {
     width: '100%',
   },
   outlinedButton: {
-    color: 'white',
-    borderColor: 'white',
+    color: (theme: Theme) => theme.palette.common.white,
+    borderColor: (theme: Theme) => theme.palette.common.white,
   },
   mobileOutlinedButton: {
-    color: 'white',
-    borderColor: 'white',
+    color: (theme: Theme) => theme.palette.common.white,
+    borderColor: (theme: Theme) => theme.palette.common.white,
     fontSize: '0.75rem',
     px: 1,
   },
