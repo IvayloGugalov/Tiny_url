@@ -47,19 +47,15 @@ export const publicHomePageStyles = {
     borderRadius: 2,
     p: 3,
     height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    display: 'grid',
+    gridTemplateRows: 'subgrid',
+    gridRow: 'span 3',
+    alignItems: 'start',
+    gap: 1,
   },
   iconContainer: {
-    width: 48,
-    height: 48,
     borderRadius: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    mx: 'auto',
-    mb: 2,
+    gridRow: 1,
   },
   iconContainerBlue: {
     bgcolor: 'primary.50',
@@ -77,9 +73,17 @@ export const publicHomePageStyles = {
     fontSize: '1.125rem',
     fontWeight: 600,
     mb: 1,
+    gridRow: 2,
+    alignSelf: 'center',
   },
   cardContent: {
     color: 'text.secondary',
     fontSize: TYPOGRAPHY_SIZES.body2,
+  },
+  cardContentContainer: {
+    gridRow: 3,
+    alignSelf: 'start', // Align to top of the content row
+    p: 0,
+    '&:last-child': { pb: 0 },
   },
 } as const

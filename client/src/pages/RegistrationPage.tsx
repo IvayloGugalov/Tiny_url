@@ -3,6 +3,7 @@ import { Box, Typography, Button } from '@mui/material'
 import { ArrowBack } from '@mui/icons-material'
 import { PublicLayout } from '../layouts/PublicLayout'
 import { RegistrationForm } from '../components/organisms/RegistrationForm'
+import { SplitText, BlurText } from '../components'
 import { useAuthStore, useThemeStore } from '../stores'
 
 export function RegistrationPage() {
@@ -51,7 +52,15 @@ export function RegistrationPage() {
 
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography variant="h3" component="h1" gutterBottom>
-          Join TinyURL
+          <SplitText
+            text="Join TinyURL"
+            animateBy="word"
+            staggerChildren={0.15}
+            duration={0.8}
+            delay={0.2}
+            initial={{ opacity: 0, y: 40, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+          />
         </Typography>
         <Typography variant="h6" color="text.secondary">
           Create an account to unlock powerful link analytics and management features

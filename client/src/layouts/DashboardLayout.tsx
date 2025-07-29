@@ -25,6 +25,7 @@ import {
   Home as HomeIcon,
   Logout as LogoutIcon,
 } from '@mui/icons-material'
+import { SplitText } from '../components'
 
 interface DashboardLayoutProps {
   theme: 'light' | 'dark'
@@ -96,7 +97,14 @@ export function DashboardLayout({
               component="h1"
               sx={dashboardLayoutStyles.title}
             >
-              🔗 TinyURL
+              <SplitText
+                text="🔗 TinyURL"
+                animateBy="character"
+                staggerChildren={0.08}
+                duration={0.6}
+                initial={{ opacity: 0, y: 30, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+              />
             </Typography>
           </Box>
 
