@@ -1,274 +1,710 @@
-[
-  {
-    "id": 1,
-    "title": "Scaffold BHVR project",
-    "description": "Create the initial Bun + Hono + Vite + React monorepo using Docker so Bun never touches the host.",
-    "details": "Run the Bun CLI from the official image, mount the working directory, and generate the template.",
-    "priority": "high",
-    "status": "done",
-    "dependencies": [],
-    "subtasks": [
-      {
-        "id": 101,
-        "title": "Generate BHVR template with Docker",
-        "description": "Execute `docker run --rm -it -v \"$PWD\":/app -w /app oven/bun:latest -- bun create bhvr@latest`.",
-        "dependencies": [],
-        "acceptanceCriteria": "A new folder structure (client, server, shared, package.json, bun.lock) exists on the host drive.",
-        "status": "done"
-      },
-      {
-        "id": 102,
-        "title": "Remove template placeholder code",
-        "description": "Delete sample components, tests, and logos from client/server to start with a clean slate.",
-        "dependencies": [101],
-        "acceptanceCriteria": "`git status` shows only essential starter files; dev server still builds.",
-        "status": "done"
-      }
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Scaffold BHVR project",
+      "description": "Create the initial Bun + Hono + Vite + React monorepo using Docker so Bun never touches the host.",
+      "details": "Run the Bun CLI from the official image, mount the working directory, and generate the template.",
+      "priority": "high",
+      "status": "done",
+      "dependencies": [],
+      "subtasks": [
+        {
+          "id": 101,
+          "title": "Generate BHVR template with Docker",
+          "description": "Execute `docker run --rm -it -v \"$PWD\":/app -w /app oven/bun:latest -- bun create bhvr@latest`.",
+          "dependencies": [],
+          "acceptanceCriteria": "A new folder structure (client, server, shared, package.json, bun.lock) exists on the host drive.",
+          "status": "done"
+        },
+        {
+          "id": 102,
+          "title": "Remove template placeholder code",
+          "description": "Delete sample components, tests, and logos from client/server to start with a clean slate.",
+          "dependencies": [101],
+          "acceptanceCriteria": "`git status` shows only essential starter files; dev server still builds.",
+          "status": "done"
+        }
+      ],
+      "testStrategy": "Run `docker run … bun run dev`; hit http://localhost:5173 and http://localhost:3000 to confirm both front- and backend compile."
+    },
+    {
+      "id": 2,
+      "title": "Set up SQLite + Drizzle ORM",
+      "description": "Add persistence layer for links and click counters.",
+      "details": "Use Drizzle for Bun with SQLite; commit schema and migration scripts.",
+      "priority": "high",
+      "status": "done",
+      "dependencies": [1],
+      "subtasks": [
+        {
+          "id": 201,
+          "title": "Install Drizzle & SQLite packages",
+          "description": "Inside server workspace run `bun add drizzle-orm drizzle-kit`.",
+          "dependencies": [],
+          "acceptanceCriteria": "Dependencies appear in server/package.json and `bun install` completes.",
+          "status": "done"
+        },
+        {
+          "id": 202,
+          "title": "Create schema.ts with links table",
+          "description": "Define `links` table (id, target, clicks, createdAt) using Drizzle DSL.",
+          "dependencies": [201],
+          "acceptanceCriteria": "Type-safe schema compiles with `bun test` or `tsc`.",
+          "status": "done"
+        },
+        {
+          "id": 203,
+          "title": "Generate & apply initial migration",
+          "description": "Run `drizzle-kit generate` then execute migration via Bun script.",
+          "dependencies": [202],
+          "acceptanceCriteria": "`links` table exists in tiny_url.sqlite and migration file is committed.",
+          "status": "done"
+        }
+      ],
+      "testStrategy": "Run a Bun REPL in Docker and query `SELECT * FROM links` to ensure table exists without errors."
+    },
+    {
+      "id": 3,
+      "title": "Implement Hono backend routes",
+      "description": "Expose API and redirect endpoints.",
+      "details": "Three routes: POST /links, GET /:id, GET /links (list).",
+      "priority": "high",
+      "status": "done",
+      "dependencies": [2],
+      "subtasks": [
+        {
+          "id": 301,
+          "title": "POST /links – create short code",
+          "description": "Insert row into links table; return full short URL.",
+          "dependencies": [203],
+          "acceptanceCriteria": "Curl POST returns JSON `{ id, shortUrl }` and row exists in DB.",
+          "status": "done"
+        },
+        {
+          "id": 302,
+          "title": "GET /:id – redirect & increment clicks",
+          "description": "Look up target, `UPDATE clicks = clicks + 1`, respond 302.",
+          "dependencies": [301],
+          "acceptanceCriteria": "Visiting short URL redirects and increments clicks count.",
+          "status": "done"
+        },
+        {
+          "id": 303,
+          "title": "GET /links – list all links",
+          "description": "Return JSON array with id, target, clicks, createdAt.",
+          "dependencies": [301],
+          "acceptanceCriteria": "`/links` responds 200 with array matching DB rows.",
+          "status": "done"
+        },
+        {
+          "id": 304,
+          "title": "Add error-handling middleware",
+          "description": "Return 404 for unknown codes and 500 for unhandled errors.",
+          "dependencies": [302, 303],
+          "acceptanceCriteria": "Invalid code returns 404 JSON `{error}`; server never crashes.",
+          "status": "done"
+        }
+      ],
+      "testStrategy": "Use Postman/Newman collection covering happy + error paths; assert DB side-effects via SELECT."
+    },
+    {
+      "id": 4,
+      "title": "Build React dashboard",
+      "description": "Front-end SPA for managing and viewing links.",
+      "details": "Uses Vite, React, MUI fetches `/links` and renders a table with copy button.",
+      "priority": "high",
+      "status": "done",
+      "dependencies": [3],
+      "subtasks": [
+        {
+          "id": 401,
+          "title": "Configure API base URL",
+          "description": "Add `VITE_API_URL` env and helper `api.ts` for fetch wrappers.",
+          "dependencies": [],
+          "acceptanceCriteria": "Changing env switches endpoints without code changes.",
+          "status": "done"
+        },
+        {
+          "id": 402,
+          "title": "Create LinksTable component",
+          "description": "Render rows with id, target, click count, created date.",
+          "dependencies": [401],
+          "acceptanceCriteria": "On load, table shows existing links from DB.",
+          "status": "done"
+        },
+        {
+          "id": 403,
+          "title": "Add copy-to-clipboard button",
+          "description": "Uses `navigator.clipboard.writeText` to copy short URL.",
+          "dependencies": [402],
+          "acceptanceCriteria": "Toast confirms link copied; clipboard value matches.",
+          "status": "done"
+        },
+        {
+          "id": 404,
+          "title": "Minimal styling with Tailwind/CSS",
+          "description": "Ensure table is responsive and buttons look clean.",
+          "dependencies": [403],
+          "acceptanceCriteria": "UI passes Lighthouse accessibility audit > 90.",
+          "status": "done"
+        }
+      ],
+      "testStrategy": "Run Cypress component test to assert table renders rows and copy button triggers clipboard stub."
+    },
+    {
+      "id": 5,
+      "title": "Add click analytics chart",
+      "description": "Visualize click counts per link.",
+      "details": "Integrate Chart.js bar chart in dashboard.",
+      "priority": "medium",
+      "status": "done",
+      "dependencies": [4],
+      "subtasks": [
+        {
+          "id": 501,
+          "title": "Install Chart.js & wrapper",
+          "description": "`bun add chart.js react-chartjs-2` in client workspace.",
+          "dependencies": [],
+          "acceptanceCriteria": "Packages appear in client/package.json; dev server compiles.",
+          "status": "done"
+        },
+        {
+          "id": 502,
+          "title": "Render bar chart of clicks",
+          "description": "Map `/links` data into labels & datasets; update on fetch.",
+          "dependencies": [501],
+          "acceptanceCriteria": "Chart displays bars whose values equal DB click counts.",
+          "status": "done"
+        }
+      ],
+      "testStrategy": "Jest DOM test ensures canvas renders; mock API returns predictable dataset and bar heights match."
+    },
+    {
+      "id": 6,
+      "title": "Add JWT-based authentication (optional)",
+      "description": "Protect API and dashboard behind a single-user login.",
+      "details": "Use hono/jwt middleware and simple email+password form.",
+      "priority": "low",
+      "status": "todo",
+      "dependencies": [3],
+      "subtasks": [
+        {
+          "id": 601,
+          "title": "Integrate hono/jwt middleware",
+          "description": "Create `/login` issuing token; protect /links* & /:id routes.",
+          "dependencies": [],
+          "acceptanceCriteria": "Unauthenticated requests return 401; valid JWT passes.",
+          "status": "todo"
+        },
+        {
+          "id": 602,
+          "title": "Add login UI in React",
+          "description": "Simple form that stores JWT in localStorage and sets auth header.",
+          "dependencies": [601],
+          "acceptanceCriteria": "Login succeeds and dashboard fetches authorised data.",
+          "status": "todo"
+        }
+      ],
+      "testStrategy": "Playwright e2e: attempt to access dashboard without token (redirect to login) then with valid creds."
+    },
+    {
+      "id": 7,
+      "title": "Build & deploy binary",
+      "description": "Produce a single Bun binary and deploy via Docker on Fly.io.",
+      "details": "Use `bun build --compile`, multi-stage Dockerfile, fly.toml.",
+      "priority": "high",
+      "status": "done",
+      "dependencies": [4, 5],
+      "subtasks": [
+        {
+          "id": 701,
+          "title": "Compile Bun binary",
+          "description": "Run `bun build src/index.ts --compile --minify --outfile app`.",
+          "dependencies": [],
+          "acceptanceCriteria": "`./app` runs locally and serves routes.",
+          "status": "done"
+        },
+        {
+          "id": 702,
+          "title": "Write production Dockerfile",
+          "description": "Scratch/alpine image copying compiled binary and static assets.",
+          "dependencies": [701],
+          "acceptanceCriteria": "`docker build .` produces image <50 MB that runs `./app`.",
+          "status": "done"
+        },
+        {
+          "id": 703,
+          "title": "Deploy to Fly.io",
+          "description": "Create Fly app, set secrets, `fly deploy`.",
+          "dependencies": [702],
+          "acceptanceCriteria": "Public URL redirects and dashboard loads over HTTPS.",
+          "status": "done"
+        }
+      ],
+      "testStrategy": "Fly health checks green; run integration tests against deployed URL in CI."
+    },
+    {
+      "id": 8,
+      "title": "Add cron job to prune expired links",
+      "description": "Scheduled cleanup keeps DB small.",
+      "details": "Use `Bun.cron` to delete links older than configurable TTL.",
+      "priority": "medium",
+      "status": "done",
+      "dependencies": [2],
+      "subtasks": [
+        {
+          "id": 801,
+          "title": "Implement Bun.cron task",
+          "description": "Every 24 h run DELETE FROM links WHERE createdAt < now-TTL.",
+          "dependencies": [],
+          "acceptanceCriteria": "Running cron manually deletes stale rows; log output shows count.",
+          "status": "done"
+        },
+        {
+          "id": 802,
+          "title": "Make TTL configurable via env",
+          "description": "Read `LINK_TTL_DAYS` env; default 90 days.",
+          "dependencies": [801],
+          "acceptanceCriteria": "Changing env value alters deletion threshold on next run.",
+          "status": "done"
+        }
+      ],
+      "testStrategy": "Unit test cron handler with fake timers; assert deletion query called with correct cutoff."
+    },
+    {
+      "id": 9,
+      "title": "Advanced Analytics System",
+      "description": "Real-time link performance tracking with geographic data and detailed metrics",
+      "details": "Implement comprehensive analytics with real-time tracking, geographic data, and export functionality",
+      "priority": "high",
+      "status": "todo",
+      "dependencies": [2, 3],
+      "subtasks": [
+        {
+          "id": 901,
+          "title": "Design Analytics Database Schema",
+          "description": "Create database tables for analytics events, sessions, and summary data",
+          "type": "backend",
+          "complexity": "medium",
+          "estimated_hours": 8,
+          "dependencies": [],
+          "technical_specs": {
+            "tables": [
+              "analytics_events (id, link_id, event_type, timestamp, ip_address, user_agent, referrer, country, city, device_type, session_id)",
+              "analytics_sessions (id, session_id, link_id, start_time, end_time, total_clicks, unique_visitors)",
+              "analytics_summary (id, link_id, date, total_clicks, unique_visitors, top_countries, top_referrers)"
+            ],
+            "indexes": [
+              "idx_analytics_events_link_id_timestamp",
+              "idx_analytics_events_country",
+              "idx_analytics_summary_link_id_date"
+            ]
+          },
+          "security_considerations": [
+            "IP address hashing for GDPR compliance",
+            "Data retention policies"
+          ],
+          "acceptanceCriteria": "Database schema supports real-time analytics with proper indexing and GDPR compliance",
+          "status": "todo"
+        },
+        {
+          "id": 902,
+          "title": "Implement GeoIP Service Integration",
+          "description": "Integrate GeoIP service for geographic data collection from IP addresses",
+          "type": "backend",
+          "complexity": "medium",
+          "estimated_hours": 12,
+          "dependencies": [901],
+          "technical_specs": {
+            "libraries": ["maxmind-db", "geoip-lite"],
+            "endpoints": ["GET /api/analytics/geo/:ip"],
+            "data_sources": ["MaxMind GeoLite2 database"]
+          },
+          "security_considerations": [
+            "IP anonymization",
+            "Rate limiting",
+            "Secure database storage"
+          ],
+          "acceptanceCriteria": "Accurate country/city detection with GDPR-compliant IP handling",
+          "status": "todo"
+        },
+        {
+          "id": 903,
+          "title": "Create Analytics Event Tracking Service",
+          "description": "Implement real-time analytics event tracking and processing",
+          "type": "backend",
+          "complexity": "high",
+          "estimated_hours": 16,
+          "dependencies": [901, 902],
+          "technical_specs": {
+            "services": [
+              "AnalyticsEventService",
+              "AnalyticsAggregationService",
+              "AnalyticsQueryService"
+            ],
+            "endpoints": [
+              "POST /api/analytics/track",
+              "GET /api/analytics/links/:id/stats",
+              "GET /api/analytics/links/:id/timeline",
+              "GET /api/analytics/links/:id/geographic"
+            ]
+          },
+          "testing_requirements": [
+            "Unit tests for all services",
+            "Integration tests",
+            "Performance tests"
+          ],
+          "acceptanceCriteria": "Real-time event tracking with <100ms latency and accurate aggregation",
+          "status": "todo"
+        },
+        {
+          "id": 904,
+          "title": "Build Analytics Dashboard Frontend",
+          "description": "Create comprehensive analytics dashboard with charts and metrics",
+          "type": "frontend",
+          "complexity": "high",
+          "estimated_hours": 20,
+          "dependencies": [903],
+          "technical_specs": {
+            "libraries": ["recharts", "date-fns", "@mui/x-charts"],
+            "components": [
+              "AnalyticsDashboard",
+              "MetricsCards",
+              "GeographicChart",
+              "TimelineChart"
+            ],
+            "features": ["Real-time updates", "Date range filtering", "Export functionality"]
+          },
+          "testing_requirements": ["Component tests", "E2E tests", "Accessibility tests"],
+          "acceptanceCriteria": "Interactive dashboard with real-time updates and responsive design",
+          "status": "todo"
+        },
+        {
+          "id": 905,
+          "title": "Implement Analytics Data Export",
+          "description": "Add functionality to export analytics data in multiple formats",
+          "type": "backend",
+          "complexity": "medium",
+          "estimated_hours": 10,
+          "dependencies": [903],
+          "technical_specs": {
+            "formats": ["CSV", "JSON", "PDF"],
+            "endpoints": ["GET /api/analytics/export/:linkId/:format"],
+            "libraries": ["csv-writer", "jspdf"]
+          },
+          "security_considerations": [
+            "Rate limiting",
+            "Authentication required",
+            "Data sanitization"
+          ],
+          "acceptanceCriteria": "Export functionality supports multiple formats with proper authentication",
+          "status": "todo"
+        }
+      ],
+      "testStrategy": "Integration tests for analytics pipeline, performance tests for high-volume scenarios, E2E tests for dashboard functionality"
+    },
+    {
+      "id": 10,
+      "title": "QR Code Generation System",
+      "description": "Automatic QR code generation with customization and mobile optimization",
+      "details": "Implement QR code generation, customization options, and mobile-optimized scanning experience",
+      "priority": "medium",
+      "status": "todo",
+      "dependencies": [3],
+      "subtasks": [
+        {
+          "id": 1001,
+          "title": "Implement QR Code Generation Service",
+          "description": "Create backend service for generating QR codes for short links",
+          "type": "backend",
+          "complexity": "medium",
+          "estimated_hours": 12,
+          "dependencies": [],
+          "technical_specs": {
+            "libraries": ["qrcode", "sharp", "canvas"],
+            "endpoints": [
+              "GET /api/qr/:linkId",
+              "GET /api/qr/:linkId/download",
+              "POST /api/qr/:linkId/customize"
+            ],
+            "formats": ["PNG", "SVG", "JPEG"],
+            "customization_options": ["size", "error_correction", "border", "colors"]
+          },
+          "testing_requirements": [
+            "Unit tests for QR generation",
+            "Image validation tests",
+            "Performance tests"
+          ],
+          "acceptanceCriteria": "Generate QR codes in multiple formats with customization options",
+          "status": "todo"
+        },
+        {
+          "id": 1002,
+          "title": "Add QR Code Database Schema",
+          "description": "Extend database to store QR code metadata and customization settings",
+          "type": "backend",
+          "complexity": "low",
+          "estimated_hours": 4,
+          "dependencies": [1001],
+          "technical_specs": {
+            "tables": [
+              "qr_codes (id, link_id, format, size, error_correction, custom_colors, created_at, file_path)"
+            ],
+            "indexes": ["idx_qr_codes_link_id"]
+          },
+          "acceptanceCriteria": "Database stores QR code metadata with proper relationships",
+          "status": "todo"
+        },
+        {
+          "id": 1003,
+          "title": "Build QR Code Customization UI",
+          "description": "Create frontend interface for QR code customization and preview",
+          "type": "frontend",
+          "complexity": "medium",
+          "estimated_hours": 14,
+          "dependencies": [1001, 1002],
+          "technical_specs": {
+            "components": ["QRCustomizer", "QRPreview", "QRDownloadButton"],
+            "features": ["Real-time preview", "Color picker", "Size selector", "Format options"],
+            "libraries": ["react-color", "@mui/material"]
+          },
+          "testing_requirements": [
+            "Component tests",
+            "Visual regression tests",
+            "Accessibility tests"
+          ],
+          "acceptanceCriteria": "Interactive QR customization with real-time preview and download functionality",
+          "status": "todo"
+        },
+        {
+          "id": 1004,
+          "title": "Integrate QR Codes with Link Creation",
+          "description": "Automatically generate QR codes when creating new short links",
+          "type": "fullstack",
+          "complexity": "medium",
+          "estimated_hours": 8,
+          "dependencies": [1001, 1002],
+          "technical_specs": {
+            "integration_points": ["CreateLinkForm component", "POST /api/links endpoint"],
+            "features": ["Automatic QR generation", "Default settings", "Immediate availability"]
+          },
+          "acceptanceCriteria": "QR codes automatically generated for new links with default settings",
+          "status": "todo"
+        },
+        {
+          "id": 1005,
+          "title": "Implement Mobile QR Scanner Experience",
+          "description": "Optimize QR code scanning experience for mobile devices",
+          "type": "frontend",
+          "complexity": "medium",
+          "estimated_hours": 10,
+          "dependencies": [1003],
+          "technical_specs": {
+            "features": [
+              "Mobile-responsive QR display",
+              "Touch-friendly controls",
+              "Share functionality"
+            ],
+            "libraries": ["react-qr-scanner", "navigator.share API"],
+            "components": ["MobileQRView", "QRShareButton"]
+          },
+          "testing_requirements": [
+            "Mobile device testing",
+            "Cross-browser compatibility",
+            "Performance tests"
+          ],
+          "acceptanceCriteria": "Optimized mobile experience with native sharing capabilities",
+          "status": "todo"
+        }
+      ],
+      "testStrategy": "Unit tests for QR generation, visual regression tests for UI components, mobile device testing for scanner experience"
+    },
+    {
+      "id": 11,
+      "title": "Enterprise Security System",
+      "description": "SSL/TLS encryption, malware detection, and security monitoring",
+      "details": "Implement comprehensive security measures including encryption, threat detection, and compliance monitoring",
+      "priority": "high",
+      "status": "todo",
+      "dependencies": [3],
+      "subtasks": [
+        {
+          "id": 1101,
+          "title": "Implement SSL/TLS Encryption",
+          "description": "Configure SSL/TLS encryption for all communications",
+          "type": "backend",
+          "complexity": "medium",
+          "estimated_hours": 12,
+          "dependencies": [],
+          "technical_specs": {
+            "certificates": ["Let's Encrypt integration", "Certificate auto-renewal"],
+            "protocols": ["TLS 1.3", "HSTS headers", "Certificate pinning"],
+            "libraries": ["acme-client", "helmet"]
+          },
+          "security_considerations": [
+            "Perfect Forward Secrecy",
+            "Certificate transparency",
+            "OCSP stapling"
+          ],
+          "testing_requirements": [
+            "SSL Labs testing",
+            "Certificate validation tests",
+            "Security header tests"
+          ],
+          "acceptanceCriteria": "A+ SSL Labs rating with proper certificate management",
+          "status": "todo"
+        },
+        {
+          "id": 1102,
+          "title": "Implement Malware Detection Service",
+          "description": "Integrate malware scanning for submitted URLs",
+          "type": "backend",
+          "complexity": "high",
+          "estimated_hours": 20,
+          "dependencies": [1101],
+          "technical_specs": {
+            "services": ["VirusTotal API", "Google Safe Browsing API", "URLVoid API"],
+            "endpoints": ["POST /api/security/scan", "GET /api/security/status/:linkId"],
+            "libraries": ["virustotal-api", "safe-browsing-api"],
+            "features": ["Real-time scanning", "Quarantine system", "Whitelist management"]
+          },
+          "security_considerations": [
+            "API key protection",
+            "Rate limiting",
+            "False positive handling"
+          ],
+          "testing_requirements": ["Mock API tests", "Integration tests", "Performance tests"],
+          "acceptanceCriteria": "Automatic malware detection with 99.9% uptime and <2s scan time",
+          "status": "todo"
+        },
+        {
+          "id": 1103,
+          "title": "Implement Spam Detection Algorithms",
+          "description": "Create intelligent spam detection for URL submissions",
+          "type": "backend",
+          "complexity": "high",
+          "estimated_hours": 18,
+          "dependencies": [1102],
+          "technical_specs": {
+            "algorithms": ["Machine learning models", "Pattern recognition", "Reputation scoring"],
+            "features": ["Real-time analysis", "Learning system", "Manual review queue"],
+            "libraries": ["tensorflow.js", "natural", "ml-matrix"],
+            "data_sources": ["URL patterns", "Domain reputation", "User behavior"]
+          },
+          "security_considerations": [
+            "Model security",
+            "Training data protection",
+            "Bias prevention"
+          ],
+          "testing_requirements": [
+            "Algorithm accuracy tests",
+            "Performance benchmarks",
+            "False positive analysis"
+          ],
+          "acceptanceCriteria": "95% spam detection accuracy with <5% false positive rate",
+          "status": "todo"
+        },
+        {
+          "id": 1104,
+          "title": "Build Security Monitoring Dashboard",
+          "description": "Create comprehensive security monitoring and alerting system",
+          "type": "fullstack",
+          "complexity": "high",
+          "estimated_hours": 16,
+          "dependencies": [1101, 1102, 1103],
+          "technical_specs": {
+            "components": ["SecurityDashboard", "ThreatAlerts", "SecurityMetrics", "IncidentLog"],
+            "features": [
+              "Real-time monitoring",
+              "Alert system",
+              "Incident tracking",
+              "Compliance reporting"
+            ],
+            "libraries": ["socket.io", "recharts", "nodemailer"]
+          },
+          "testing_requirements": [
+            "Real-time update tests",
+            "Alert delivery tests",
+            "Dashboard performance tests"
+          ],
+          "acceptanceCriteria": "Real-time security monitoring with automated alerting and compliance reporting",
+          "status": "todo"
+        },
+        {
+          "id": 1105,
+          "title": "Implement Security Compliance Framework",
+          "description": "Ensure compliance with security standards and regulations",
+          "type": "backend",
+          "complexity": "medium",
+          "estimated_hours": 14,
+          "dependencies": [1104],
+          "technical_specs": {
+            "standards": ["SOC 2", "ISO 27001", "GDPR", "CCPA"],
+            "features": [
+              "Audit logging",
+              "Data encryption",
+              "Access controls",
+              "Incident response"
+            ],
+            "documentation": ["Security policies", "Incident procedures", "Compliance reports"]
+          },
+          "security_considerations": [
+            "Audit trail integrity",
+            "Data sovereignty",
+            "Privacy controls"
+          ],
+          "testing_requirements": [
+            "Compliance validation tests",
+            "Audit simulation",
+            "Privacy impact assessment"
+          ],
+          "acceptanceCriteria": "Full compliance with security standards and automated compliance reporting",
+          "status": "todo"
+        }
+      ],
+      "testStrategy": "Security penetration testing, compliance audits, automated security scanning, incident response drills"
+    }
+  ],
+  "implementation_order": [
+    "Analytics Database Schema (T001)",
+    "GeoIP Service Integration (T002)",
+    "SSL/TLS Implementation (T1101)",
+    "QR Code Generation Service (T1001)",
+    "Analytics Event Tracking (T903)",
+    "Malware Detection Service (T1102)",
+    "QR Code Database Schema (T1002)",
+    "Analytics Dashboard Frontend (T904)",
+    "Spam Detection Algorithms (T1103)",
+    "QR Code Customization UI (T1003)",
+    "Security Monitoring Dashboard (T1104)",
+    "Analytics Data Export (T905)",
+    "QR Code Link Integration (T1004)",
+    "Mobile QR Scanner (T1005)",
+    "Security Compliance Framework (T1105)"
+  ],
+  "dependencies_summary": {
+    "critical_path": [
+      "Database Schema",
+      "SSL Implementation",
+      "Core Services",
+      "Frontend Components",
+      "Security Features"
     ],
-    "testStrategy": "Run `docker run … bun run dev`; hit http://localhost:5173 and http://localhost:3000 to confirm both front- and backend compile."
+    "parallel_development": [
+      "Analytics and QR Code features can be developed in parallel",
+      "Security features should be integrated throughout"
+    ],
+    "integration_points": [
+      "All features integrate with existing link creation and management",
+      "Security scanning affects all URL submissions",
+      "Analytics tracking affects all link clicks"
+    ]
   },
-  {
-    "id": 2,
-    "title": "Set up SQLite + Drizzle ORM",
-    "description": "Add persistence layer for links and click counters.",
-    "details": "Use Drizzle for Bun with SQLite; commit schema and migration scripts.",
-    "priority": "high",
-    "status": "done",
-    "dependencies": [1],
-    "subtasks": [
-      {
-        "id": 201,
-        "title": "Install Drizzle & SQLite packages",
-        "description": "Inside server workspace run `bun add drizzle-orm drizzle-kit`.",
-        "dependencies": [],
-        "acceptanceCriteria": "Dependencies appear in server/package.json and `bun install` completes.",
-        "status": "done"
-      },
-      {
-        "id": 202,
-        "title": "Create schema.ts with links table",
-        "description": "Define `links` table (id, target, clicks, createdAt) using Drizzle DSL.",
-        "dependencies": [201],
-        "acceptanceCriteria": "Type-safe schema compiles with `bun test` or `tsc`.",
-        "status": "done"
-      },
-      {
-        "id": 203,
-        "title": "Generate & apply initial migration",
-        "description": "Run `drizzle-kit generate` then execute migration via Bun script.",
-        "dependencies": [202],
-        "acceptanceCriteria": "`links` table exists in tiny_url.sqlite and migration file is committed.",
-        "status": "done"
-      }
-    ],
-    "testStrategy": "Run a Bun REPL in Docker and query `SELECT * FROM links` to ensure table exists without errors."
-  },
-  {
-    "id": 3,
-    "title": "Implement Hono backend routes",
-    "description": "Expose API and redirect endpoints.",
-    "details": "Three routes: POST /links, GET /:id, GET /links (list).",
-    "priority": "high",
-    "status": "done",
-    "dependencies": [2],
-    "subtasks": [
-      {
-        "id": 301,
-        "title": "POST /links – create short code",
-        "description": "Insert row into links table; return full short URL.",
-        "dependencies": [203],
-        "acceptanceCriteria": "Curl POST returns JSON `{ id, shortUrl }` and row exists in DB.",
-        "status": "done"
-      },
-      {
-        "id": 302,
-        "title": "GET /:id – redirect & increment clicks",
-        "description": "Look up target, `UPDATE clicks = clicks + 1`, respond 302.",
-        "dependencies": [301],
-        "acceptanceCriteria": "Visiting short URL redirects and increments clicks count.",
-        "status": "done"
-      },
-      {
-        "id": 303,
-        "title": "GET /links – list all links",
-        "description": "Return JSON array with id, target, clicks, createdAt.",
-        "dependencies": [301],
-        "acceptanceCriteria": "`/links` responds 200 with array matching DB rows.",
-        "status": "done"
-      },
-      {
-        "id": 304,
-        "title": "Add error-handling middleware",
-        "description": "Return 404 for unknown codes and 500 for unhandled errors.",
-        "dependencies": [302,303],
-        "acceptanceCriteria": "Invalid code returns 404 JSON `{error}`; server never crashes.",
-        "status": "done"
-      }
-    ],
-    "testStrategy": "Use Postman/Newman collection covering happy + error paths; assert DB side-effects via SELECT."
-  },
-  {
-    "id": 4,
-    "title": "Build React dashboard",
-    "description": "Front-end SPA for managing and viewing links.",
-    "details": "Uses Vite, React, MUI fetches `/links` and renders a table with copy button.",
-    "priority": "high",
-    "status": "done",
-    "dependencies": [3],
-    "subtasks": [
-      {
-        "id": 401,
-        "title": "Configure API base URL",
-        "description": "Add `VITE_API_URL` env and helper `api.ts` for fetch wrappers.",
-        "dependencies": [],
-        "acceptanceCriteria": "Changing env switches endpoints without code changes.",
-        "status": "done"
-      },
-      {
-        "id": 402,
-        "title": "Create LinksTable component",
-        "description": "Render rows with id, target, click count, created date.",
-        "dependencies": [401],
-        "acceptanceCriteria": "On load, table shows existing links from DB.",
-        "status": "done"
-      },
-      {
-        "id": 403,
-        "title": "Add copy-to-clipboard button",
-        "description": "Uses `navigator.clipboard.writeText` to copy short URL.",
-        "dependencies": [402],
-        "acceptanceCriteria": "Toast confirms link copied; clipboard value matches.",
-        "status": "done"
-      },
-      {
-        "id": 404,
-        "title": "Minimal styling with Tailwind/CSS",
-        "description": "Ensure table is responsive and buttons look clean.",
-        "dependencies": [403],
-        "acceptanceCriteria": "UI passes Lighthouse accessibility audit > 90.",
-        "status": "done"
-      }
-    ],
-    "testStrategy": "Run Cypress component test to assert table renders rows and copy button triggers clipboard stub."
-  },
-  {
-    "id": 5,
-    "title": "Add click analytics chart",
-    "description": "Visualize click counts per link.",
-    "details": "Integrate Chart.js bar chart in dashboard.",
-    "priority": "medium",
-    "status": "done",
-    "dependencies": [4],
-    "subtasks": [
-      {
-        "id": 501,
-        "title": "Install Chart.js & wrapper",
-        "description": "`bun add chart.js react-chartjs-2` in client workspace.",
-        "dependencies": [],
-        "acceptanceCriteria": "Packages appear in client/package.json; dev server compiles.",
-        "status": "done"
-      },
-      {
-        "id": 502,
-        "title": "Render bar chart of clicks",
-        "description": "Map `/links` data into labels & datasets; update on fetch.",
-        "dependencies": [501],
-        "acceptanceCriteria": "Chart displays bars whose values equal DB click counts.",
-        "status": "done"
-      }
-    ],
-    "testStrategy": "Jest DOM test ensures canvas renders; mock API returns predictable dataset and bar heights match."
-  },
-  {
-    "id": 6,
-    "title": "Add JWT-based authentication (optional)",
-    "description": "Protect API and dashboard behind a single-user login.",
-    "details": "Use hono/jwt middleware and simple email+password form.",
-    "priority": "low",
-    "status": "todo",
-    "dependencies": [3],
-    "subtasks": [
-      {
-        "id": 601,
-        "title": "Integrate hono/jwt middleware",
-        "description": "Create `/login` issuing token; protect /links* & /:id routes.",
-        "dependencies": [],
-        "acceptanceCriteria": "Unauthenticated requests return 401; valid JWT passes.",
-        "status": "todo"
-      },
-      {
-        "id": 602,
-        "title": "Add login UI in React",
-        "description": "Simple form that stores JWT in localStorage and sets auth header.",
-        "dependencies": [601],
-        "acceptanceCriteria": "Login succeeds and dashboard fetches authorised data.",
-        "status": "todo"
-      }
-    ],
-    "testStrategy": "Playwright e2e: attempt to access dashboard without token (redirect to login) then with valid creds."
-  },
-  {
-    "id": 7,
-    "title": "Build & deploy binary",
-    "description": "Produce a single Bun binary and deploy via Docker on Fly.io.",
-    "details": "Use `bun build --compile`, multi-stage Dockerfile, fly.toml.",
-    "priority": "high",
-    "status": "done",
-    "dependencies": [4,5],
-    "subtasks": [
-      {
-        "id": 701,
-        "title": "Compile Bun binary",
-        "description": "Run `bun build src/index.ts --compile --minify --outfile app`.",
-        "dependencies": [],
-        "acceptanceCriteria": "`./app` runs locally and serves routes.",
-        "status": "done"
-      },
-      {
-        "id": 702,
-        "title": "Write production Dockerfile",
-        "description": "Scratch/alpine image copying compiled binary and static assets.",
-        "dependencies": [701],
-        "acceptanceCriteria": "`docker build .` produces image <50 MB that runs `./app`.",
-        "status": "done"
-      },
-      {
-        "id": 703,
-        "title": "Deploy to Fly.io",
-        "description": "Create Fly app, set secrets, `fly deploy`.",
-        "dependencies": [702],
-        "acceptanceCriteria": "Public URL redirects and dashboard loads over HTTPS.",
-        "status": "done"
-      }
-    ],
-    "testStrategy": "Fly health checks green; run integration tests against deployed URL in CI."
-  },
-  {
-    "id": 8,
-    "title": "Add cron job to prune expired links",
-    "description": "Scheduled cleanup keeps DB small.",
-    "details": "Use `Bun.cron` to delete links older than configurable TTL.",
-    "priority": "medium",
-    "status": "done",
-    "dependencies": [2],
-    "subtasks": [
-      {
-        "id": 801,
-        "title": "Implement Bun.cron task",
-        "description": "Every 24 h run DELETE FROM links WHERE createdAt < now-TTL.",
-        "dependencies": [],
-        "acceptanceCriteria": "Running cron manually deletes stale rows; log output shows count.",
-        "status": "done"
-      },
-      {
-        "id": 802,
-        "title": "Make TTL configurable via env",
-        "description": "Read `LINK_TTL_DAYS` env; default 90 days.",
-        "dependencies": [801],
-        "acceptanceCriteria": "Changing env value alters deletion threshold on next run.",
-        "status": "done"
-      }
-    ],
-    "testStrategy": "Unit test cron handler with fake timers; assert deletion query called with correct cutoff."
+  "estimated_total_effort": {
+    "analytics": "70 hours (4-6 weeks)",
+    "qr_codes": "48 hours (2-3 weeks)",
+    "security": "80 hours (3-4 weeks)",
+    "total": "198 hours (8-10 weeks with parallel development)"
   }
-]
+}
