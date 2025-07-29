@@ -1,4 +1,4 @@
-import { Box, Typography, Stack } from '@mui/material'
+import { Box, Typography, Stack, useTheme } from '@mui/material'
 import { motion } from 'framer-motion'
 import { ReactNode } from 'react'
 import { BlurText } from '../atoms/BlurText'
@@ -11,6 +11,8 @@ interface FeatureItemProps {
 }
 
 export const FeatureItem = ({ icon, title, description, delay = 0 }: FeatureItemProps) => {
+  const theme = useTheme()
+
   const itemVariants = {
     hidden: {
       opacity: 0,
@@ -40,13 +42,12 @@ export const FeatureItem = ({ icon, title, description, delay = 0 }: FeatureItem
           borderRadius: 2,
           transition: 'all 0.3s ease',
           cursor: 'pointer',
-          background:
-            'linear-gradient(135deg, rgba(232, 98, 34, 0.1) 0%, rgba(232, 98, 34, 0.05) 100%)',
-          border: '2px solid rgba(232, 98, 34, 0.2)',
+          background: `linear-gradient(135deg, ${theme.palette.primary.main}1A 0%, ${theme.palette.primary.main}0D 100%)`,
+          border: `2px solid ${theme.palette.primary.main}33`,
           '&:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.02)',
+            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)',
             transform: 'translateX(8px)',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+            boxShadow: theme.palette.mode === 'dark' ? '0 4px 12px rgba(255, 255, 255, 0.1)' : '0 4px 12px rgba(0, 0, 0, 0.1)',
           },
         }}
       >
@@ -58,7 +59,7 @@ export const FeatureItem = ({ icon, title, description, delay = 0 }: FeatureItem
             width: 48,
             height: 48,
             borderRadius: '50%',
-            backgroundColor: 'primary.main',
+            backgroundColor: theme.palette.primary.main,
             color: 'white',
             flexShrink: 0,
           }}
@@ -71,7 +72,7 @@ export const FeatureItem = ({ icon, title, description, delay = 0 }: FeatureItem
             sx={{
               fontWeight: 600,
               mb: 0.5,
-              color: 'text.primary',
+              color: theme.palette.text.primary,
             }}
           >
             <BlurText
@@ -84,7 +85,7 @@ export const FeatureItem = ({ icon, title, description, delay = 0 }: FeatureItem
           <Typography
             variant='body2'
             sx={{
-              color: 'text.secondary',
+              color: theme.palette.text.secondary,
               lineHeight: 1.5,
             }}
           >

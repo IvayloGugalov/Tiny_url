@@ -1,3 +1,4 @@
+import { Theme } from '@mui/material/styles'
 import { TYPOGRAPHY_SIZES, LAYOUT, RESPONSIVE, COMMON_SX } from '../styles/constants'
 
 export const dashboardLayoutStyles = {
@@ -19,7 +20,7 @@ export const dashboardLayoutStyles = {
     minWidth: 0, // Allow text to shrink
   },
   title: {
-    color: 'white',
+    color: (theme: Theme) => theme.palette.common.white,
     margin: 0,
     fontSize: TYPOGRAPHY_SIZES.h4,
     lineHeight: 1.2,
@@ -46,16 +47,16 @@ export const dashboardLayoutStyles = {
     maxWidth: '100%',
   },
   outlinedButton: {
-    color: 'white',
-    borderColor: 'white',
+    color: (theme: Theme) => theme.palette.common.white,
+    borderColor: (theme: Theme) => theme.palette.common.white,
     '&:hover': {
-      borderColor: 'white',
+      borderColor: (theme: Theme) => theme.palette.common.white,
       backgroundColor: 'rgba(255, 255, 255, 0.1)',
     },
   },
   containedButton: {
-    backgroundColor: 'white',
-    color: 'primary.main',
+    backgroundColor: (theme: Theme) => theme.palette.common.white,
+    color: (theme: Theme) => theme.palette.primary.main,
     '&:hover': {
       backgroundColor: 'rgba(255, 255, 255, 0.9)',
     },

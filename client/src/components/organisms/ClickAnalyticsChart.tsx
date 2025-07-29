@@ -1,22 +1,23 @@
 import { BarChart } from '@mui/x-charts/BarChart'
-import { Box, Typography, CircularProgress, Alert } from '@mui/material'
+import { Box, Typography, CircularProgress, Alert, useTheme } from '@mui/material'
 import { useLinksStore } from '../../stores'
-
-const colorPalette = [
-  '#1f77b4',
-  '#ff7f0e',
-  '#2ca02c',
-  '#d62728',
-  '#9467bd',
-  '#8c564b',
-  '#e377c2',
-  '#7f7f7f',
-  '#bcbd22',
-  '#17becf',
-]
 
 export function ClickAnalyticsChart() {
   const { links, loading, error } = useLinksStore()
+  const theme = useTheme()
+
+  const colorPalette = [
+    theme.palette.primary.main,
+    theme.palette.secondary.main,
+    theme.palette.success.main,
+    theme.palette.error.main,
+    theme.palette.warning.main,
+    theme.palette.info.main,
+    theme.palette.primary.light,
+    theme.palette.secondary.light,
+    theme.palette.success.light,
+    theme.palette.error.light,
+  ]
 
   if (loading) {
     return (
@@ -49,7 +50,7 @@ export function ClickAnalyticsChart() {
         <Typography variant='h5' gutterBottom>
           Click Analytics
         </Typography>
-        <Typography variant='body2' color='text.secondary'>
+        <Typography variant='body2' sx={{ color: theme.palette.text.secondary }}>
           Visualization of your most popular short links
         </Typography>
       </Box>
