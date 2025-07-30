@@ -1,6 +1,6 @@
 import { BarChart } from '@mui/x-charts/BarChart'
 import { Box, Typography, CircularProgress, Alert, useTheme } from '@mui/material'
-import { useLinksStore } from '../../stores'
+import { useLinksStore } from '@/stores/useLinksStore'
 
 export function ClickAnalyticsChart() {
   const { links, loading, error } = useLinksStore()

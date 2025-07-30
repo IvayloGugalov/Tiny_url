@@ -5,7 +5,7 @@ import { Refresh as RefreshIcon } from '@mui/icons-material'
 import { getShortUrl } from '../../api'
 import { CopyButton } from '../molecules/CopyButton'
 import { linksTableStyles } from './LinksTable.styles'
-import { useLinksStore } from '../../stores'
+import { useLinksStore } from '@/stores/useLinksStore'
 
 const MAX_URL_DISPLAY_LENGTH = 50
 

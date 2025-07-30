@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom'
 import { Box, Typography, Button } from '@mui/material'
 import { ArrowBack } from '@mui/icons-material'
-import { PublicLayout } from '../layouts/PublicLayout'
-import { RegistrationForm } from '../components/organisms/RegistrationForm'
-import { SplitText, BlurText } from '../components'
-import { useAuthStore, useThemeStore } from '../stores'
+import { PublicLayout } from '@/layouts/PublicLayout'
+import { RegistrationForm } from '@/organisms/RegistrationForm'
+import { SplitText } from '@/atoms/SplitText'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { useThemeStore } from '@/stores/useThemeStore'
 
 export function RegistrationPage() {
   const theme = useThemeStore((state) => state.theme)

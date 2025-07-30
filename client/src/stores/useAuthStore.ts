@@ -13,7 +13,7 @@ interface AuthState {
   clearError: () => void
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: !!localStorage.getItem('jwt'),
   isLoading: false,
   error: null,

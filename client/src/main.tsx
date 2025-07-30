@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { CacheProvider } from '@emotion/react'
 import App from './App'
-import { createEmotionCache } from './utils'
+import { createEmotionCache } from '@/utils/colorUtils'
 import './App.css'
 
 const clientSideEmotionCache = createEmotionCache()

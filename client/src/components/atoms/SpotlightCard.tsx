@@ -1,7 +1,7 @@
 import { ReactNode, useRef, MouseEvent } from 'react'
 import { Card, CardProps, useTheme } from '@mui/material'
 import type { Palette } from '@mui/material/styles'
-import { hexToRGBA } from '../../utils'
+import { hexToRGBA } from '@/utils/colorUtils'
 
 type PaletteColorKey = keyof Pick<Palette, 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'>
 type PaletteColorVariant = keyof Palette['primary']
