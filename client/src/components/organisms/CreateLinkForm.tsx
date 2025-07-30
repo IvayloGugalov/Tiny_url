@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { motion, AnimatePresence } from 'framer-motion'
-import { createShortLink } from '../../api'
-import { Alert } from '../molecules/Alert'
+import { createShortLink } from '@/api'
+import { Alert } from '@/molecules/Alert'
 import {
   TextField,
   Box,
@@ -81,7 +81,7 @@ export function CreateLinkForm() {
         await navigator.clipboard.writeText(shortUrl)
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
-      } catch (err) {
+      } catch {
         setError('Failed to copy to clipboard')
       }
     }

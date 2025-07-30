@@ -14,9 +14,17 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@client": path.resolve(__dirname, "./src"),
-      "@server": path.resolve(__dirname, "../server/src"),
-      "@shared": path.resolve(__dirname, "../shared/src")
+      "@/components": path.resolve(__dirname, "./src/components"),
+      "@/atoms": path.resolve(__dirname, "./src/components/atoms"),
+      "@/molecules": path.resolve(__dirname, "./src/components/molecules"),
+      "@/organisms": path.resolve(__dirname, "./src/components/organisms"),
+      "@/stores": path.resolve(__dirname, "./src/stores"),
+      "@/layouts": path.resolve(__dirname, "./src/layouts"),
+      "@/pages": path.resolve(__dirname, "./src/pages"),
+      "@/utils": path.resolve(__dirname, "./src/utils"),
+      "@/styles": path.resolve(__dirname, "./src/styles"),
+      "@/types": path.resolve(__dirname, "./src/types"),
+      "@/api": path.resolve(__dirname, "./src/api.ts")
     }
   },
   build: {

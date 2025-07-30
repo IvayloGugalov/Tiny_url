@@ -16,7 +16,21 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@/components/*": ["./components/*"],
+      "@/atoms/*": ["./components/atoms/*"],
+      "@/molecules/*": ["./components/molecules/*"],
+      "@/organisms/*": ["./components/organisms/*"],
+      "@/stores/*": ["./stores/*"],
+      "@/layouts/*": ["./layouts/*"],
+      "@/pages/*": ["./pages/*"],
+      "@/utils/*": ["./utils/*"],
+      "@/styles/*": ["./styles/*"],
+      "@/types/*": ["./types/*"],
+      "@/api": ["./api.ts"]
+    }
   },
   "include": ["src"]
 }

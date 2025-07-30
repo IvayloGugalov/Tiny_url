@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom'
 import { Box, Stack, Typography } from '@mui/material'
-import { DashboardLayout } from '../layouts/DashboardLayout'
-import { CreateLinkForm } from '../components/organisms/CreateLinkForm'
-import { ClickAnalyticsChart } from '../components/organisms/ClickAnalyticsChart'
-import { LinksTable } from '../components/organisms/LinksTable'
-import { useAuthStore, useThemeStore, useLinksStore } from '../stores'
+import { DashboardLayout } from '@/layouts/DashboardLayout'
+import { CreateLinkForm } from '@/organisms/CreateLinkForm'
+import { ClickAnalyticsChart } from '@/organisms/ClickAnalyticsChart'
+import { LinksTable } from '@/organisms/LinksTable'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { useThemeStore } from '@/stores/useThemeStore'
+import { useLinksStore } from '@/stores/useLinksStore'
 
 export function AnalyticsPage() {
   const theme = useThemeStore((state) => state.theme)

@@ -1,11 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
-import { LoginForm } from './components'
-import { PublicHomePage } from './pages/PublicHomePage'
-import { AnalyticsPage } from './pages/AnalyticsPage'
-import { RegistrationPage } from './pages/RegistrationPage'
-import { BasicLayout } from './layouts/BasicLayout'
-import { useAuthStore, useThemeStore } from './stores'
+import { LoginForm } from '@/organisms/LoginForm'
+import { PublicHomePage } from '@/pages/PublicHomePage'
+import { AnalyticsPage } from '@/pages/AnalyticsPage'
+import { RegistrationPage } from '@/pages/RegistrationPage'
+import { BasicLayout } from '@/layouts/BasicLayout'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { useThemeStore } from '@/stores/useThemeStore'
 
 function App() {
   const theme = useThemeStore((state) => state.theme)

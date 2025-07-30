@@ -3,7 +3,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { Box } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import { createBasicLayoutTheme, basicLayoutStyles } from './BasicLayout.styles'
-import { Footer } from '../components/organisms'
+import { Footer } from '@/organisms/Footer'
 
 interface BasicLayoutProps {
   children: ReactNode

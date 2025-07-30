@@ -1,17 +1,17 @@
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { 
-  Box, 
-  Typography, 
-  TextField, 
-  Button, 
-  Paper, 
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Paper,
   Alert,
   CircularProgress,
   Link as MuiLink
 } from '@mui/material'
-import { useAuthStore } from '../../stores'
+import { useAuthStore } from '@/stores/useAuthStore'
 
 interface FormData {
   email: string
@@ -31,10 +31,10 @@ export function RegistrationForm() {
     try {
       setLoading(true)
       setError(null)
-      
+
       await register(values.email, values.name || undefined)
       setSuccess(true)
-      
+
       // Redirect to analytics page after successful registration
       setTimeout(() => {
         navigate('/analytics')

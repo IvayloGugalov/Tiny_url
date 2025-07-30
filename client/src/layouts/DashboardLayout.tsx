@@ -25,7 +25,7 @@ import {
   Home as HomeIcon,
   Logout as LogoutIcon,
 } from '@mui/icons-material'
-import { SplitText } from '../components'
+import { SplitText } from '@/atoms/SplitText'
 
 interface DashboardLayoutProps {
   theme: 'light' | 'dark'

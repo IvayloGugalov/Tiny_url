@@ -1,17 +1,17 @@
 import { useNavigate } from 'react-router-dom'
 import { Paper, Stack, Typography, Button, Box, CardContent, useTheme } from '@mui/material'
 import { AccessTime, MoneyOff, BarChart, Security } from '@mui/icons-material'
-import { PublicLayout } from '../layouts/PublicLayout'
-import { CreateLinkForm } from '../components/organisms/CreateLinkForm'
-import { Alert, FeatureItem } from '../components/molecules'
-import {
-  BlurText,
-  AnimatedIcon,
-  AnimatedSection,
-  StaggeredContainer,
-  AnimatedCard,
-} from '../components'
-import { useAuthStore, useThemeStore } from '../stores'
+import { PublicLayout } from '@/layouts/PublicLayout'
+import { CreateLinkForm } from '@/organisms/CreateLinkForm'
+import { Alert } from '@/molecules/Alert'
+import { FeatureItem } from '@/molecules/FeatureItem'
+import { BlurText } from '@/atoms/BlurText'
+import { AnimatedIcon } from '@/atoms/AnimatedIcon'
+import { AnimatedSection } from '@/atoms/AnimatedSection'
+import { StaggeredContainer } from '@/atoms/StaggeredContainer'
+import { AnimatedCard } from '@/atoms/AnimatedCard'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { useThemeStore } from '@/stores/useThemeStore'
 import { publicHomePageStyles } from './PublicHomePage.styles'
 import {
   ANIMATION_TIMING,
@@ -19,7 +19,7 @@ import {
   ICON_DELAYS,
   BLUR_TEXT_DELAYS,
   FEATURE_ITEM_DELAYS,
-} from '../styles/animations'
+} from '@/styles/animations'
 import {
   FlashOn as Zap,
   BarChart as BarChart3,
@@ -84,7 +84,7 @@ export function PublicHomePage() {
                       ...publicHomePageStyles.featuresTitle,
                       textAlign: 'center',
                       fontWeight: 700,
-                      background: 'linear-gradient(135deg, #e86222 0%, #de5617 100%)',
+                      background: `linear-gradient(135deg, ${muiTheme.palette.primary.light} 0%, ${muiTheme.palette.primary.main} 100%)`,
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
                     }}

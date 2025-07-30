@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { Alert } from '../molecules/Alert'
 import { TextField, Box, Typography, Button, Container, Paper } from '@mui/material'
-import { useAuthStore } from '../../stores'
+import { useAuthStore } from '@/stores/useAuthStore'
 
 interface FormData {
   email: string
