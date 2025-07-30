@@ -1,16 +1,14 @@
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Paper,
-  Alert,
-  CircularProgress,
-  Link as MuiLink
-} from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import Paper from '@mui/material/Paper'
+import Alert from '@mui/material/Alert'
+import CircularProgress from '@mui/material/CircularProgress'
+import MuiLink from '@mui/material/Link'
 import { useAuthStore } from '@/stores/useAuthStore'
 
 interface FormData {

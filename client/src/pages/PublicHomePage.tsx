@@ -1,6 +1,15 @@
 import { useNavigate } from 'react-router-dom'
-import { Paper, Stack, Typography, Button, Box, CardContent, useTheme } from '@mui/material'
-import { AccessTime, MoneyOff, BarChart, Security } from '@mui/icons-material'
+import Paper from '@mui/material/Paper'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import CardContent from '@mui/material/CardContent'
+import { useTheme } from '@mui/material/styles'
+import AccessTime from '@mui/icons-material/AccessTime'
+import MoneyOff from '@mui/icons-material/MoneyOff'
+import BarChart from '@mui/icons-material/BarChart'
+import Security from '@mui/icons-material/Security'
 import { PublicLayout } from '@/layouts/PublicLayout'
 import { CreateLinkForm } from '@/organisms/CreateLinkForm'
 import { Alert } from '@/molecules/Alert'
@@ -20,12 +29,10 @@ import {
   BLUR_TEXT_DELAYS,
   FEATURE_ITEM_DELAYS,
 } from '@/styles/animations'
-import {
-  FlashOn as Zap,
-  BarChart as BarChart3,
-  Security as Shield,
-  Smartphone as Smartphone,
-} from '@mui/icons-material'
+import Zap from '@mui/icons-material/FlashOn'
+import BarChart3 from '@mui/icons-material/BarChart'
+import Shield from '@mui/icons-material/Security'
+import Smartphone from '@mui/icons-material/Smartphone'
 
 export function PublicHomePage() {
   const theme = useThemeStore((state) => state.theme)

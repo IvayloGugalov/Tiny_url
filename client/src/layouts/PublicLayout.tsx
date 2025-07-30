@@ -1,16 +1,15 @@
-import {
-  Box,
-  AppBar,
-  Toolbar,
-  Container,
-  Typography,
-  Button,
-  IconButton,
-  useTheme,
-  useMediaQuery,
-} from '@mui/material'
+import Box from '@mui/material/Box'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Container from '@mui/material/Container'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { ReactNode } from 'react'
-import { Brightness4, Brightness7 } from '@mui/icons-material'
+import Brightness4 from '@mui/icons-material/Brightness4'
+import Brightness7 from '@mui/icons-material/Brightness7'
 import { publicLayoutStyles } from './PublicLayout.styles'
 
 interface PublicLayoutProps {

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { fetchLinks, registerUser } from '../api'
+import { registerUser } from '../api'
 
 interface AuthState {
   isAuthenticated: boolean
@@ -70,8 +70,6 @@ export const useAuthStore = create<AuthState>((set) => ({
         })
         return
       }
-
-      await fetchLinks()
 
       set({
         isAuthenticated: true,

@@ -12,6 +12,54 @@ export default defineConfig({
       targets: browserslistToTargets(browserslist('>= 0.25%'))
     }
   },
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      '@mui/material',
+      '@mui/material/Container',
+      '@mui/material/Divider',
+      '@mui/material/IconButton',
+      '@mui/material/AppBar',
+      '@mui/material/Toolbar',
+      '@mui/material/useMediaQuery',
+      '@mui/material/TextField',
+      '@mui/material/InputAdornment',
+      '@mui/material/Tooltip',
+      '@mui/material/Card',
+      '@mui/material/Box',
+      '@mui/material/Typography',
+      '@mui/material/Button',
+      '@mui/material/Chip',
+      '@mui/material/Link',
+      '@mui/material/Alert',
+      '@mui/material/CircularProgress',
+      '@mui/material/Paper',
+      '@mui/material/Stack',
+      '@mui/material/useTheme',
+      '@mui/icons-material/GitHub',
+      '@mui/icons-material/LinkedIn',
+      '@mui/icons-material/Twitter',
+      '@mui/icons-material/Favorite',
+      '@mui/icons-material/Brightness4',
+      '@mui/icons-material/Brightness7',
+      '@mui/icons-material/Link',
+      '@mui/icons-material/ContentCopy',
+      '@mui/icons-material/CheckCircle',
+      '@mui/icons-material/AutoAwesome',
+      '@mui/icons-material/Refresh',
+      'framer-motion',
+      'react-router-dom',
+      'zustand',
+      'react-hook-form',
+      '@mui/x-charts',
+      '@mui/x-data-grid',
+      'prop-types'
+    ],
+    esbuildOptions: {
+      target: 'es2020'
+    }
+  },
   resolve: {
     alias: {
       "@/components": path.resolve(__dirname, "./src/components"),
@@ -28,10 +76,57 @@ export default defineConfig({
     }
   },
   build: {
+    target: 'esnext',
+    minify: 'esbuild',
+    sourcemap: false,
     rollupOptions: {
-      input: {
-        main: path.resolve(__dirname, 'index.html'),
+      output: {
+        manualChunks: (id) => {
+          // MUI Material + Icons together (but separate from React)
+          if (id.includes('@mui/material') || id.includes('@mui/icons-material')) {
+            return 'mui-vendor';
+          }
+
+          // Heavy MUI X packages
+          if (id.includes('@mui/x-charts') || id.includes('@mui/x-data-grid')) {
+            return 'mui-x-vendor';
+          }
+
+          // Framer Motion
+          if (id.includes('framer-motion')) {
+            return 'animation-vendor';
+          }
+
+          // React Router
+          if (id.includes('react-router-dom')) {
+            return 'router-vendor';
+          }
+
+          // Optional: split by route/page
+          if (id.includes('/src/pages/')) {
+            const match = id.match(/\/src\/pages\/([^/]+)/);
+            if (match) {
+              return `page-${match[1]}`;
+            }
+          }
+
+          // Fallback vendor chunk
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        },
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
       },
     },
+    commonjsOptions: {
+      include: [/node_modules/],
+      transformMixedEsModules: true
+    }
   },
+  esbuild: {
+    legalComments: 'none',
+    target: 'es2020'
+  }
 })

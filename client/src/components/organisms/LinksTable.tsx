@@ -1,11 +1,19 @@
-import { useCallback, useMemo, useEffect } from 'react'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { Box, Typography, Button, Chip, Link, Alert, CircularProgress } from '@mui/material'
-import { Refresh as RefreshIcon } from '@mui/icons-material'
+import { useCallback, useMemo, useEffect, lazy, Suspense } from 'react'
+import type { GridColDef } from '@mui/x-data-grid'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import Chip from '@mui/material/Chip'
+import Link from '@mui/material/Link'
+import Alert from '@mui/material/Alert'
+import CircularProgress from '@mui/material/CircularProgress'
+import RefreshIcon from '@mui/icons-material/Refresh'
 import { getShortUrl } from '../../api'
 import { CopyButton } from '../molecules/CopyButton'
 import { linksTableStyles } from './LinksTable.styles'
 import { useLinksStore } from '@/stores/useLinksStore'
+
+const DataGrid = lazy(() => import('@mui/x-data-grid').then(module => ({ default: module.DataGrid })))
 
 const MAX_URL_DISPLAY_LENGTH = 50
 
@@ -120,19 +128,21 @@ export function LinksTable() {
       </Box>
 
       <Box sx={linksTableStyles.dataGridContainer}>
-        <DataGrid
-          rows={links}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
-            },
-          }}
-          pageSizeOptions={[5, 10, 25]}
-          disableRowSelectionOnClick
-          density='compact'
-          sx={linksTableStyles.dataGrid}
-        />
+        <Suspense fallback={<CircularProgress />}>
+          <DataGrid
+            rows={links}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 10 },
+              },
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            disableRowSelectionOnClick
+            density='compact'
+            sx={linksTableStyles.dataGrid}
+          />
+        </Suspense>
       </Box>
     </Box>
   )

@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react';
-import { Button, Snackbar, Alert as MuiAlert } from '@mui/material';
-import { ContentCopy } from '@mui/icons-material';
+import Button from '@mui/material/Button'
+import Snackbar from '@mui/material/Snackbar'
+import MuiAlert from '@mui/material/Alert'
+import ContentCopy from '@mui/icons-material/ContentCopy'
 import { copyButtonStyles } from './CopyButton.styles';
 
 interface CopyButtonProps {

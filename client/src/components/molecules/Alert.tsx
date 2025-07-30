@@ -1,4 +1,5 @@
-import { Alert as MuiAlert, AlertProps as MuiAlertProps } from '@mui/material';
+import MuiAlert from '@mui/material/Alert'
+import type { AlertProps as MuiAlertProps } from '@mui/material/Alert'
 import { ReactNode } from 'react';
 export interface AlertProps extends Omit<MuiAlertProps, 'message'> {
   message: ReactNode;

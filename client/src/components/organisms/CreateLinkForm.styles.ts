@@ -90,13 +90,5 @@ export const createLinkFormStyles = {
   alert: {
     mb: 2,
     borderRadius: 2,
-  },
-  successAnimation: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: (theme: Theme) => theme.palette.success.main,
-    fontSize: '2rem',
-    mb: 1,
-  },
+  }
 } as const
