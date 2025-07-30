@@ -2,12 +2,18 @@ import { motion } from 'framer-motion'
 import { ReactNode } from 'react'
 import { SpotlightCard } from './SpotlightCard'
 import { SxProps, Theme } from '@mui/material'
+import type { Palette } from '@mui/material/styles'
+
+type PaletteColorKey = keyof Pick<Palette, 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'>
+type PaletteColorVariant = keyof Palette['primary']
 
 interface AnimatedCardProps {
   children: ReactNode
   delay?: number
   duration?: number
-  spotlightColor?: `rgba(${number}, ${number}, ${number}, ${number})`
+  spotlightColor?: PaletteColorKey
+  spotlightVariant?: PaletteColorVariant
+  spotlightOpacity?: number
   sx?: SxProps<Theme>
   className?: string
 }
@@ -16,7 +22,9 @@ export const AnimatedCard = ({
   children,
   delay = 0,
   duration = 0.6,
-  spotlightColor = 'rgba(255, 255, 255, 0.25)',
+  spotlightColor = 'primary',
+  spotlightVariant = 'main',
+  spotlightOpacity = 0.25,
   sx,
   className = '',
 }: AnimatedCardProps) => {
@@ -44,6 +52,8 @@ export const AnimatedCard = ({
         sx={sx}
         className={className}
         spotlightColor={spotlightColor}
+        spotlightVariant={spotlightVariant}
+        spotlightOpacity={spotlightOpacity}
       >
         {children}
       </SpotlightCard>

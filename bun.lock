@@ -4,6 +4,7 @@
     "": {
       "name": "bhvr",
       "dependencies": {
+        "@emotion/cache": "^11.14.0",
         "chart.js": "^4.5.0",
         "jose": "^6.0.12",
         "react-chartjs-2": "^5.3.0",

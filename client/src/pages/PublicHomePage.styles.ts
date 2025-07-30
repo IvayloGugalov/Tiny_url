@@ -57,18 +57,6 @@ export const publicHomePageStyles = {
     borderRadius: 1,
     gridRow: 1,
   },
-  iconContainerBlue: {
-    bgcolor: (theme: Theme) => theme.palette.primary.light,
-  },
-  iconContainerPurple: {
-    bgcolor: (theme: Theme) => theme.palette.secondary.light,
-  },
-  iconContainerGreen: {
-    bgcolor: (theme: Theme) => theme.palette.success.light,
-  },
-  iconContainerOrange: {
-    bgcolor: (theme: Theme) => theme.palette.warning.light,
-  },
   cardTitle: {
     fontSize: '1.125rem',
     fontWeight: 600,

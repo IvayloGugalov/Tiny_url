@@ -19,7 +19,7 @@ import {
   ICON_DELAYS,
   BLUR_TEXT_DELAYS,
   FEATURE_ITEM_DELAYS,
-} from '../constants/animations'
+} from '../styles/animations'
 import {
   FlashOn as Zap,
   BarChart as BarChart3,
@@ -152,14 +152,14 @@ export function PublicHomePage() {
             <Box sx={publicHomePageStyles.whyChooseGrid}>
               <AnimatedCard
                 sx={publicHomePageStyles.featureCard}
-                spotlightColor='rgba(232, 98, 34, 0.4)'
+                spotlightColor='primary'
+                spotlightOpacity={0.4}
                 delay={FEATURE_CARD_DELAYS.LIGHTNING_FAST}
               >
                 <AnimatedIcon delay={ICON_DELAYS.LIGHTNING_FAST}>
                   <Box
                     sx={{
                       ...publicHomePageStyles.iconContainer,
-                      ...publicHomePageStyles.iconContainerBlue,
                     }}
                   >
                     <Zap sx={{ fontSize: 24, color: muiTheme.palette.primary.main }} />
@@ -186,14 +186,14 @@ export function PublicHomePage() {
 
               <AnimatedCard
                 sx={publicHomePageStyles.featureCard}
-                spotlightColor='rgba(14, 134, 74, 0.35)'
+                spotlightColor='secondary'
+                spotlightOpacity={0.35}
                 delay={FEATURE_CARD_DELAYS.DETAILED_ANALYTICS}
               >
                 <AnimatedIcon delay={ICON_DELAYS.DETAILED_ANALYTICS}>
                   <Box
                     sx={{
                       ...publicHomePageStyles.iconContainer,
-                      ...publicHomePageStyles.iconContainerPurple,
                     }}
                   >
                     <BarChart3 sx={{ fontSize: 24, color: muiTheme.palette.secondary.main }} />
@@ -220,14 +220,14 @@ export function PublicHomePage() {
 
               <AnimatedCard
                 sx={publicHomePageStyles.featureCard}
-                spotlightColor='rgba(17, 127, 167, 0.4)'
+                spotlightColor='info'
+                spotlightOpacity={0.4}
                 delay={FEATURE_CARD_DELAYS.SECURE_RELIABLE}
               >
                 <AnimatedIcon delay={ICON_DELAYS.SECURE_RELIABLE}>
                   <Box
                     sx={{
                       ...publicHomePageStyles.iconContainer,
-                      ...publicHomePageStyles.iconContainerGreen,
                     }}
                   >
                     <Shield sx={{ fontSize: 24, color: muiTheme.palette.success.main }} />
@@ -249,14 +249,14 @@ export function PublicHomePage() {
 
               <AnimatedCard
                 sx={publicHomePageStyles.featureCard}
-                spotlightColor='rgba(222, 23, 179, 0.3)'
+                spotlightColor='warning'
+                spotlightOpacity={0.3}
                 delay={FEATURE_CARD_DELAYS.MOBILE_OPTIMIZED}
               >
                 <AnimatedIcon
                   delay={ICON_DELAYS.MOBILE_OPTIMIZED}
                   containerStyles={{
                     ...publicHomePageStyles.iconContainer,
-                    ...publicHomePageStyles.iconContainerOrange,
                   }}
                 >
                   <Smartphone sx={{ fontSize: 24, color: muiTheme.palette.warning.main }} />
