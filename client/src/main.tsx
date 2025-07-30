@@ -1,7 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { CacheProvider } from '@emotion/react'
 import App from './App'
+import { createEmotionCache } from './utils'
 import './App.css'
+
+const clientSideEmotionCache = createEmotionCache()
 
 const container = document.getElementById('root')
 
@@ -11,7 +15,9 @@ if (!container) {
 
 const root = createRoot(container)
 root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>
+  <CacheProvider value={clientSideEmotionCache}>
+    <StrictMode>
+      <App />
+    </StrictMode>
+  </CacheProvider>
 )

@@ -1,20 +1,36 @@
 import { ReactNode, useRef, MouseEvent } from 'react'
-import { Card, CardProps } from '@mui/material'
+import { Card, CardProps, useTheme } from '@mui/material'
+import type { Palette } from '@mui/material/styles'
+import { hexToRGBA } from '../../utils'
+
+type PaletteColorKey = keyof Pick<Palette, 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'>
+type PaletteColorVariant = keyof Palette['primary']
 
 interface SpotlightCardProps extends Omit<CardProps, 'onMouseMove'> {
   children: ReactNode
   className?: string
-  spotlightColor?: `rgba(${number}, ${number}, ${number}, ${number})`
+  spotlightColor?: PaletteColorKey
+  spotlightVariant?: PaletteColorVariant
+  spotlightOpacity?: number
 }
 
 export const SpotlightCard = ({
   children,
   className = '',
-  spotlightColor = 'rgba(255, 255, 255, 0.25)',
+  spotlightColor = 'primary',
+  spotlightVariant = 'main',
+  spotlightOpacity = 0.25,
   sx,
   ...cardProps
 }: SpotlightCardProps) => {
+  const theme = useTheme()
   const cardRef = useRef<HTMLDivElement>(null)
+
+  const getSpotlightColorValue = () => {
+    const paletteColor = theme.palette[spotlightColor]
+    const colorValue = paletteColor[spotlightVariant]
+    return hexToRGBA(colorValue, spotlightOpacity)
+  }
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return
@@ -25,7 +41,7 @@ export const SpotlightCard = ({
 
     cardRef.current.style.setProperty('--mouse-x', `${x}px`)
     cardRef.current.style.setProperty('--mouse-y', `${y}px`)
-    cardRef.current.style.setProperty('--spotlight-color', spotlightColor)
+    cardRef.current.style.setProperty('--spotlight-color', getSpotlightColorValue())
   }
 
   return (
@@ -40,7 +56,7 @@ export const SpotlightCard = ({
         transition: 'transform 0.2s ease-out',
         '--mouse-x': '50%',
         '--mouse-y': '50%',
-        '--spotlight-color': spotlightColor,
+        '--spotlight-color': getSpotlightColorValue(),
         '&:hover': {
           transform: 'translateY(-2px)',
         },

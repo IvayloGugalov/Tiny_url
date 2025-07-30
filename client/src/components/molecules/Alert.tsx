@@ -1,7 +1,5 @@
 import { Alert as MuiAlert, AlertProps as MuiAlertProps } from '@mui/material';
 import { ReactNode } from 'react';
-import { alertStyles } from './Alert.styles';
-
 export interface AlertProps extends Omit<MuiAlertProps, 'message'> {
   message: ReactNode;
   description?: ReactNode;
@@ -28,7 +26,7 @@ export function Alert({
     >
       {message}
       {description && (
-        <div style={alertStyles.description}>
+        <div>
           {description}
         </div>
       )}
