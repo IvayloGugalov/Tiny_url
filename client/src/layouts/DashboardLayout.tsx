@@ -1,30 +1,26 @@
 import { useState } from 'react'
-import {
-  Box,
-  AppBar,
-  Toolbar,
-  Container,
-  Typography,
-  Button,
-  IconButton,
-  useTheme,
-  useMediaQuery,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText
-} from '@mui/material'
+import Box from '@mui/material/Box'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Container from '@mui/material/Container'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import Drawer from '@mui/material/Drawer'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
 import { dashboardLayoutStyles } from './DashboardLayout.styles'
 import { ReactNode } from 'react'
-import {
-  Brightness4,
-  Brightness7,
-  Menu as MenuIcon,
-  Home as HomeIcon,
-  Logout as LogoutIcon,
-} from '@mui/icons-material'
+import Brightness4 from '@mui/icons-material/Brightness4'
+import Brightness7 from '@mui/icons-material/Brightness7'
+import MenuIcon from '@mui/icons-material/Menu'
+import HomeIcon from '@mui/icons-material/Home'
+import LogoutIcon from '@mui/icons-material/Logout'
 import { SplitText } from '@/atoms/SplitText'
 
 interface DashboardLayoutProps {
@@ -57,7 +53,7 @@ export function DashboardLayout({
     setTheme(newTheme)
     document.documentElement.setAttribute('data-theme', newTheme)
     localStorage.setItem('theme', newTheme)
-    handleMenuClose()
+  handleMenuClose()
   }
 
   const handleLogout = () => {
@@ -77,13 +73,13 @@ export function DashboardLayout({
 
   return (
     <Box sx={dashboardLayoutStyles.root}>
-      <AppBar position="static">
+      <AppBar position='static'>
         <Toolbar sx={dashboardLayoutStyles.toolbar}>
           {/* Mobile Menu Button */}
           {isMobile && (
             <IconButton
-              color="inherit"
-              aria-label="open menu"
+              color='inherit'
+              aria-label='open menu'
               onClick={() => setMobileMenuOpen(true)}
               sx={dashboardLayoutStyles.mobileMenuButton}
             >
@@ -92,14 +88,10 @@ export function DashboardLayout({
           )}
 
           <Box sx={dashboardLayoutStyles.titleContainer}>
-            <Typography
-              variant="h4"
-              component="h1"
-              sx={dashboardLayoutStyles.title}
-            >
+            <Typography variant='h4' component='h1' sx={dashboardLayoutStyles.title}>
               <SplitText
-                text="🔗 TinyURL"
-                animateBy="character"
+                text='🔗 TinyURL'
+                animateBy='character'
                 staggerChildren={0.08}
                 duration={0.6}
                 initial={{ opacity: 0, y: 30, scale: 0.8 }}
@@ -114,24 +106,24 @@ export function DashboardLayout({
               {headerActions}
               <Button
                 onClick={handleGoHome}
-                variant="outlined"
-                size="small"
+                variant='outlined'
+                size='small'
                 sx={dashboardLayoutStyles.outlinedButton}
               >
                 Home
               </Button>
               <IconButton
                 onClick={handleThemeToggle}
-                color="inherit"
+                color='inherit'
                 aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-                size="medium"
+                size='medium'
               >
                 {theme === 'light' ? <Brightness4 /> : <Brightness7 />}
               </IconButton>
               <Button
                 onClick={handleLogout}
-                variant="contained"
-                size="small"
+                variant='contained'
+                size='small'
                 sx={dashboardLayoutStyles.containedButton}
               >
                 Logout
@@ -145,9 +137,9 @@ export function DashboardLayout({
               {headerActions}
               <IconButton
                 onClick={handleThemeToggle}
-                color="inherit"
+                color='inherit'
                 aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-                size="medium"
+                size='medium'
               >
                 {theme === 'light' ? <Brightness4 /> : <Brightness7 />}
               </IconButton>
@@ -158,7 +150,7 @@ export function DashboardLayout({
 
       {/* Mobile Drawer */}
       <Drawer
-        anchor="left"
+        anchor='left'
         open={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
         ModalProps={{
@@ -180,10 +172,7 @@ export function DashboardLayout({
       </Drawer>
 
       {/* Main Content */}
-      <Container
-        component="main"
-        sx={dashboardLayoutStyles.mainContent}
-      >
+      <Container component='main' sx={dashboardLayoutStyles.mainContent}>
         {children}
       </Container>
     </Box>

@@ -1,23 +1,19 @@
 import { useNavigate } from 'react-router-dom'
-import { Box, Stack, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { DashboardLayout } from '@/layouts/DashboardLayout'
 import { CreateLinkForm } from '@/organisms/CreateLinkForm'
 import { ClickAnalyticsChart } from '@/organisms/ClickAnalyticsChart'
 import { LinksTable } from '@/organisms/LinksTable'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useThemeStore } from '@/stores/useThemeStore'
-import { useLinksStore } from '@/stores/useLinksStore'
 
 export function AnalyticsPage() {
   const theme = useThemeStore((state) => state.theme)
   const setTheme = useThemeStore((state) => state.setTheme)
   const logout = useAuthStore((state) => state.logout)
   const navigate = useNavigate()
-  const { fetchLinks } = useLinksStore()
-
-  const handleLinkCreated = async () => {
-    await fetchLinks()
-  }
 
   const handleGoHome = () => {
     navigate('/')
@@ -45,7 +41,7 @@ export function AnalyticsPage() {
       </Box>
 
       <Box py={2}>
-        <CreateLinkForm onLinkCreated={handleLinkCreated} />
+        <CreateLinkForm />
       </Box>
 
       <Stack spacing={4}>

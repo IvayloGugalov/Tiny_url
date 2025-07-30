@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { ReactNode } from 'react'
 import { SpotlightCard } from './SpotlightCard'
-import { SxProps, Theme } from '@mui/material'
+import type { SxProps, Theme } from '@mui/material/styles'
 import type { Palette } from '@mui/material/styles'
 
 type PaletteColorKey = keyof Pick<Palette, 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'>

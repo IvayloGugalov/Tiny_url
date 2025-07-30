@@ -23,6 +23,21 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@mui/material',
+              message: 'Use direct imports instead of barrel imports for better dev performance. Example: import Button from "@mui/material/Button"',
+            },
+            {
+              name: '@mui/icons-material',
+              message: 'Use direct imports instead of barrel imports for better dev performance. Example: import AccessTime from "@mui/icons-material/AccessTime"',
+            },
+          ],
+        },
+      ],
     },
   },
 )

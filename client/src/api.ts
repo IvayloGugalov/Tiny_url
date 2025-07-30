@@ -3,13 +3,13 @@ import type { Link } from 'shared';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const apiLog = {
-  info: (message: string, data?: any) => {
+  info: (message: string, data?: unknown) => {
     console.log(`[API] ${message}`, data || '')
   },
-  error: (message: string, error?: any) => {
+  error: (message: string, error?: unknown) => {
     console.error(`[API] ${message}`, error)
   },
-  warn: (message: string, data?: any) => {
+  warn: (message: string, data?: unknown) => {
     console.warn(`[API] ${message}`, data || '')
   }
 }

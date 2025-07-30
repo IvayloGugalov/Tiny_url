@@ -1,5 +1,7 @@
 import { ReactNode, useRef, MouseEvent } from 'react'
-import { Card, CardProps, useTheme } from '@mui/material'
+import Card from '@mui/material/Card'
+import type { CardProps } from '@mui/material/Card'
+import { useTheme } from '@mui/material/styles'
 import type { Palette } from '@mui/material/styles'
 import { hexToRGBA } from '@/utils/colorUtils'
 

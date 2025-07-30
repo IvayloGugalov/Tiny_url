@@ -1,6 +1,12 @@
-import { BarChart } from '@mui/x-charts/BarChart'
-import { Box, Typography, CircularProgress, Alert, useTheme } from '@mui/material'
+import { lazy, Suspense } from 'react'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import CircularProgress from '@mui/material/CircularProgress'
+import Alert from '@mui/material/Alert'
+import { useTheme } from '@mui/material/styles'
 import { useLinksStore } from '@/stores/useLinksStore'
+
+const BarChart = lazy(() => import('@mui/x-charts/BarChart').then(module => ({ default: module.BarChart })))
 
 export function ClickAnalyticsChart() {
   const { links, loading, error } = useLinksStore()
@@ -56,25 +62,27 @@ export function ClickAnalyticsChart() {
       </Box>
 
       <Box height={400}>
-        <BarChart
-          dataset={chartData}
-          axisHighlight={{
-            y: 'band',
-          }}
-          xAxis={[
-            {
-              scaleType: 'band',
-              dataKey: 'id',
-              colorMap: {
-                type: 'ordinal',
-                colors: colorPalette,
+        <Suspense fallback={<CircularProgress />}>
+          <BarChart
+            dataset={chartData}
+            axisHighlight={{
+              y: 'band',
+            }}
+            xAxis={[
+              {
+                scaleType: 'band',
+                dataKey: 'id',
+                colorMap: {
+                  type: 'ordinal',
+                  colors: colorPalette,
+                },
               },
-            },
-          ]}
-          series={[{ dataKey: 'clicks' }]}
-          borderRadius={8}
-          height={400}
-        />
+            ]}
+            series={[{ dataKey: 'clicks' }]}
+            borderRadius={8}
+            height={400}
+          />
+        </Suspense>
       </Box>
     </Box>
   )

@@ -3,25 +3,22 @@ import { useForm, Controller } from 'react-hook-form'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createShortLink } from '@/api'
 import { Alert } from '@/molecules/Alert'
-import {
-  TextField,
-  Box,
-  Typography,
-  Button,
-  InputAdornment,
-  IconButton,
-  Paper,
-  CircularProgress,
-  Tooltip,
-  Chip,
-} from '@mui/material'
-import {
-  Link as LinkIcon,
-  ContentCopy as ContentCopyIcon,
-  CheckCircle as CheckCircleIcon,
-  AutoAwesome as SparkleIcon,
-} from '@mui/icons-material'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import LinkIcon from '@mui/icons-material/Link'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import SparkleIcon from '@mui/icons-material/AutoAwesome'
 import { createLinkFormStyles } from './CreateLinkForm.styles'
+import InputAdornment from '@mui/material/InputAdornment'
+import Tooltip from '@mui/material/Tooltip'
+import IconButton from '@mui/material/IconButton'
+import CircularProgress from '@mui/material/CircularProgress'
+import Paper from '@mui/material/Paper'
+import { useTheme } from '@mui/material/styles'
+import Chip from '@mui/material/Chip'
 
 interface FormData {
   targetUrl: string
@@ -34,6 +31,7 @@ export function CreateLinkForm() {
   const [copied, setCopied] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const theme = useTheme()
 
   const {
     control,
@@ -179,7 +177,14 @@ export function CreateLinkForm() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                      style={createLinkFormStyles.successAnimation}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: theme.palette.success.main,
+                        fontSize: '2rem',
+                        marginBottom: '8px',
+                      }}
                     >
                       <CheckCircleIcon fontSize='inherit' />
                     </motion.div>
