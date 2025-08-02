@@ -5,7 +5,10 @@ import { useTheme } from '@mui/material/styles'
 import type { Palette } from '@mui/material/styles'
 import { hexToRGBA } from '@/utils/colorUtils'
 
-type PaletteColorKey = keyof Pick<Palette, 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'>
+type PaletteColorKey = keyof Pick<
+  Palette,
+  'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
+>
 type PaletteColorVariant = keyof Palette['primary']
 
 interface SpotlightCardProps extends Omit<CardProps, 'onMouseMove'> {
@@ -43,7 +46,10 @@ export const SpotlightCard = ({
 
     cardRef.current.style.setProperty('--mouse-x', `${x}px`)
     cardRef.current.style.setProperty('--mouse-y', `${y}px`)
-    cardRef.current.style.setProperty('--spotlight-color', getSpotlightColorValue())
+    cardRef.current.style.setProperty(
+      '--spotlight-color',
+      getSpotlightColorValue(),
+    )
   }
 
   return (
@@ -69,7 +75,8 @@ export const SpotlightCard = ({
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 80%)',
+          background:
+            'radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 80%)',
           opacity: 0,
           transition: 'opacity 0.5s ease',
           pointerEvents: 'none',

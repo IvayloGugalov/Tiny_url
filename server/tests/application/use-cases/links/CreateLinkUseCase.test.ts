@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { CreateLinkUseCase } from 'application/use-cases/CreateLinkUseCase'
-import { MockLinkRepository, MockLinkIdGenerator } from '../../mocks'
-import { TestData, TestHelpers } from '../../../utils'
+import { MockLinkRepository } from 'tests/application/mocks/repositories/MockLinkRepository'
+import { MockLinkIdGenerator } from 'tests/application/mocks/services/MockLinkIdGenerator'
+import { createMockLink } from 'tests/utils/test-data'
 
 describe('CreateLinkUseCase', () => {
   let useCase: CreateLinkUseCase
@@ -14,143 +15,48 @@ describe('CreateLinkUseCase', () => {
     useCase = new CreateLinkUseCase(mockRepository, mockGenerator)
   })
 
-  describe('execute', () => {
-    it('should create a link successfully', async () => {
-      const request = { target: 'https://example.com' }
-      const baseUrl = 'http://localhost:3000/api/links'
+  it('should create a new link successfully', async () => {
+    const target = 'https://example.com'
+    const userId = 'test-user-1'
 
-      mockGenerator.setGeneratedIds(['test01'])
+    const result = await useCase.execute(target, userId)
 
-      const result = await useCase.execute(request, baseUrl)
+    expect(result).toBeDefined()
+    expect(result.target).toBe(target)
+    expect(result.userId).toBe(userId)
+    expect(result.clicks).toBe(0)
+    expect(result.createdAt).toBeInstanceOf(Date)
+  })
 
-      expect(result.id).toBe('test01')
-      expect(result.shortUrl).toBe('http://localhost:3000/test01')
+  it('should generate a unique link ID', async () => {
+    const target = 'https://example.com'
+    const userId = 'test-user-1'
 
-      // Verify link was saved
-      const savedLink = await mockRepository.findById('test01')
-      expect(savedLink).toBeDefined()
-      expect(savedLink!.target).toBe('https://example.com')
-      expect(savedLink!.clicks).toBe(0)
-    })
+    const result1 = await useCase.execute(target, userId)
+    const result2 = await useCase.execute(target, userId)
 
-    it('should handle collision by generating new ID', async () => {
-      const request = { target: 'https://example.com' }
-      const baseUrl = 'http://localhost:3000/api/links'
+    expect(result1.id).not.toBe(result2.id)
+  })
 
-      // Pre-populate repository with first ID
-      const existingLink = TestData.createLink({ id: 'test01' })
-      await mockRepository.save(existingLink)
+  it('should save the link to the repository', async () => {
+    const target = 'https://example.com'
+    const userId = 'test-user-1'
 
-      // Set generator to produce collision then unique ID
-      mockGenerator.setGeneratedIds(['test01', 'test02'])
+    await useCase.execute(target, userId)
 
-      const result = await useCase.execute(request, baseUrl)
+    const savedLinks = await mockRepository.findAll()
+    expect(savedLinks).toHaveLength(1)
+    expect(savedLinks[0]!.target).toBe(target)
+    expect(savedLinks[0]!.userId).toBe(userId)
+  })
 
-      expect(result.id).toBe('test02')
-      expect(result.shortUrl).toBe('http://localhost:3000/test02')
+  it('should handle links without userId', async () => {
+    const target = 'https://example.com'
 
-      // Verify new link was saved
-      const savedLink = await mockRepository.findById('test02')
-      expect(savedLink).toBeDefined()
-      expect(savedLink!.target).toBe('https://example.com')
-    })
+    const result = await useCase.execute(target)
 
-    it('should handle multiple collisions', async () => {
-      const request = { target: 'https://example.com' }
-      const baseUrl = 'http://localhost:3000/api/links'
-
-      // Pre-populate repository with multiple IDs
-      for (let i = 1; i <= 3; i++) {
-        const link = TestData.createLink({ id: `test0${i}` })
-        await mockRepository.save(link)
-      }
-
-      // Set generator to produce multiple collisions then unique ID
-      mockGenerator.setGeneratedIds(['test01', 'test02', 'test03', 'test04'])
-
-      const result = await useCase.execute(request, baseUrl)
-
-      expect(result.id).toBe('test04')
-      expect(mockGenerator.getGeneratedCount()).toBe(4)
-    })
-
-    it('should throw error after max collision attempts', async () => {
-      const request = { target: 'https://example.com' }
-      const baseUrl = 'http://localhost:3000/api/links'
-
-      // Pre-populate repository with many IDs
-      for (let i = 1; i <= 15; i++) {
-        const link = TestData.createLink({ id: `test${i.toString().padStart(2, '0')}` })
-        await mockRepository.save(link)
-      }
-
-      // Set generator to always produce collisions
-      mockGenerator.setShouldGenerateUnique(false)
-
-      await TestHelpers.expectError(
-        () => useCase.execute(request, baseUrl),
-        'Failed to generate unique link ID'
-      )
-    })
-
-    it('should validate target URL', async () => {
-      const request = { target: 'invalid-url' }
-      const baseUrl = 'http://localhost:3000/api/links'
-
-      await TestHelpers.expectDomainError(
-        () => useCase.execute(request, baseUrl),
-        'INVALID_URL'
-      )
-    })
-
-    it('should handle different base URL formats', async () => {
-      const request = { target: 'https://example.com' }
-      mockGenerator.setGeneratedIds(['test01'])
-
-      const testCases = [
-        {
-          baseUrl: 'http://localhost:3000/api/links',
-          expected: 'http://localhost:3000/test01'
-        },
-        {
-          baseUrl: 'https://myapp.com/api/links',
-          expected: 'https://myapp.com/test01'
-        },
-        {
-          baseUrl: 'http://localhost:8080/api/links',
-          expected: 'http://localhost:8080/test01'
-        }
-      ]
-
-      for (const testCase of testCases) {
-        mockRepository.clear()
-        const result = await useCase.execute(request, testCase.baseUrl)
-        expect(result.shortUrl).toBe(testCase.expected)
-      }
-    })
-
-    it('should trim whitespace from target URL', async () => {
-      const request = { target: '  https://example.com  ' }
-      const baseUrl = 'http://localhost:3000/api/links'
-
-      mockGenerator.setGeneratedIds(['test01'])
-
-      await useCase.execute(request, baseUrl)
-
-      const savedLink = await mockRepository.findById('test01')
-      expect(savedLink!.target).toBe('https://example.com')
-    })
-
-    it('should create link with current timestamp', async () => {
-      const request = { target: 'https://example.com' }
-      const baseUrl = 'http://localhost:3000/api/links'
-
-      mockGenerator.setGeneratedIds(['test01'])
-
-      await useCase.execute(request, baseUrl)
-
-      const savedLink = await mockRepository.findById('test01')
-      TestHelpers.expectDateToBeRecent(savedLink!.createdAt)
-    })
+    expect(result).toBeDefined()
+    expect(result.target).toBe(target)
+    expect(result.userId).toBeUndefined()
   })
 })

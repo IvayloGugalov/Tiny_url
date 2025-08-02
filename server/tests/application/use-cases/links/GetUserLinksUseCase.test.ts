@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { GetUserLinksUseCase } from 'application/use-cases/GetUserLinksUseCase'
-import { MockLinkRepository } from '../../mocks'
-import { TestData } from '../../../utils'
+import { MockLinkRepository } from 'tests/application/mocks/repositories/MockLinkRepository'
+import { createMockLink } from 'tests/utils/test-data'
 
 describe('GetUserLinksUseCase', () => {
   let useCase: GetUserLinksUseCase
@@ -13,139 +13,100 @@ describe('GetUserLinksUseCase', () => {
   })
 
   describe('execute', () => {
+    it('should return links for specific user', async () => {
+      const userId = 'user1'
+      const user1Link1 = createMockLink({ id: 'link1', userId })
+      const user1Link2 = createMockLink({ id: 'link2', userId })
+      const user2Link = createMockLink({ id: 'link3', userId: 'user2' })
+      const anonymousLink = createMockLink({ id: 'link4', userId: undefined })
+
+      await mockRepository.create(user1Link1)
+      await mockRepository.create(user1Link2)
+      await mockRepository.create(user2Link)
+      await mockRepository.create(anonymousLink)
+
+      const result = await useCase.execute(userId)
+
+      expect(result).toHaveLength(2)
+      expect(result).toEqual(expect.arrayContaining([user1Link1, user1Link2]))
+    })
+
     it('should return empty array when user has no links', async () => {
-      const result = await useCase.execute('user123')
+      const userId = 'user1'
+      const otherUserLink = createMockLink({ id: 'link1', userId: 'user2' })
+      const anonymousLink = createMockLink({ id: 'link2', userId: undefined })
+
+      await mockRepository.create(otherUserLink)
+      await mockRepository.create(anonymousLink)
+
+      const result = await useCase.execute(userId)
 
       expect(result).toEqual([])
     })
 
-    it('should return only links belonging to the specified user', async () => {
-      // Create links for different users
-      const user1Link1 = TestData.createLink({
+    it('should handle user with single link', async () => {
+      const userId = 'user1'
+      const userLink = createMockLink({ id: 'link1', userId })
+      const anonymousLink = createMockLink({ id: 'link2', userId: undefined })
+
+      await mockRepository.create(userLink)
+      await mockRepository.create(anonymousLink)
+
+      const result = await useCase.execute(userId)
+
+      expect(result).toHaveLength(1)
+      expect(result[0]).toEqual(userLink)
+    })
+
+    it('should handle multiple users with links', async () => {
+      const user1Id = 'user1'
+      const user2Id = 'user2'
+      const link1 = createMockLink({ id: 'link1', userId: user1Id })
+      const link2 = createMockLink({ id: 'link2', userId: user2Id })
+
+      await mockRepository.create(link1)
+      await mockRepository.create(link2)
+
+      const user1Result = await useCase.execute(user1Id)
+      const user2Result = await useCase.execute(user2Id)
+
+      expect(user1Result).toHaveLength(1)
+      expect(user1Result[0]).toEqual(link1)
+      expect(user2Result).toHaveLength(1)
+      expect(user2Result[0]).toEqual(link2)
+    })
+
+    it('should handle links with different properties', async () => {
+      const userId = 'user1'
+      const link = createMockLink({
         id: 'link1',
-        target: 'https://example1.com',
-        userId: 'user1'
-      })
-      const user1Link2 = TestData.createLink({
-        id: 'link2',
-        target: 'https://example2.com',
-        userId: 'user1'
-      })
-      const user2Link = TestData.createLink({
-        id: 'link3',
-        target: 'https://example3.com',
-        userId: 'user2'
-      })
-      const anonymousLink = TestData.createLink({
-        id: 'link4',
-        target: 'https://example4.com',
-        userId: undefined
+        userId,
+        target: 'https://example.com',
+        clicks: 5,
       })
 
-      await mockRepository.save(user1Link1)
-      await mockRepository.save(user1Link2)
-      await mockRepository.save(user2Link)
-      await mockRepository.save(anonymousLink)
+      await mockRepository.create(link)
 
-      const result = await useCase.execute('user1')
+      const result = await useCase.execute(userId)
+
+      expect(result).toHaveLength(1)
+      expect(result[0]!.target).toBe('https://example.com')
+      expect(result[0]!.clicks).toBe(5)
+    })
+
+    it('should return links in repository order', async () => {
+      const userId = 'user1'
+      const link1 = createMockLink({ id: 'link1', userId })
+      const link2 = createMockLink({ id: 'link2', userId })
+
+      await mockRepository.create(link1)
+      await mockRepository.create(link2)
+
+      const result = await useCase.execute(userId)
 
       expect(result).toHaveLength(2)
-      expect(result.map(link => link.id)).toEqual(['link1', 'link2'])
-      expect(result.every(link => link.userId === 'user1')).toBe(true)
-    })
-
-    it('should not return links from other users', async () => {
-      const user1Link = TestData.createLink({
-        id: 'user1link',
-        target: 'https://user1.com',
-        userId: 'user1'
-      })
-      const user2Link = TestData.createLink({
-        id: 'user2link',
-        target: 'https://user2.com',
-        userId: 'user2'
-      })
-
-      await mockRepository.save(user1Link)
-      await mockRepository.save(user2Link)
-
-      const result = await useCase.execute('user1')
-
-      expect(result).toHaveLength(1)
-      expect(result[0].id).toBe('user1link')
-      expect(result[0].userId).toBe('user1')
-    })
-
-    it('should not return anonymous links (userId = null)', async () => {
-      const userLink = TestData.createLink({
-        id: 'userlink',
-        target: 'https://user.com',
-        userId: 'user1'
-      })
-      const anonymousLink = TestData.createLink({
-        id: 'anonlink',
-        target: 'https://anon.com',
-        userId: undefined
-      })
-
-      await mockRepository.save(userLink)
-      await mockRepository.save(anonymousLink)
-
-      const result = await useCase.execute('user1')
-
-      expect(result).toHaveLength(1)
-      expect(result[0].id).toBe('userlink')
-      expect(result[0].userId).toBe('user1')
-    })
-
-    it('should return links with all properties intact', async () => {
-      const link = TestData.createLink({
-        id: 'testlink',
-        target: 'https://test.com',
-        clicks: 5,
-        userId: 'user1',
-        createdAt: new Date('2024-01-01')
-      })
-
-      await mockRepository.save(link)
-
-      const result = await useCase.execute('user1')
-
-      expect(result).toHaveLength(1)
-      expect(result[0]).toEqual({
-        id: 'testlink',
-        target: 'https://test.com',
-        clicks: 5,
-        userId: 'user1',
-        createdAt: new Date('2024-01-01')
-      })
-    })
-
-    it('should handle multiple links with different click counts', async () => {
-      const link1 = TestData.createLink({
-        id: 'popular',
-        target: 'https://popular.com',
-        clicks: 100,
-        userId: 'user1'
-      })
-      const link2 = TestData.createLink({
-        id: 'new',
-        target: 'https://new.com',
-        clicks: 0,
-        userId: 'user1'
-      })
-
-      await mockRepository.save(link1)
-      await mockRepository.save(link2)
-
-      const result = await useCase.execute('user1')
-
-      expect(result).toHaveLength(2)
-      const popularLink = result.find(link => link.id === 'popular')
-      const newLink = result.find(link => link.id === 'new')
-      
-      expect(popularLink?.clicks).toBe(100)
-      expect(newLink?.clicks).toBe(0)
+      expect(result[0]!.id).toBe('link1')
+      expect(result[1]!.id).toBe('link2')
     })
   })
 })

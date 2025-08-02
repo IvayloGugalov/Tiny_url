@@ -1,72 +1,64 @@
 import { eq } from 'drizzle-orm'
-import { User, UserDomain } from 'domain/entities/User'
-import type { Email } from 'domain/value-objects/Email'
-import type { UserId } from 'domain/value-objects/UserId'
+import type { Email, User, UserId } from 'shared'
+import { db, type Transaction } from 'infrastructure/database/connection'
+import { UserDomain } from 'domain/entities/User'
 import { IUserRepository } from 'application/interfaces/IUserRepository'
-import { DatabaseConnection } from 'infrastructure/database/connection'
-import { users } from 'infrastructure/database/schema'
+import { users as usersTable } from 'infrastructure/database/schema'
 
 export class DrizzleUserRepository implements IUserRepository {
-  private db = DatabaseConnection.getInstance().db
+  constructor() {}
 
-  async save(user: User): Promise<void> {
-    await this.db.insert(users).values({
-      id: user.id,
-      email: user.email,
-      name: user.name || null,
-      createdAt: user.createdAt,
-    })
+  async create(user: User, tx?: Transaction): Promise<User> {
+    const dbInstance = tx ?? db
+    const [result] = await dbInstance
+      .insert(usersTable)
+      .values({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        createdAt: user.createdAt,
+      })
+      .returning()
+
+    return UserDomain.fromPersistence(result)
   }
 
-  async findById(id: UserId): Promise<User | null> {
-    const result = await this.db.select().from(users).where(eq(users.id, id)).limit(1)
-
-    if (result.length === 0) {
-      return null
-    }
-
-    const row = result[0]!
-    return UserDomain.fromPersistence({
-      id: row.id,
-      email: row.email,
-      name: row.name || undefined,
-      createdAt: row.createdAt,
-    })
-  }
-
-  async findByEmail(email: Email): Promise<User | null> {
-    const result = await this.db.select().from(users).where(eq(users.email, email)).limit(1)
-
-    if (result.length === 0) {
-      return null
-    }
-
-    const row = result[0]!
-    return UserDomain.fromPersistence({
-      id: row.id,
-      email: row.email,
-      name: row.name || undefined,
-      createdAt: row.createdAt,
-    })
-  }
-
-  async existsByEmail(email: Email): Promise<boolean> {
-    const result = await this.db
-      .select({ id: users.id })
-      .from(users)
-      .where(eq(users.email, email))
+  async findById(id: UserId, tx?: Transaction): Promise<User | null> {
+    const dbInstance = tx ?? db
+    const result = await dbInstance
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, id))
       .limit(1)
-
-    return result.length > 0
+    return result.length > 0 ? UserDomain.fromPersistence(result[0]) : null
   }
 
-  async update(user: User): Promise<void> {
-    await this.db
-      .update(users)
+  async findByEmail(email: Email, tx?: Transaction): Promise<User | null> {
+    const dbInstance = tx ?? db
+    const result = await dbInstance
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, email))
+      .limit(1)
+    return result.length > 0 ? UserDomain.fromPersistence(result[0]) : null
+  }
+
+  async update(user: User, tx?: Transaction): Promise<User> {
+    const dbInstance = tx ?? db
+    const [result] = await dbInstance
+      .update(usersTable)
       .set({
         email: user.email,
-        name: user.name || null,
+        name: user.name,
       })
-      .where(eq(users.id, user.id))
+      .where(eq(usersTable.id, user.id))
+      .returning()
+
+    return UserDomain.fromPersistence(result)
+  }
+
+  async delete(id: UserId, tx?: Transaction): Promise<void> {
+    const dbInstance = tx ?? db
+    await dbInstance.delete(usersTable).where(eq(usersTable.id, id))
   }
 }

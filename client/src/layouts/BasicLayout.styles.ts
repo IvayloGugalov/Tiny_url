@@ -59,11 +59,15 @@ export const createBasicLayoutTheme = (isDark: boolean) => ({
     values: BREAKPOINTS,
   },
   palette: {
-    mode: isDark ? 'dark' as const : 'light' as const,
+    mode: isDark ? ('dark' as const) : ('light' as const),
     primary: isDark ? THEME_COLORS.dark.primary : THEME_COLORS.light.primary,
-    secondary: isDark ? THEME_COLORS.dark.secondary : THEME_COLORS.light.secondary,
+    secondary: isDark
+      ? THEME_COLORS.dark.secondary
+      : THEME_COLORS.light.secondary,
     info: isDark ? THEME_COLORS.dark.info : THEME_COLORS.light.info,
-    background: isDark ? THEME_COLORS.dark.background : THEME_COLORS.light.background,
+    background: isDark
+      ? THEME_COLORS.dark.background
+      : THEME_COLORS.light.background,
     text: isDark ? THEME_COLORS.dark.text : THEME_COLORS.light.text,
   },
   typography: {

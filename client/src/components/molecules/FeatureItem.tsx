@@ -13,7 +13,12 @@ interface FeatureItemProps {
   delay?: number
 }
 
-export const FeatureItem = ({ icon, title, description, delay = 0 }: FeatureItemProps) => {
+export const FeatureItem = ({
+  icon,
+  title,
+  description,
+  delay = 0,
+}: FeatureItemProps) => {
   const theme = useTheme()
 
   const itemVariants = {
@@ -48,9 +53,15 @@ export const FeatureItem = ({ icon, title, description, delay = 0 }: FeatureItem
           background: `linear-gradient(135deg, ${theme.palette.primary.main}1A 0%, ${theme.palette.primary.main}0D 100%)`,
           border: `2px solid ${theme.palette.primary.main}33`,
           '&:hover': {
-            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)',
+            backgroundColor:
+              theme.palette.mode === 'dark'
+                ? 'rgba(255, 255, 255, 0.02)'
+                : 'rgba(0, 0, 0, 0.02)',
             transform: 'translateX(8px)',
-            boxShadow: theme.palette.mode === 'dark' ? '0 4px 12px rgba(255, 255, 255, 0.1)' : '0 4px 12px rgba(0, 0, 0, 0.1)',
+            boxShadow:
+              theme.palette.mode === 'dark'
+                ? '0 4px 12px rgba(255, 255, 255, 0.1)'
+                : '0 4px 12px rgba(0, 0, 0, 0.1)',
           },
         }}
       >

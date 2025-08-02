@@ -1,12 +1,6 @@
 import { create } from 'zustand'
 import { fetchLinks } from '../api'
-
-interface Link {
-  id: string
-  target: string
-  clicks: number
-  createdAt: string
-}
+import type { Link } from 'shared'
 
 interface LinksState {
   links: Link[]
@@ -39,13 +33,14 @@ export const useLinksStore = create<LinksState>((set, get) => ({
         const data = await fetchLinks()
         set({
           links: data,
-          loading: false
+          loading: false,
         })
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to load links'
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to load links'
         set({
           error: errorMessage,
-          loading: false
+          loading: false,
         })
       } finally {
         fetchPromise = null
@@ -57,5 +52,5 @@ export const useLinksStore = create<LinksState>((set, get) => ({
 
   clearError: () => {
     set({ error: null })
-  }
+  },
 }))

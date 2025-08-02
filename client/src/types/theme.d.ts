@@ -16,15 +16,12 @@ import '@mui/material/styles'
 
 declare module '@mui/material/styles' {
   // Uncomment and extend these interfaces when adding custom colors
-
   // interface Palette {
   //   customColor: PaletteColor
   // }
-
   // interface PaletteOptions {
   //   customColor?: PaletteColor
   // }
-
   // interface PaletteColor {
   //   darker?: string
   //   lighter?: string

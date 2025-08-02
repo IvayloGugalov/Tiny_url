@@ -1,39 +1,49 @@
 import { drizzle } from 'drizzle-orm/bun-sqlite'
-import { Database } from 'bun:sqlite'
+import { Database as BunDatabase } from 'bun:sqlite'
+import { SQLiteTransaction } from 'drizzle-orm/sqlite-core'
+import { links, users } from './schema'
+import { ExtractTablesWithRelations } from 'drizzle-orm'
 
-export class DatabaseConnection {
-  private static instance: DatabaseConnection
-  private _db: ReturnType<typeof drizzle> | null = null
+const dbFileName = process.env.DB_FILE_NAME || 'tiny_url.sqlite'
+const sqlite = new BunDatabase(dbFileName)
+export const db = drizzle(sqlite, { schema: { users, links } })
 
-  private constructor() {}
+export type Database = ReturnType<typeof drizzle>
 
-  static getInstance(): DatabaseConnection {
-    if (!DatabaseConnection.instance) {
-      DatabaseConnection.instance = new DatabaseConnection()
-    }
-    return DatabaseConnection.instance
-  }
+type Schema = {
+  users: typeof users
+  links: typeof links
+}
 
-  get db() {
-    if (!this._db) {
-      this.connect()
-    }
-    return this._db!
-  }
+export type Transaction = SQLiteTransaction<
+  'async',
+  ResultSet,
+  Schema,
+  ExtractTablesWithRelations<Schema>
+>
 
-  private connect(): void {
-    const dbFileName = process.env.DB_FILE_NAME || 'tiny_url.sqlite'
-    const sqlite = new Database(dbFileName)
-    this._db = drizzle({ client: sqlite })
-  }
+export interface ResultSet {
+  columns: Array<string>
+  columnTypes: Array<string>
+  rows: Array<Row>
+  rowsAffected: number
+  lastInsertRowid: bigint | undefined
+  toJSON(): unknown
+}
 
-  async healthCheck(): Promise<boolean> {
-    try {
-      const { links } = await import('./schema')
-      await this.db.select().from(links).limit(1)
-      return true
-    } catch {
-      return false
-    }
+export interface Row {
+  length: number
+  [index: number]: Value
+  [name: string]: Value
+}
+
+export type Value = null | string | number | bigint | ArrayBuffer
+
+export async function healthCheck(): Promise<boolean> {
+  try {
+    await db.select().from(links).limit(1)
+    return true
+  } catch {
+    return false
   }
 }

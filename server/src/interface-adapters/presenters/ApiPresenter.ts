@@ -10,7 +10,7 @@ export class ApiPresenter {
     return {
       success: true,
       data,
-      message
+      message,
     }
   }
 
@@ -18,7 +18,7 @@ export class ApiPresenter {
     return {
       success: false,
       message,
-      error
+      error,
     }
   }
 }

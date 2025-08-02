@@ -1,13 +1,17 @@
-import { type LinkId, LinkIdDomain } from '../value-objects/LinkId'
+import { LinkIdDomain } from '../value-objects/LinkId'
+import { LinkId } from 'shared'
 
 export class ShortLinkIdGenerator {
-  private readonly alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  private readonly alphabet =
+    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
   private readonly defaultLength = 6
 
-  generate(length: number = this.defaultLength): LinkId {
+  generate(): LinkId {
     let result = ''
-    for (let i = 0; i < length; i++) {
-      result += this.alphabet.charAt(Math.floor(Math.random() * this.alphabet.length))
+    for (let i = 0; i < this.defaultLength; i++) {
+      result += this.alphabet.charAt(
+        Math.floor(Math.random() * this.alphabet.length),
+      )
     }
     return LinkIdDomain.create(result)
   }

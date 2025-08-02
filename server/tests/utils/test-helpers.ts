@@ -6,7 +6,7 @@ export const TestHelpers = {
   expectDomainError: async (
     fn: () => Promise<any> | any,
     expectedErrorCode: string,
-    expectedMessage?: string
+    expectedMessage?: string,
   ): Promise<void> => {
     try {
       await fn()
@@ -23,7 +23,7 @@ export const TestHelpers = {
 
   expectError: async (
     fn: () => Promise<any> | any,
-    expectedMessage?: string
+    expectedMessage?: string,
   ): Promise<void> => {
     try {
       await fn()
@@ -59,8 +59,11 @@ export const TestHelpers = {
   },
 
   // Array testing helpers
-  expectArrayToContainObject: <T>(array: T[], expectedObject: Partial<T>): void => {
-    const found = array.some(item => {
+  expectArrayToContainObject: <T>(
+    array: T[],
+    expectedObject: Partial<T>,
+  ): void => {
+    const found = array.some((item) => {
       return Object.entries(expectedObject).every(([key, value]) => {
         return (item as any)[key] === value
       })
@@ -70,7 +73,7 @@ export const TestHelpers = {
 
   // Mock helpers
   createMockFunction: <T extends (...args: any[]) => any>(
-    implementation?: T
+    implementation?: T,
   ) => {
     return vi.fn(implementation)
   },
@@ -89,15 +92,15 @@ export const TestHelpers = {
   waitFor: async (
     condition: () => boolean | Promise<boolean>,
     timeout: number = 1000,
-    interval: number = 10
+    interval: number = 10,
   ): Promise<void> => {
     const start = Date.now()
     while (Date.now() - start < timeout) {
       if (await condition()) {
         return
       }
-      await new Promise(resolve => setTimeout(resolve, interval))
+      await new Promise((resolve) => setTimeout(resolve, interval))
     }
     throw new Error(`Condition not met within ${timeout}ms`)
-  }
+  },
 }

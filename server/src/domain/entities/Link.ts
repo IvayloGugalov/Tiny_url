@@ -1,18 +1,7 @@
-import { z } from 'zod'
+import { LinkIdDomain } from '../value-objects/LinkId'
+import { UrlDomain } from '../value-objects/Url'
+import { LinkSchema, Link } from 'shared'
 import { LinkExpiredError } from '../errors'
-import { LinkIdSchema, LinkIdDomain } from '../value-objects/LinkId'
-import { UrlSchema, UrlDomain } from '../value-objects/Url'
-import { UserIdSchema } from '../value-objects/UserId'
-
-export const LinkSchema = z.object({
-  id: LinkIdSchema,
-  target: UrlSchema,
-  clicks: z.number().int().min(0),
-  userId: UserIdSchema.optional(),
-  createdAt: z.date()
-})
-
-export type Link = z.infer<typeof LinkSchema>
 
 export const LinkDomain = {
   create: (id: string, target: string, userId?: string): Link => {
@@ -24,7 +13,7 @@ export const LinkDomain = {
       target: validTarget,
       clicks: 0,
       userId: userId,
-      createdAt: new Date()
+      createdAt: new Date(),
     }
   },
 
@@ -35,7 +24,7 @@ export const LinkDomain = {
   incrementClicks: (link: Link): Link => {
     return {
       ...link,
-      clicks: link.clicks + 1
+      clicks: link.clicks + 1,
     }
   },
 
@@ -55,5 +44,5 @@ export const LinkDomain = {
     const expirationDate = new Date(link.createdAt)
     expirationDate.setDate(expirationDate.getDate() + ttlDays)
     return expirationDate
-  }
+  },
 }

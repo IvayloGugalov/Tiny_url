@@ -1,5 +1,10 @@
 import { Theme } from '@mui/material/styles'
-import { TYPOGRAPHY_SIZES, LAYOUT, RESPONSIVE, COMMON_SX } from '../styles/constants'
+import {
+  TYPOGRAPHY_SIZES,
+  LAYOUT,
+  RESPONSIVE,
+  COMMON_SX,
+} from '../styles/constants'
 
 export const dashboardLayoutStyles = {
   root: {

@@ -19,7 +19,7 @@ export function BasicLayout({ children, theme }: BasicLayoutProps) {
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
       <Box sx={basicLayoutStyles.root}>
-        <Box component="main" sx={{ flex: 1 }}>
+        <Box component='main' sx={{ flex: 1 }}>
           {children}
         </Box>
         <Footer />

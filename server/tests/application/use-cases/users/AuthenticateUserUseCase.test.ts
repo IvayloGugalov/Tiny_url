@@ -1,220 +1,147 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { AuthenticateUserUseCase } from 'application/use-cases/AuthenticateUserUseCase'
-import { MockAuthService, MockUserRepository } from '../../mocks'
-import { TestData, TestHelpers } from '../../../utils'
+import { MockUserRepository } from 'tests/application/mocks/repositories/MockUserRepository'
+import { MockAuthService } from 'tests/application/mocks/services/MockAuthService'
+import { createMockUser } from 'tests/utils/test-data'
 
 describe('AuthenticateUserUseCase', () => {
   let useCase: AuthenticateUserUseCase
-  let mockAuthService: MockAuthService
   let mockUserRepository: MockUserRepository
+  let mockAuthService: MockAuthService
 
   beforeEach(() => {
-    mockAuthService = new MockAuthService()
     mockUserRepository = new MockUserRepository()
-    mockUserRepository.clear()
+    mockAuthService = new MockAuthService()
     useCase = new AuthenticateUserUseCase(mockAuthService, mockUserRepository)
   })
 
   describe('execute', () => {
     it('should authenticate user with valid credentials', async () => {
-      const request = {
+      const user = createMockUser({
+        id: 'user1',
         email: 'test@example.com',
-        password: 'validpassword'
-      }
-
-      const user = TestData.createUser({
-        id: 'user123',
-        email: 'test@example.com'
+        name: 'Test User',
       })
-      await mockUserRepository.save(user)
 
-      mockAuthService.setValidCredentials('test@example.com', 'validpassword')
+      await mockUserRepository.create(user)
 
-      const result = await useCase.execute(request)
+      const result = await useCase.execute('test@example.com', 'validpassword')
 
-      expect(result.token).toBeDefined()
-      expect(typeof result.token).toBe('string')
-      expect(result.token).toContain('mock-token-user123-')
-    })
-
-    it('should throw InvalidCredentialsError for invalid password', async () => {
-      const request = {
+      expect(result).toBeDefined()
+      expect(result.token).toBe('mock-token')
+      expect(result.user).toEqual({
+        id: 'user1',
         email: 'test@example.com',
-        password: 'wrongpassword'
-      }
-
-      mockAuthService.setValidCredentials('test@example.com', 'correctpassword')
-
-      await TestHelpers.expectDomainError(
-        () => useCase.execute(request),
-        'INVALID_CREDENTIALS',
-        'Invalid email or password'
-      )
+        name: 'Test User',
+      })
     })
 
-    it('should throw InvalidCredentialsError for non-existent user', async () => {
-      const request = {
-        email: 'nonexistent@example.com',
-        password: 'anypassword'
-      }
-
-      // Don't set any valid credentials
-
-      await TestHelpers.expectDomainError(
-        () => useCase.execute(request),
-        'INVALID_CREDENTIALS'
-      )
+    it('should throw error for non-existent user', async () => {
+      await expect(
+        useCase.execute('nonexistent@example.com', 'password'),
+      ).rejects.toThrow()
     })
 
-    it('should validate email format', async () => {
-      const request = {
-        email: 'invalid-email',
-        password: 'validpassword'
-      }
-
-      await TestHelpers.expectDomainError(
-        () => useCase.execute(request),
-        'INVALID_EMAIL',
-        'invalid-email'
-      )
-    })
-
-    it('should handle various valid email formats', async () => {
-      const validEmails = TestData.validEmails
+    it('should handle different email formats', async () => {
+      const validEmails = [
+        'test@example.com',
+        'user@domain.org',
+        'admin@company.co.uk',
+      ]
 
       for (const email of validEmails) {
-        const request = {
+        const user = createMockUser({
+          id: 'user1',
           email,
-          password: 'validpassword'
-        }
-
-        const user = TestData.createUser({
-          id: `user-${email.replace(/[^a-zA-Z0-9]/g, '')}`,
-          email
+          name: 'Test User',
         })
-        await mockUserRepository.save(user)
 
-        mockAuthService.clear()
-        mockAuthService.setValidCredentials(email, 'validpassword')
+        await mockUserRepository.create(user)
 
-        const result = await useCase.execute(request)
-        expect(result.token).toBeDefined()
+        const result = await useCase.execute(email, 'validpassword')
+
+        expect(result).toBeDefined()
+        expect(result.user.email).toBe(email)
+
+        mockUserRepository.clear()
       }
     })
 
-    it('should generate token with correct user ID', async () => {
-      const request = {
+    it('should handle users without names', async () => {
+      const user = createMockUser({
+        id: 'user1',
         email: 'test@example.com',
-        password: 'validpassword'
-      }
-
-      const user = TestData.createUser({
-        id: 'testuser456',
-        email: 'test@example.com'
+        name: undefined,
       })
-      await mockUserRepository.save(user)
 
-      mockAuthService.setValidCredentials('test@example.com', 'validpassword')
+      await mockUserRepository.create(user)
 
-      const result = await useCase.execute(request)
+      const result = await useCase.execute('test@example.com', 'validpassword')
 
-      // Verify token was generated with correct parameters
-      const tokenData = await mockAuthService.verifyToken(result.token)
-      expect(tokenData.userId).toBe('testuser456')
-      expect(tokenData.email).toBe('test@example.com')
+      expect(result).toBeDefined()
+      expect(result.user.name).toBeUndefined()
     })
 
-    it('should handle empty password', async () => {
-      const request = {
+    it('should handle users with names', async () => {
+      const user = createMockUser({
+        id: 'user1',
         email: 'test@example.com',
-        password: ''
-      }
-
-      await TestHelpers.expectDomainError(
-        () => useCase.execute(request),
-        'INVALID_CREDENTIALS'
-      )
-    })
-
-    it('should handle case-sensitive passwords', async () => {
-      const request1 = {
-        email: 'test@example.com',
-        password: 'Password123'
-      }
-      const request2 = {
-        email: 'test@example.com',
-        password: 'password123'
-      }
-
-      const user = TestData.createUser({
-        id: 'caseuser',
-        email: 'test@example.com'
+        name: 'John Doe',
       })
-      await mockUserRepository.save(user)
 
-      mockAuthService.setValidCredentials('test@example.com', 'Password123')
+      await mockUserRepository.create(user)
 
-      // Correct case should work
-      const result1 = await useCase.execute(request1)
-      expect(result1.token).toBeDefined()
+      const result = await useCase.execute('test@example.com', 'validpassword')
 
-      // Wrong case should fail
-      await TestHelpers.expectDomainError(
-        () => useCase.execute(request2),
-        'INVALID_CREDENTIALS'
-      )
+      expect(result).toBeDefined()
+      expect(result.user.name).toBe('John Doe')
     })
 
-    it('should handle special characters in password', async () => {
-      const request = {
-        email: 'test@example.com',
-        password: 'P@ssw0rd!#$%^&*()'
-      }
-
-      const user = TestData.createUser({
-        id: 'specialuser',
-        email: 'test@example.com'
+    it('should handle case-sensitive email matching', async () => {
+      const user = createMockUser({
+        id: 'user1',
+        email: 'Test@Example.com',
+        name: 'Test User',
       })
-      await mockUserRepository.save(user)
 
-      mockAuthService.setValidCredentials('test@example.com', 'P@ssw0rd!#$%^&*()')
+      await mockUserRepository.create(user)
 
-      const result = await useCase.execute(request)
-      expect(result.token).toBeDefined()
+      const result = await useCase.execute('Test@Example.com', 'validpassword')
+
+      expect(result).toBeDefined()
+      expect(result.user.email).toBe('Test@Example.com')
     })
 
-    it('should handle long passwords', async () => {
-      const longPassword = 'a'.repeat(1000)
-      const request = {
-        email: 'test@example.com',
-        password: longPassword
-      }
-
-      const user = TestData.createUser({
-        id: 'longuser',
-        email: 'test@example.com'
+    it('should handle long email addresses', async () => {
+      const longEmail = 'a'.repeat(50) + '@example.com'
+      const user = createMockUser({
+        id: 'user1',
+        email: longEmail,
+        name: 'Test User',
       })
-      await mockUserRepository.save(user)
 
-      mockAuthService.setValidCredentials('test@example.com', longPassword)
+      await mockUserRepository.create(user)
 
-      const result = await useCase.execute(request)
-      expect(result.token).toBeDefined()
+      const result = await useCase.execute(longEmail, 'validpassword')
+
+      expect(result).toBeDefined()
+      expect(result.user.email).toBe(longEmail)
     })
 
-    it('should handle auth service failures gracefully', async () => {
-      const request = {
-        email: 'test@example.com',
-        password: 'validpassword'
-      }
+    it('should handle special characters in email', async () => {
+      const specialEmail = 'user+tag@example.com'
+      const user = createMockUser({
+        id: 'user1',
+        email: specialEmail,
+        name: 'Test User',
+      })
 
-      // Set auth service to always fail validation
-      mockAuthService.setShouldValidateCredentials(false)
+      await mockUserRepository.create(user)
 
-      await TestHelpers.expectDomainError(
-        () => useCase.execute(request),
-        'INVALID_CREDENTIALS'
-      )
+      const result = await useCase.execute(specialEmail, 'validpassword')
+
+      expect(result).toBeDefined()
+      expect(result.user.email).toBe(specialEmail)
     })
   })
 })

@@ -10,31 +10,35 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   token: string
+  user: {
+    id: string
+    email: string
+    name?: string
+  }
 }
 
 export class AuthenticateUserUseCase {
   constructor(
     private authService: IAuthService,
-    private userRepository: IUserRepository
+    private userRepository: IUserRepository,
   ) {}
 
-  async execute(request: LoginRequest): Promise<LoginResponse> {
-    const email = EmailDomain.create(request.email)
-
-    const isValid = await this.authService.validateCredentials(email, request.password)
-    if (!isValid) {
-      throw new InvalidCredentialsError()
-    }
-
-    const user = await this.userRepository.findByEmail(email)
+  async execute(email: string, password: string): Promise<LoginResponse> {
+    const validEmail = EmailDomain.create(email)
+    const user = await this.userRepository.findByEmail(validEmail)
     if (!user) {
       throw new InvalidCredentialsError()
     }
 
-    const authToken = await this.authService.generateToken(user.id, email)
+    const authResult = await this.authService.authenticate(validEmail, password)
 
     return {
-      token: authToken.value,
+      token: authResult.token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
     }
   }
 }

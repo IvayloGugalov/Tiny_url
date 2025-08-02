@@ -1,2 +1,2 @@
-export { TestData } from './test-data'
-export { TestHelpers } from './test-helpers'
+export * from './test-data'
+export * from './test-helpers'

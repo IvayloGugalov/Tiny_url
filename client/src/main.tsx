@@ -19,5 +19,5 @@ root.render(
     <StrictMode>
       <App />
     </StrictMode>
-  </CacheProvider>
+  </CacheProvider>,
 )

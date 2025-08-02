@@ -7,6 +7,6 @@ export class CleanupExpiredLinksUseCase {
     const cutoffDate = new Date()
     cutoffDate.setDate(cutoffDate.getDate() - ttlDays)
 
-    return await this.linkRepository.deleteExpiredLinks(cutoffDate)
+    return await this.linkRepository.deleteExpired(ttlDays)
   }
 }

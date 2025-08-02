@@ -1,53 +1,35 @@
 import type { IUserRepository } from 'application/interfaces/IUserRepository'
-import type { User } from 'domain/entities/User'
-import type { UserId, Email } from 'domain/value-objects'
+import type { User, UserId, Email } from 'shared'
 
 export class MockUserRepository implements IUserRepository {
-  private users: Map<string, User> = new Map()
+  private users: User[] = []
 
-  async save(user: User): Promise<void> {
-    this.users.set(user.id, { ...user })
+  async create(user: User): Promise<User> {
+    this.users.push(user)
+    return user
   }
 
   async findById(id: UserId): Promise<User | null> {
-    const user = this.users.get(id)
-    return user ? { ...user } : null
+    return this.users.find((user) => user.id === id) || null
   }
 
   async findByEmail(email: Email): Promise<User | null> {
-    for (const user of this.users.values()) {
-      if (user.email === email) {
-        return { ...user }
-      }
-    }
-    return null
+    return this.users.find((user) => user.email === email) || null
   }
 
-  async existsByEmail(email: Email): Promise<boolean> {
-    for (const user of this.users.values()) {
-      if (user.email === email) {
-        return true
-      }
+  async update(user: User): Promise<User> {
+    const index = this.users.findIndex((u) => u.id === user.id)
+    if (index !== -1) {
+      this.users[index] = user
     }
-    return false
+    return user
   }
 
-  async update(user: User): Promise<void> {
-    if (this.users.has(user.id)) {
-      this.users.set(user.id, { ...user })
-    }
+  async delete(id: UserId): Promise<void> {
+    this.users = this.users.filter((user) => user.id !== id)
   }
 
-  // Test helper methods
   clear(): void {
-    this.users.clear()
-  }
-
-  getAll(): User[] {
-    return Array.from(this.users.values())
-  }
-
-  size(): number {
-    return this.users.size
+    this.users = []
   }
 }

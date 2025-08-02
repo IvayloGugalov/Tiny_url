@@ -1,13 +1,12 @@
-import type { UserId } from '@/domain/value-objects/UserId'
-import type { Email } from '@/domain/value-objects/Email'
-
-export interface AuthToken {
-  value: string
-  expiresAt: Date
-}
+import type { UserId, Email } from 'shared'
 
 export interface IAuthService {
-  generateToken(userId: UserId, email: Email): Promise<AuthToken>
+  authenticate(
+    email: Email,
+    password: string,
+  ): Promise<{
+    token: string
+    user: { id: UserId; email: Email; name?: string }
+  }>
   verifyToken(token: string): Promise<{ userId: UserId; email: Email }>
-  validateCredentials(email: Email, password: string): Promise<boolean>
 }

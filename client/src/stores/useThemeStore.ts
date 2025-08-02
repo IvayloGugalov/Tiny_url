@@ -14,10 +14,10 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
   setTheme: (theme: Theme) => {
     // Update localStorage
     localStorage.setItem('theme', theme)
-    
+
     // Update document attribute for CSS theming
     document.documentElement.setAttribute('data-theme', theme)
-    
+
     // Update store state
     set({ theme })
   },
@@ -26,7 +26,7 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
     const currentTheme = get().theme
     const newTheme = currentTheme === 'light' ? 'dark' : 'light'
     get().setTheme(newTheme)
-  }
+  },
 }))
 
 // Initialize theme on document when store is created

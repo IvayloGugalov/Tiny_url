@@ -47,8 +47,8 @@ client/
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
+| Variable       | Default                 | Description          |
+| -------------- | ----------------------- | -------------------- |
 | `VITE_API_URL` | `http://localhost:3000` | Backend API base URL |
 
 ### API Integration
@@ -57,13 +57,13 @@ The client communicates with the backend through the `api.ts` module:
 
 ```typescript
 // Create a new short link
-const result = await createShortLink('https://example.com');
+const result = await createShortLink('https://example.com')
 
 // Fetch all links
-const links = await fetchLinks();
+const links = await fetchLinks()
 
 // Get short URL for a link
-const shortUrl = getShortUrl('abc123');
+const shortUrl = getShortUrl('abc123')
 ```
 
 ## 🧪 Testing

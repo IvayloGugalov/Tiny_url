@@ -8,14 +8,24 @@ import { ErrorMiddleware } from 'interface-adapters/middleware/ErrorMiddleware'
 import { LoggingMiddleware } from 'interface-adapters/middleware/LoggingMiddleware'
 import type { AppConfig } from 'di/container'
 
-export const createInterfaceAdaptersModule = (getInjection: <K extends keyof DI_RETURN_TYPES>(symbol: K) => DI_RETURN_TYPES[K], config: AppConfig) => {
+export const createInterfaceAdaptersModule = (
+  getInjection: <K extends keyof DI_RETURN_TYPES>(
+    symbol: K,
+  ) => DI_RETURN_TYPES[K],
+  config: AppConfig,
+) => {
   const module = createModule()
 
   module.bind(DI_SYMBOLS.LinkController).toFactory(() => {
     const createLinkUseCase = getInjection('CreateLinkUseCase')
     const getUserLinksUseCase = getInjection('GetUserLinksUseCase')
     const redirectToTargetUseCase = getInjection('RedirectToTargetUseCase')
-    return new LinkController(createLinkUseCase, getUserLinksUseCase, redirectToTargetUseCase, config.links.ttlDays)
+    return new LinkController(
+      createLinkUseCase,
+      getUserLinksUseCase,
+      redirectToTargetUseCase,
+      config.links.ttlDays,
+    )
   })
 
   module.bind(DI_SYMBOLS.AuthController).toFactory(() => {
@@ -24,10 +34,7 @@ export const createInterfaceAdaptersModule = (getInjection: <K extends keyof DI_
     return new AuthController(authenticateUserUseCase, registerUserUseCase)
   })
 
-  module.bind(DI_SYMBOLS.HealthController).toFactory(() => {
-    const databaseConnection = getInjection('DatabaseConnection')
-    return new HealthController(databaseConnection)
-  })
+  module.bind(DI_SYMBOLS.HealthController).toClass(HealthController)
 
   module.bind(DI_SYMBOLS.AuthMiddleware).toFactory(() => {
     const authService = getInjection('IAuthService')

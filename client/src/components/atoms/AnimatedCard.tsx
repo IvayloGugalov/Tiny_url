@@ -4,7 +4,10 @@ import { SpotlightCard } from './SpotlightCard'
 import type { SxProps, Theme } from '@mui/material/styles'
 import type { Palette } from '@mui/material/styles'
 
-type PaletteColorKey = keyof Pick<Palette, 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'>
+type PaletteColorKey = keyof Pick<
+  Palette,
+  'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
+>
 type PaletteColorVariant = keyof Palette['primary']
 
 interface AnimatedCardProps {

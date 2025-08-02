@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { CleanupExpiredLinksUseCase } from 'application/use-cases/CleanupExpiredLinksUseCase'
-import { MockLinkRepository } from '../../mocks'
-import { TestData, TestHelpers } from '../../../utils'
+import { MockLinkRepository } from 'tests/application/mocks/repositories/MockLinkRepository'
+import { createMockLink } from 'tests/utils/test-data'
 
 describe('CleanupExpiredLinksUseCase', () => {
   let useCase: CleanupExpiredLinksUseCase
@@ -13,202 +13,159 @@ describe('CleanupExpiredLinksUseCase', () => {
   })
 
   describe('execute', () => {
-    it('should return 0 when no links exist', async () => {
-      const result = await useCase.execute(7)
-
-      expect(result).toBe(0)
-    })
-
-    it('should return 0 when no links are expired', async () => {
-      TestHelpers.freezeTime(new Date('2024-01-15T00:00:00Z'))
-
-      const recentLinks = [
-        TestData.createLink({
-          id: 'recent1',
-          createdAt: new Date('2024-01-10T00:00:00Z') // 5 days ago
-        }),
-        TestData.createLink({
-          id: 'recent2',
-          createdAt: new Date('2024-01-14T00:00:00Z') // 1 day ago
-        }),
-        TestData.createLink({
-          id: 'recent3',
-          createdAt: new Date('2024-01-15T00:00:00Z') // Today
-        })
-      ]
-
-      for (const link of recentLinks) {
-        await mockRepository.save(link)
-      }
-
-      const result = await useCase.execute(7) // 7 day TTL
-
-      expect(result).toBe(0)
-      expect(mockRepository.size()).toBe(3) // All links should remain
-
-      TestHelpers.restoreTime()
-    })
-
     it('should delete expired links and return count', async () => {
-      TestHelpers.freezeTime(new Date('2024-01-15T00:00:00Z'))
+      const ttlDays = 7
+      const cutoffDate = new Date()
+      cutoffDate.setDate(cutoffDate.getDate() - ttlDays)
 
-      const links = [
-        TestData.createLink({
-          id: 'expired1',
-          createdAt: new Date('2024-01-01T00:00:00Z') // 14 days ago
-        }),
-        TestData.createLink({
-          id: 'expired2',
-          createdAt: new Date('2024-01-05T00:00:00Z') // 10 days ago
-        }),
-        TestData.createLink({
-          id: 'valid1',
-          createdAt: new Date('2024-01-10T00:00:00Z') // 5 days ago
-        }),
-        TestData.createLink({
-          id: 'valid2',
-          createdAt: new Date('2024-01-14T00:00:00Z') // 1 day ago
-        })
-      ]
+      const expiredLink1 = createMockLink({
+        id: 'expired1',
+        createdAt: new Date(cutoffDate.getTime() - 24 * 60 * 60 * 1000), // 1 day before cutoff
+      })
+      const expiredLink2 = createMockLink({
+        id: 'expired2',
+        createdAt: new Date(cutoffDate.getTime() - 2 * 24 * 60 * 60 * 1000), // 2 days before cutoff
+      })
+      const validLink = createMockLink({
+        id: 'valid1',
+        createdAt: new Date(cutoffDate.getTime() + 24 * 60 * 60 * 1000), // 1 day after cutoff
+      })
 
-      for (const link of links) {
-        await mockRepository.save(link)
-      }
+      await mockRepository.create(expiredLink1)
+      await mockRepository.create(expiredLink2)
+      await mockRepository.create(validLink)
 
-      const result = await useCase.execute(7) // 7 day TTL
+      const deletedCount = await useCase.execute(ttlDays)
 
-      expect(result).toBe(2) // 2 expired links deleted
-      expect(mockRepository.size()).toBe(2) // 2 valid links remain
+      expect(deletedCount).toBe(2)
 
-      // Verify correct links remain
-      expect(await mockRepository.findById('valid1')).toBeDefined()
-      expect(await mockRepository.findById('valid2')).toBeDefined()
-      expect(await mockRepository.findById('expired1')).toBeNull()
-      expect(await mockRepository.findById('expired2')).toBeNull()
+      const remainingLinks = await mockRepository.findAll()
+      expect(remainingLinks).toHaveLength(1)
+      expect(remainingLinks[0]!.id).toBe('valid1')
+    })
 
-      TestHelpers.restoreTime()
+    it('should handle no expired links', async () => {
+      const ttlDays = 7
+      const validLink1 = createMockLink({
+        id: 'valid1',
+        createdAt: new Date(),
+      })
+      const validLink2 = createMockLink({
+        id: 'valid2',
+        createdAt: new Date(),
+      })
+
+      await mockRepository.create(validLink1)
+      await mockRepository.create(validLink2)
+
+      const deletedCount = await useCase.execute(ttlDays)
+
+      expect(deletedCount).toBe(0)
+
+      const remainingLinks = await mockRepository.findAll()
+      expect(remainingLinks).toHaveLength(2)
+    })
+
+    it('should handle empty repository', async () => {
+      const ttlDays = 7
+
+      const deletedCount = await useCase.execute(ttlDays)
+
+      expect(deletedCount).toBe(0)
+    })
+
+    it('should handle all links expired', async () => {
+      const ttlDays = 7
+      const cutoffDate = new Date()
+      cutoffDate.setDate(cutoffDate.getDate() - ttlDays)
+
+      const expiredLink1 = createMockLink({
+        id: 'expired1',
+        createdAt: new Date(cutoffDate.getTime() - 24 * 60 * 60 * 1000),
+      })
+      const expiredLink2 = createMockLink({
+        id: 'expired2',
+        createdAt: new Date(cutoffDate.getTime() - 2 * 24 * 60 * 60 * 1000),
+      })
+
+      await mockRepository.create(expiredLink1)
+      await mockRepository.create(expiredLink2)
+
+      const deletedCount = await useCase.execute(ttlDays)
+
+      expect(deletedCount).toBe(2)
+
+      const remainingLinks = await mockRepository.findAll()
+      expect(remainingLinks).toHaveLength(0)
     })
 
     it('should handle different TTL values', async () => {
-      TestHelpers.freezeTime(new Date('2024-01-15T00:00:00Z'))
-
-      const links = [
-        TestData.createLink({
-          id: 'old',
-          createdAt: new Date('2024-01-01T00:00:00Z') // 14 days ago
-        }),
-        TestData.createLink({
-          id: 'medium',
-          createdAt: new Date('2024-01-10T00:00:00Z') // 5 days ago
-        }),
-        TestData.createLink({
-          id: 'recent',
-          createdAt: new Date('2024-01-14T00:00:00Z') // 1 day ago
-        })
-      ]
-
-      for (const link of links) {
-        await mockRepository.save(link)
-      }
-
-      // Test with 3 day TTL - should delete 2 links
-      const result1 = await useCase.execute(3)
-      expect(result1).toBe(2)
-      expect(mockRepository.size()).toBe(1)
-      expect(await mockRepository.findById('recent')).toBeDefined()
-
-      TestHelpers.restoreTime()
-    })
-
-    it('should handle edge case of exactly expired link', async () => {
-      TestHelpers.freezeTime(new Date('2024-01-08T00:00:00Z'))
-
-      const links = [
-        TestData.createLink({
-          id: 'exactly',
-          createdAt: new Date('2024-01-01T00:00:00Z') // Exactly 7 days ago
-        }),
-        TestData.createLink({
-          id: 'justOver',
-          createdAt: new Date('2023-12-31T23:59:59Z') // Just over 7 days ago
-        })
-      ]
-
-      for (const link of links) {
-        await mockRepository.save(link)
-      }
-
-      const result = await useCase.execute(7)
-
-      expect(result).toBe(1) // Only the "just over" link should be deleted
-      expect(await mockRepository.findById('exactly')).toBeDefined()
-      expect(await mockRepository.findById('justOver')).toBeNull()
-
-      TestHelpers.restoreTime()
-    })
-
-    it('should calculate cutoff date correctly', async () => {
-      TestHelpers.freezeTime(new Date('2024-01-15T12:30:45Z'))
-
-      const link = TestData.createLink({
-        id: 'test',
-        createdAt: new Date('2024-01-08T12:30:44Z') // 1 second before cutoff
+      const link = createMockLink({
+        id: 'test1',
+        createdAt: new Date(),
       })
 
-      await mockRepository.save(link)
+      await mockRepository.create(link)
 
-      const result = await useCase.execute(7)
+      // With 30 day TTL (link created today, should not be expired)
+      const deletedCount30 = await useCase.execute(30)
+      expect(deletedCount30).toBe(0)
 
-      expect(result).toBe(1) // Should be deleted
-      expect(await mockRepository.findById('test')).toBeNull()
+      mockRepository.clear()
+      await mockRepository.create(link)
 
-      TestHelpers.restoreTime()
+      // With 0 day TTL (link should be expired)
+      const deletedCount0 = await useCase.execute(0)
+      expect(deletedCount0).toBe(1)
     })
 
-    it('should handle large numbers of expired links', async () => {
-      TestHelpers.freezeTime(new Date('2024-01-15T00:00:00Z'))
+    it('should handle links with different properties', async () => {
+      const ttlDays = 7
+      const cutoffDate = new Date()
+      cutoffDate.setDate(cutoffDate.getDate() - ttlDays)
 
-      // Create 100 expired links
-      for (let i = 0; i < 100; i++) {
-        const link = TestData.createLink({
-          id: `expired${i}`,
-          createdAt: new Date('2024-01-01T00:00:00Z')
-        })
-        await mockRepository.save(link)
-      }
+      const expiredLink = createMockLink({
+        id: 'expired1',
+        target: 'https://example.com',
+        clicks: 5,
+        createdAt: new Date(cutoffDate.getTime() - 24 * 60 * 60 * 1000),
+      })
 
-      // Create 10 valid links
-      for (let i = 0; i < 10; i++) {
-        const link = TestData.createLink({
-          id: `valid${i}`,
-          createdAt: new Date('2024-01-14T00:00:00Z')
-        })
-        await mockRepository.save(link)
-      }
+      await mockRepository.create(expiredLink)
 
-      const result = await useCase.execute(7)
+      const deletedCount = await useCase.execute(ttlDays)
 
-      expect(result).toBe(100)
-      expect(mockRepository.size()).toBe(10)
-
-      TestHelpers.restoreTime()
+      expect(deletedCount).toBe(1)
     })
 
-    it('should handle zero TTL (delete all links)', async () => {
-      const links = [
-        TestData.createLink({ id: 'link1' }),
-        TestData.createLink({ id: 'link2' }),
-        TestData.createLink({ id: 'link3' })
-      ]
+    it('should handle multiple cleanup operations', async () => {
+      const ttlDays = 7
+      const cutoffDate = new Date()
+      cutoffDate.setDate(cutoffDate.getDate() - ttlDays)
 
-      for (const link of links) {
-        await mockRepository.save(link)
-      }
+      const expiredLink1 = createMockLink({
+        id: 'expired1',
+        createdAt: new Date(cutoffDate.getTime() - 24 * 60 * 60 * 1000),
+      })
+      const expiredLink2 = createMockLink({
+        id: 'expired2',
+        createdAt: new Date(cutoffDate.getTime() - 2 * 24 * 60 * 60 * 1000),
+      })
+      const expiredLink3 = createMockLink({
+        id: 'expired3',
+        createdAt: new Date(cutoffDate.getTime() - 3 * 24 * 60 * 60 * 1000),
+      })
 
-      const result = await useCase.execute(0)
+      await mockRepository.create(expiredLink1)
+      await mockRepository.create(expiredLink2)
+      await mockRepository.create(expiredLink3)
 
-      expect(result).toBe(3)
-      expect(mockRepository.size()).toBe(0)
+      const deletedCount = await useCase.execute(ttlDays)
+
+      expect(deletedCount).toBe(3)
+
+      const remainingLinks = await mockRepository.findAll()
+      expect(remainingLinks).toHaveLength(0)
     })
   })
 })

@@ -8,7 +8,8 @@ export const footerStyles = {
       theme.palette.mode === 'dark'
         ? `linear-gradient(135deg, ${alpha(theme.palette.primary.dark, 0.1)} 0%, ${alpha(theme.palette.secondary.dark, 0.05)} 100%)`
         : `linear-gradient(135deg, ${alpha(theme.palette.primary.light, 0.05)} 0%, ${alpha(theme.palette.secondary.light, 0.1)} 100%)`,
-    borderTop: (theme: Theme) => `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+    borderTop: (theme: Theme) =>
+      `1px solid ${alpha(theme.palette.divider, 0.1)}`,
     backdropFilter: 'blur(10px)',
   },
 

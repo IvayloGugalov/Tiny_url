@@ -1,19 +1,26 @@
-import type { User } from 'domain/entities/User'
+import type { User } from 'shared'
 
-export interface UserResponse {
-  id: string
-  email: string
-  name: string | null
-  createdAt: string
+export interface UserPresenter {
+  present(user: User): {
+    id: string
+    email: string
+    name?: string
+    createdAt: string
+  }
 }
 
-export class UserPresenter {
-  static toResponse(user: User): UserResponse {
+export class ApiUserPresenter implements UserPresenter {
+  present(user: User): {
+    id: string
+    email: string
+    name?: string
+    createdAt: string
+  } {
     return {
       id: user.id,
       email: user.email,
-      name: user.name || null,
-      createdAt: user.createdAt.toISOString()
+      name: user.name,
+      createdAt: user.createdAt.toISOString(),
     }
   }
 }

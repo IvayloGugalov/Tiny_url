@@ -46,18 +46,18 @@ export function RegistrationPage() {
         <Button
           startIcon={<ArrowBack />}
           onClick={handleGoBack}
-          variant="text"
-          color="primary"
+          variant='text'
+          color='primary'
         >
           Back to Home
         </Button>
       </Box>
 
       <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
+        <Typography variant='h3' component='h1' gutterBottom>
           <SplitText
-            text="Join TinyURL"
-            animateBy="word"
+            text='Join TinyURL'
+            animateBy='word'
             staggerChildren={0.15}
             duration={0.8}
             delay={0.2}
@@ -65,8 +65,9 @@ export function RegistrationPage() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
           />
         </Typography>
-        <Typography variant="h6" color="text.secondary">
-          Create an account to unlock powerful link analytics and management features
+        <Typography variant='h6' color='text.secondary'>
+          Create an account to unlock powerful link analytics and management
+          features
         </Typography>
       </Box>
 

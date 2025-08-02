@@ -82,7 +82,10 @@ export function PublicHomePage() {
             >
               <Stack spacing={3} alignItems='center'>
                 <AnimatedSection
-                  delay={ANIMATION_TIMING.FEATURES_TITLE - ANIMATION_TIMING.FEATURES_PAPER}
+                  delay={
+                    ANIMATION_TIMING.FEATURES_TITLE -
+                    ANIMATION_TIMING.FEATURES_PAPER
+                  }
                 >
                   <Typography
                     variant='h4'
@@ -101,7 +104,10 @@ export function PublicHomePage() {
                 </AnimatedSection>
 
                 <StaggeredContainer
-                  delay={ANIMATION_TIMING.FEATURES_LIST - ANIMATION_TIMING.FEATURES_PAPER}
+                  delay={
+                    ANIMATION_TIMING.FEATURES_LIST -
+                    ANIMATION_TIMING.FEATURES_PAPER
+                  }
                   staggerChildren={0.1}
                 >
                   <Stack spacing={2} sx={{ width: '100%', maxWidth: 600 }}>
@@ -141,9 +147,16 @@ export function PublicHomePage() {
         <Box sx={publicHomePageStyles.whyChooseSection}>
           <Box sx={publicHomePageStyles.whyChooseHeader}>
             <Typography variant='h2' sx={publicHomePageStyles.whyChooseTitle}>
-              <BlurText text='Why Choose TinyURL?' animateBy='character' delay={1} />
+              <BlurText
+                text='Why Choose TinyURL?'
+                animateBy='character'
+                delay={1}
+              />
             </Typography>
-            <Typography variant='h6' sx={publicHomePageStyles.whyChooseSubtitle}>
+            <Typography
+              variant='h6'
+              sx={publicHomePageStyles.whyChooseSubtitle}
+            >
               <BlurText
                 text='More than just a URL shortener - get powerful analytics and insights'
                 animateBy='word'
@@ -153,7 +166,10 @@ export function PublicHomePage() {
           </Box>
 
           <StaggeredContainer
-            delay={ANIMATION_TIMING.FEATURE_CARDS - ANIMATION_TIMING.WHY_CHOOSE_HEADER}
+            delay={
+              ANIMATION_TIMING.FEATURE_CARDS -
+              ANIMATION_TIMING.WHY_CHOOSE_HEADER
+            }
             staggerChildren={0.1}
           >
             <Box sx={publicHomePageStyles.whyChooseGrid}>
@@ -169,7 +185,12 @@ export function PublicHomePage() {
                       ...publicHomePageStyles.iconContainer,
                     }}
                   >
-                    <Zap sx={{ fontSize: 24, color: muiTheme.palette.primary.main }} />
+                    <Zap
+                      sx={{
+                        fontSize: 24,
+                        color: muiTheme.palette.primary.main,
+                      }}
+                    />
                   </Box>
                 </AnimatedIcon>
                 <Typography variant='h6' sx={publicHomePageStyles.cardTitle}>
@@ -203,7 +224,12 @@ export function PublicHomePage() {
                       ...publicHomePageStyles.iconContainer,
                     }}
                   >
-                    <BarChart3 sx={{ fontSize: 24, color: muiTheme.palette.secondary.main }} />
+                    <BarChart3
+                      sx={{
+                        fontSize: 24,
+                        color: muiTheme.palette.secondary.main,
+                      }}
+                    />
                   </Box>
                 </AnimatedIcon>
                 <Typography variant='h6' sx={publicHomePageStyles.cardTitle}>
@@ -237,11 +263,20 @@ export function PublicHomePage() {
                       ...publicHomePageStyles.iconContainer,
                     }}
                   >
-                    <Shield sx={{ fontSize: 24, color: muiTheme.palette.success.main }} />
+                    <Shield
+                      sx={{
+                        fontSize: 24,
+                        color: muiTheme.palette.success.main,
+                      }}
+                    />
                   </Box>
                 </AnimatedIcon>
                 <Typography variant='h6' sx={publicHomePageStyles.cardTitle}>
-                  <BlurText text='Secure & Reliable' animateBy='character' delay={1.6} />
+                  <BlurText
+                    text='Secure & Reliable'
+                    animateBy='character'
+                    delay={1.6}
+                  />
                 </Typography>
                 <CardContent sx={publicHomePageStyles.cardContentContainer}>
                   <Typography sx={publicHomePageStyles.cardContent}>
@@ -266,7 +301,9 @@ export function PublicHomePage() {
                     ...publicHomePageStyles.iconContainer,
                   }}
                 >
-                  <Smartphone sx={{ fontSize: 24, color: muiTheme.palette.warning.main }} />
+                  <Smartphone
+                    sx={{ fontSize: 24, color: muiTheme.palette.warning.main }}
+                  />
                 </AnimatedIcon>
                 <Typography variant='h6' sx={publicHomePageStyles.cardTitle}>
                   <BlurText
@@ -299,7 +336,11 @@ export function PublicHomePage() {
             severity='success'
             action={
               <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button size='small' variant='contained' onClick={handleRegister}>
+                <Button
+                  size='small'
+                  variant='contained'
+                  onClick={handleRegister}
+                >
                   Create Account
                 </Button>
                 <Button size='small' variant='outlined' onClick={handleLogin}>

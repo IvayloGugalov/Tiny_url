@@ -1,11 +1,12 @@
 import { create } from 'zustand'
 import { registerUser } from '../api'
+import type { ClientUser } from 'shared'
 
 interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
-  user: { id: string; email: string; name: string | null } | null
+  user: ClientUser | null
   login: (token: string) => void
   logout: () => void
   register: (email: string, name?: string) => Promise<void>
@@ -23,7 +24,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.setItem('jwt', token)
     set({
       isAuthenticated: true,
-      error: null
+      error: null,
     })
   },
 
@@ -32,7 +33,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({
       isAuthenticated: false,
       error: null,
-      user: null
+      user: null,
     })
   },
 
@@ -46,12 +47,12 @@ export const useAuthStore = create<AuthState>((set) => ({
         isAuthenticated: true,
         isLoading: false,
         user: response.user,
-        error: null
+        error: null,
       })
     } catch (error) {
       set({
         isLoading: false,
-        error: error instanceof Error ? error.message : 'Registration failed'
+        error: error instanceof Error ? error.message : 'Registration failed',
       })
       throw error
     }
@@ -66,27 +67,27 @@ export const useAuthStore = create<AuthState>((set) => ({
       if (!token) {
         set({
           isAuthenticated: false,
-          isLoading: false
+          isLoading: false,
         })
         return
       }
 
       set({
         isAuthenticated: true,
-        isLoading: false
+        isLoading: false,
       })
-    } catch (error) {
+    } catch {
       localStorage.removeItem('jwt')
       set({
         isAuthenticated: false,
-        isLoading: false
+        isLoading: false,
       })
     }
   },
 
   clearError: () => {
     set({ error: null })
-  }
+  },
 }))
 
 useAuthStore.getState().checkAuthStatus()

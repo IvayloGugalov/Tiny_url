@@ -1,4 +1,9 @@
-import { TYPOGRAPHY_SIZES, HEIGHTS, RESPONSIVE, COMMON_SX } from '../../styles/constants'
+import {
+  TYPOGRAPHY_SIZES,
+  HEIGHTS,
+  RESPONSIVE,
+  COMMON_SX,
+} from '../../styles/constants'
 
 export const linksTableStyles = {
   headerContainer: {

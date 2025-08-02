@@ -1,14 +1,14 @@
 import TextField from '@mui/material/TextField'
-import { ReactNode } from 'react';
+import { ReactNode } from 'react'
 
 export interface FormFieldProps {
-  label: ReactNode;
-  name: string;
-  placeholder?: string;
-  type?: 'text' | 'password' | 'url' | 'email';
-  disabled?: boolean;
-  autoFocus?: boolean;
-  autoComplete?: string;
+  label: ReactNode
+  name: string
+  placeholder?: string
+  type?: 'text' | 'password' | 'url' | 'email'
+  disabled?: boolean
+  autoFocus?: boolean
+  autoComplete?: string
 }
 
 export function FormField({
@@ -30,9 +30,9 @@ export function FormField({
       disabled={disabled}
       autoFocus={autoFocus}
       autoComplete={autoComplete}
-      variant="outlined"
+      variant='outlined'
       fullWidth
       {...props}
     />
-  );
+  )
 }

@@ -66,14 +66,14 @@ export default [
           pattern: ['src/main.ts'],
         },
       ],
-      'boundaries/ignore': [
-        '**/*.test.ts',
-        '**/*.spec.ts'
-      ],
+      'boundaries/ignore': ['**/*.test.ts', '**/*.spec.ts'],
     },
     rules: {
       ...tseslint.configs.recommended.rules,
-      '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' },
+      ],
       'boundaries/no-unknown': 'error',
       'boundaries/no-unknown-files': 'error',
       'boundaries/element-types': [
@@ -99,11 +99,23 @@ export default [
             },
             {
               from: 'di',
-              allow: ['domain', 'application', 'infrastructure', 'interface-adapters', 'di'],
+              allow: [
+                'domain',
+                'application',
+                'infrastructure',
+                'interface-adapters',
+                'di',
+              ],
             },
             {
               from: 'main',
-              allow: ['domain', 'application', 'infrastructure', 'interface-adapters', 'di'],
+              allow: [
+                'domain',
+                'application',
+                'infrastructure',
+                'interface-adapters',
+                'di',
+              ],
             },
           ],
         },

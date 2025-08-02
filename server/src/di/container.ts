@@ -48,13 +48,21 @@ const config = createConfig()
 
 ApplicationContainer.bind(DI_SYMBOLS.Config).toValue(config)
 
-export function getInjection<K extends keyof typeof DI_SYMBOLS>(symbol: K): DI_RETURN_TYPES[K] {
-  return ApplicationContainer.get(DI_SYMBOLS[symbol]) as DI_RETURN_TYPES[K]
+export function getInjection<K extends keyof typeof DI_SYMBOLS>(
+  symbol: K,
+): DI_RETURN_TYPES[K] {
+  return ApplicationContainer.get(DI_SYMBOLS[symbol])
 }
 
-ApplicationContainer.load(Symbol('InfrastructureModule'), createInfrastructureModule(config, getInjection))
+ApplicationContainer.load(
+  Symbol('InfrastructureModule'),
+  createInfrastructureModule(config, getInjection),
+)
 ApplicationContainer.load(Symbol('DomainModule'), createDomainModule())
-ApplicationContainer.load(Symbol('ApplicationModule'), createApplicationModule(getInjection))
+ApplicationContainer.load(
+  Symbol('ApplicationModule'),
+  createApplicationModule(getInjection),
+)
 ApplicationContainer.load(
   Symbol('InterfaceAdaptersModule'),
   createInterfaceAdaptersModule(getInjection, config),

@@ -10,7 +10,7 @@ export class LoggingMiddleware {
     this.logger.info('Request started', {
       method: c.req.method,
       url: c.req.url,
-      userAgent: c.req.header('User-Agent')
+      userAgent: c.req.header('User-Agent'),
     })
 
     await next()
@@ -21,7 +21,7 @@ export class LoggingMiddleware {
       method: c.req.method,
       url: c.req.url,
       status: c.res.status,
-      duration: `${duration}ms`
+      duration: `${duration}ms`,
     })
   }
 }

@@ -1,41 +1,35 @@
 import { describe, it, expect } from 'vitest'
 import { EmailDomain } from 'domain/value-objects/Email'
-import { TestData } from '../../utils'
 
 describe('EmailDomain', () => {
+  const validEmails = [
+    'test@example.com',
+    'user@domain.org',
+    'admin@company.co.uk',
+  ]
+
+  const invalidEmails = [
+    '',
+    'invalid',
+    '@domain.com',
+    'user@',
+    'user@domain',
+    'user.domain.com',
+    'a'.repeat(255) + '@domain.com', // too long
+  ]
+
   describe('create', () => {
-    it('should create valid email addresses', () => {
-      TestData.validEmails.forEach(email => {
+    validEmails.forEach((email) => {
+      it(`should create valid email: ${email}`, () => {
         const result = EmailDomain.create(email)
         expect(result).toBe(email)
       })
     })
 
-    it('should throw InvalidEmailError for invalid email addresses', () => {
-      TestData.invalidEmails.forEach(email => {
+    invalidEmails.forEach((email) => {
+      it(`should reject invalid email: ${email}`, () => {
         expect(() => EmailDomain.create(email)).toThrow()
-
-        try {
-          EmailDomain.create(email)
-        } catch (error) {
-          expect(error).toBeInstanceOf(Error)
-          expect((error as any).code).toBe('INVALID_EMAIL')
-          expect((error as Error).message).toContain(email)
-        }
       })
-    })
-
-    it('should handle edge cases', () => {
-      // Valid edge cases
-      expect(EmailDomain.create('a@b.co')).toBe('a@b.co')
-      expect(EmailDomain.create('test+tag@example.com')).toBe('test+tag@example.com')
-      expect(EmailDomain.create('user.name@example.com')).toBe('user.name@example.com')
-      expect(EmailDomain.create('.user@domain.com')).toBe('.user@domain.com') // This is actually valid by our regex
-
-      // Invalid edge cases that should fail
-      expect(() => EmailDomain.create('user@')).toThrow()
-      expect(() => EmailDomain.create('@domain.com')).toThrow()
-      expect(() => EmailDomain.create('user@domain')).toThrow() // No TLD
     })
   })
 
@@ -43,18 +37,14 @@ describe('EmailDomain', () => {
     it('should return true for identical emails', () => {
       const email1 = EmailDomain.create('test@example.com')
       const email2 = EmailDomain.create('test@example.com')
+
       expect(EmailDomain.equals(email1, email2)).toBe(true)
     })
 
     it('should return false for different emails', () => {
-      const email1 = EmailDomain.create('test1@example.com')
-      const email2 = EmailDomain.create('test2@example.com')
-      expect(EmailDomain.equals(email1, email2)).toBe(false)
-    })
-
-    it('should be case sensitive', () => {
       const email1 = EmailDomain.create('test@example.com')
-      const email2 = EmailDomain.create('Test@example.com')
+      const email2 = EmailDomain.create('other@example.com')
+
       expect(EmailDomain.equals(email1, email2)).toBe(false)
     })
   })

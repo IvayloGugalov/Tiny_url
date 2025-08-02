@@ -41,7 +41,10 @@ export function Footer() {
               spacing={{ xs: 2, sm: 4 }}
               alignItems='center'
             >
-              <Stack spacing={1} alignItems={{ xs: 'center', md: 'flex-start' }}>
+              <Stack
+                spacing={1}
+                alignItems={{ xs: 'center', md: 'flex-start' }}
+              >
                 <Typography variant='subtitle2' sx={footerStyles.sectionTitle}>
                   Product
                 </Typography>
@@ -56,7 +59,10 @@ export function Footer() {
                 </Link>
               </Stack>
 
-              <Stack spacing={1} alignItems={{ xs: 'center', md: 'flex-start' }}>
+              <Stack
+                spacing={1}
+                alignItems={{ xs: 'center', md: 'flex-start' }}
+              >
                 <Typography variant='subtitle2' sx={footerStyles.sectionTitle}>
                   Support
                 </Typography>
@@ -71,7 +77,10 @@ export function Footer() {
                 </Link>
               </Stack>
 
-              <Stack spacing={1} alignItems={{ xs: 'center', md: 'flex-start' }}>
+              <Stack
+                spacing={1}
+                alignItems={{ xs: 'center', md: 'flex-start' }}
+              >
                 <Typography variant='subtitle2' sx={footerStyles.sectionTitle}>
                   Legal
                 </Typography>

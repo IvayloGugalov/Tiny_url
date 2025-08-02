@@ -43,9 +43,10 @@ export const SplitText = ({
   initial = defaultInitial,
   animate = defaultAnimate,
 }: SplitTextProps) => {
-  const splitText = animateBy === 'character'
-    ? Array.from(text) // Use Array.from to properly handle Unicode characters like emojis
-    : text.split(' ')
+  const splitText =
+    animateBy === 'character'
+      ? Array.from(text) // Use Array.from to properly handle Unicode characters like emojis
+      : text.split(' ')
 
   const containerVariants = {
     hidden: {},
@@ -72,8 +73,8 @@ export const SplitText = ({
     <motion.span
       className={className}
       variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+      initial='hidden'
+      animate='visible'
       style={{ display: 'inline-block' }}
     >
       {splitText.map((char, index) => (

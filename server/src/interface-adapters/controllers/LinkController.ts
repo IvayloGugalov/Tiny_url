@@ -3,29 +3,31 @@ import { BaseController } from './BaseController'
 import { CreateLinkUseCase } from 'application/use-cases/CreateLinkUseCase'
 import { GetUserLinksUseCase } from 'application/use-cases/GetUserLinksUseCase'
 import { RedirectToTargetUseCase } from 'application/use-cases/RedirectToTargetUseCase'
-import { LinkPresenter } from '../presenters/LinkPresenter'
+import { ApiLinkPresenter } from 'interface-adapters/presenters/LinkPresenter'
 
 export class LinkController extends BaseController {
   constructor(
     private createLinkUseCase: CreateLinkUseCase,
     private getUserLinksUseCase: GetUserLinksUseCase,
     private redirectToTargetUseCase: RedirectToTargetUseCase,
-    private linkTtlDays: number
+    private linkTtlDays: number,
   ) {
     super()
   }
 
   createLink = async (c: Context): Promise<Response> => {
-    return this.handleRequest(c, async () => {
-      const body = await this.parseJsonBody<{ target: string }>(c)
-      const baseUrl = this.getBaseUrl(c)
+    return this.handleRequest(
+      c,
+      async () => {
+        const body = await this.parseJsonBody<{ target: string }>(c)
 
-      const auth = c.get('auth')
-      const userId = auth?.userId
-
-      const result = await this.createLinkUseCase.execute(body, baseUrl, userId)
-      return result
-    }, 201)
+        const auth = c.get('auth')
+        const userId = auth?.userId
+        const result = await this.createLinkUseCase.execute(body.target, userId)
+        return result
+      },
+      201,
+    )
   }
 
   getAllLinks = async (c: Context): Promise<Response> => {
@@ -36,7 +38,7 @@ export class LinkController extends BaseController {
       }
 
       const links = await this.getUserLinksUseCase.execute(auth.userId)
-      return LinkPresenter.toResponseList(links)
+      return links.map((link) => new ApiLinkPresenter().present(link))
     })
   }
 
@@ -47,7 +49,10 @@ export class LinkController extends BaseController {
         throw new Error('Link ID is required')
       }
 
-      const targetUrl = await this.redirectToTargetUseCase.execute(id, this.linkTtlDays)
+      const targetUrl = await this.redirectToTargetUseCase.execute(
+        id,
+        this.linkTtlDays,
+      )
 
       return c.redirect(targetUrl, 302)
     } catch (error) {

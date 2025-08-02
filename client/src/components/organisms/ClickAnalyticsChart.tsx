@@ -6,7 +6,11 @@ import Alert from '@mui/material/Alert'
 import { useTheme } from '@mui/material/styles'
 import { useLinksStore } from '@/stores/useLinksStore'
 
-const BarChart = lazy(() => import('@mui/x-charts/BarChart').then(module => ({ default: module.BarChart })))
+const BarChart = lazy(() =>
+  import('@mui/x-charts/BarChart').then((module) => ({
+    default: module.BarChart,
+  })),
+)
 
 export function ClickAnalyticsChart() {
   const { links, loading, error } = useLinksStore()
@@ -27,7 +31,12 @@ export function ClickAnalyticsChart() {
 
   if (loading) {
     return (
-      <Box display='flex' justifyContent='center' alignItems='center' minHeight='200px'>
+      <Box
+        display='flex'
+        justifyContent='center'
+        alignItems='center'
+        minHeight='200px'
+      >
         <CircularProgress />
       </Box>
     )
@@ -42,12 +51,17 @@ export function ClickAnalyticsChart() {
   }
 
   // Sort links by clicks (descending) and take top 10
-  const sortedLinks = [...links].sort((a, b) => b.clicks - a.clicks).slice(0, 10)
+  const sortedLinks = [...links]
+    .sort((a, b) => b.clicks - a.clicks)
+    .slice(0, 10)
 
   const chartData = sortedLinks.map((link) => ({
     id: link.id,
     clicks: link.clicks,
-    target: link.target.length > 40 ? link.target.substring(0, 40) + '...' : link.target,
+    target:
+      link.target.length > 40
+        ? link.target.substring(0, 40) + '...'
+        : link.target,
   }))
 
   return (
@@ -56,7 +70,10 @@ export function ClickAnalyticsChart() {
         <Typography variant='h5' gutterBottom>
           Click Analytics
         </Typography>
-        <Typography variant='body2' sx={{ color: theme.palette.text.secondary }}>
+        <Typography
+          variant='body2'
+          sx={{ color: theme.palette.text.secondary }}
+        >
           Visualization of your most popular short links
         </Typography>
       </Box>

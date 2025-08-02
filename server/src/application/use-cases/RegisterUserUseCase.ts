@@ -14,20 +14,20 @@ export interface RegisterResponse {
   user: {
     id: string
     email: string
-    name: string | null
+    name: string | undefined
   }
 }
 
 export class RegisterUserUseCase {
   constructor(
     private userRepository: IUserRepository,
-    private authService: IAuthService
+    private authService: IAuthService,
   ) {}
 
   async execute(request: RegisterRequest): Promise<RegisterResponse> {
     const email = EmailDomain.create(request.email)
 
-    const existingUser = await this.userRepository.existsByEmail(email)
+    const existingUser = await this.userRepository.findByEmail(email)
     if (existingUser) {
       throw new DuplicateEmailError(email)
     }
@@ -35,22 +35,23 @@ export class RegisterUserUseCase {
     const userId = this.generateUserId()
     const user = UserDomain.create(userId, email, request.name)
 
-    await this.userRepository.save(user)
+    await this.userRepository.create(user)
 
-    const authToken = await this.authService.generateToken(userId, email)
+    const authToken = await this.authService.authenticate(email, '')
 
     return {
-      token: authToken.value,
+      token: authToken.token,
       user: {
         id: user.id,
         email: user.email,
-        name: user.name || null
-      }
+        name: user.name || undefined,
+      },
     }
   }
 
   private generateUserId(): string {
-    const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    const alphabet =
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     let result = ''
     for (let i = 0; i < 10; i++) {
       result += alphabet.charAt(Math.floor(Math.random() * alphabet.length))

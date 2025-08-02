@@ -6,7 +6,11 @@ export interface ILogger {
 }
 
 export class ConsoleLogger implements ILogger {
-  private formatMessage(level: string, message: string, meta?: unknown): string {
+  private formatMessage(
+    level: string,
+    message: string,
+    meta?: unknown,
+  ): string {
     const timestamp = new Date().toISOString()
     const metaStr = meta ? ` ${JSON.stringify(meta)}` : ''
     return `[${timestamp}] ${level.toUpperCase()}: ${message}${metaStr}`

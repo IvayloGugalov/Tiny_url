@@ -1,6 +1,6 @@
 import type { Context } from 'hono'
 import type { ILogger } from 'infrastructure/services/ConsoleLogger'
-import { ApiPresenter } from '../presenters/ApiPresenter'
+import { ApiPresenter } from 'interface-adapters/presenters/ApiPresenter'
 
 export class ErrorMiddleware {
   constructor(private logger: ILogger) {}
@@ -10,7 +10,7 @@ export class ErrorMiddleware {
       error: error.message,
       stack: error.stack,
       url: c.req.url,
-      method: c.req.method
+      method: c.req.method,
     })
 
     return c.json(ApiPresenter.error('Internal server error'), 500)
@@ -19,7 +19,7 @@ export class ErrorMiddleware {
   notFoundHandler = (c: Context): Response => {
     this.logger.warn('Route not found', {
       url: c.req.url,
-      method: c.req.method
+      method: c.req.method,
     })
 
     return c.json(ApiPresenter.error('Route not found'), 404)

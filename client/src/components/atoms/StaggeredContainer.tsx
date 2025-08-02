@@ -31,8 +31,8 @@ export const StaggeredContainer = ({
       className={className}
       style={style}
       variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+      initial='hidden'
+      animate='visible'
     >
       {children}
     </motion.div>

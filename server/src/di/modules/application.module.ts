@@ -8,7 +8,11 @@ import { AuthenticateUserUseCase } from 'application/use-cases/AuthenticateUserU
 import { RegisterUserUseCase } from 'application/use-cases/RegisterUserUseCase'
 import { CleanupExpiredLinksUseCase } from 'application/use-cases/CleanupExpiredLinksUseCase'
 
-export const createApplicationModule = (getInjection: <K extends keyof DI_RETURN_TYPES>(symbol: K) => DI_RETURN_TYPES[K]) => {
+export const createApplicationModule = (
+  getInjection: <K extends keyof DI_RETURN_TYPES>(
+    symbol: K,
+  ) => DI_RETURN_TYPES[K],
+) => {
   const module = createModule()
 
   module.bind(DI_SYMBOLS.CreateLinkUseCase).toFactory(() => {

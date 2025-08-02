@@ -62,7 +62,8 @@ export function CreateLinkForm() {
 
       setTimeout(() => setShowSuccess(false), 3000)
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create short link'
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to create short link'
       setError(
         errorMessage.includes('http')
           ? 'Please enter a valid URL (including http:// or https://)'
@@ -123,7 +124,8 @@ export function CreateLinkForm() {
               required: 'Please enter a URL',
               pattern: {
                 value: /^https?:\/\/.+/,
-                message: 'Please enter a valid URL (including http:// or https://)',
+                message:
+                  'Please enter a valid URL (including http:// or https://)',
               },
             }}
             render={({ field }) => (
@@ -158,7 +160,11 @@ export function CreateLinkForm() {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <Alert message={error} severity='error' sx={createLinkFormStyles.alert} />
+                <Alert
+                  message={error}
+                  severity='error'
+                  sx={createLinkFormStyles.alert}
+                />
               </motion.div>
             )}
           </AnimatePresence>
@@ -176,7 +182,11 @@ export function CreateLinkForm() {
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 500,
+                        damping: 30,
+                      }}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -229,7 +239,12 @@ export function CreateLinkForm() {
                         label='Copied to clipboard!'
                         color='success'
                         size='small'
-                        sx={{ mt: 1, mx: 'auto', display: 'flex', width: 'fit-content' }}
+                        sx={{
+                          mt: 1,
+                          mx: 'auto',
+                          display: 'flex',
+                          width: 'fit-content',
+                        }}
                       />
                     </motion.div>
                   )}
@@ -244,7 +259,13 @@ export function CreateLinkForm() {
             disabled={loading}
             size='large'
             sx={createLinkFormStyles.submitButton}
-            startIcon={loading ? <CircularProgress size={20} color='inherit' /> : <SparkleIcon />}
+            startIcon={
+              loading ? (
+                <CircularProgress size={20} color='inherit' />
+              ) : (
+                <SparkleIcon />
+              )
+            }
           >
             {loading ? 'Shortening...' : 'Shorten URL'}
           </Button>

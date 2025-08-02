@@ -1,17 +1,15 @@
 import { eq, lt } from 'drizzle-orm'
-import { Link, LinkDomain } from 'domain/entities/Link'
-import { LinkId } from 'domain/value-objects/LinkId'
-import { UserId } from 'domain/value-objects/UserId'
+import { LinkDomain } from 'domain/entities/Link'
+import { Link, LinkId, UserId } from 'shared'
 import { ILinkRepository } from 'application/interfaces/ILinkRepository'
-import { DatabaseConnection } from 'infrastructure/database/connection'
-import { links } from 'infrastructure/database/schema'
+import { db, type Transaction } from 'infrastructure/database/connection'
+import { links as linksTable } from 'infrastructure/database/schema'
 
 export class DrizzleLinkRepository implements ILinkRepository {
-  private db = DatabaseConnection.getInstance().db
-
-  async save(link: Link): Promise<void> {
-    await this.db
-      .insert(links)
+  async create(link: Link, tx?: Transaction): Promise<Link> {
+    const dbInstance = tx || db
+    const [result] = await dbInstance
+      .insert(linksTable)
       .values({
         id: link.id,
         target: link.target,
@@ -19,86 +17,66 @@ export class DrizzleLinkRepository implements ILinkRepository {
         userId: link.userId,
         createdAt: link.createdAt,
       })
-  }
-
-  async findById(id: LinkId): Promise<Link | null> {
-    const result = await this.db
-      .select()
-      .from(links)
-      .where(eq(links.id, id))
-      .limit(1)
-
-    if (result.length === 0) {
-      return null
-    }
-
-    const row = result[0]!
-    return LinkDomain.fromPersistence({
-      id: row.id,
-      target: row.target,
-      clicks: row.clicks,
-      userId: row.userId,
-      createdAt: row.createdAt,
-    })
-  }
-
-  async findAll(): Promise<Link[]> {
-    const result = await this.db.select().from(links)
-
-    return result.map(row =>
-      LinkDomain.fromPersistence({
-        id: row.id,
-        target: row.target,
-        clicks: row.clicks,
-        userId: row.userId,
-        createdAt: row.createdAt,
-      })
-    )
-  }
-
-  async findByUserId(userId: UserId): Promise<Link[]> {
-    const result = await this.db
-      .select()
-      .from(links)
-      .where(eq(links.userId, userId))
-
-    return result.map(row =>
-      LinkDomain.fromPersistence({
-        id: row.id,
-        target: row.target,
-        clicks: row.clicks,
-        userId: row.userId,
-        createdAt: row.createdAt,
-      })
-    )
-  }
-
-  async existsById(id: LinkId): Promise<boolean> {
-    const result = await this.db
-      .select({ id: links.id })
-      .from(links)
-      .where(eq(links.id, id))
-      .limit(1)
-
-    return result.length > 0
-  }
-
-  async deleteExpiredLinks(cutoffDate: Date): Promise<number> {
-    const result = await this.db
-      .delete(links)
-      .where(lt(links.createdAt, cutoffDate))
       .returning()
 
-    return result.length
+    return LinkDomain.fromPersistence(result)
   }
 
-  async update(link: Link): Promise<void> {
-    await this.db
-      .update(links)
+  async findById(id: LinkId, tx?: Transaction): Promise<Link | null> {
+    const dbInstance = tx || db
+    const result = await dbInstance
+      .select()
+      .from(linksTable)
+      .where(eq(linksTable.id, id))
+      .limit(1)
+    return result.length > 0 ? LinkDomain.fromPersistence(result[0]) : null
+  }
+
+  async findByUserId(userId: UserId, tx?: Transaction): Promise<Link[]> {
+    const dbInstance = tx || db
+    const result = await dbInstance
+      .select()
+      .from(linksTable)
+      .where(eq(linksTable.userId, userId))
+    return result.map((row) => LinkDomain.fromPersistence(row))
+  }
+
+  async findAll(tx?: Transaction): Promise<Link[]> {
+    const dbInstance = tx || db
+    const result = await dbInstance.select().from(linksTable)
+    return result.map((row) => LinkDomain.fromPersistence(row))
+  }
+
+  async update(link: Link, tx?: Transaction): Promise<Link> {
+    const dbInstance = tx || db
+    const [result] = await dbInstance
+      .update(linksTable)
       .set({
         target: link.target,
         clicks: link.clicks,
+        userId: link.userId,
       })
-      .where(eq(links.id, link.id))
+      .where(eq(linksTable.id, link.id))
+      .returning()
+
+    return LinkDomain.fromPersistence(result)
+  }
+
+  async delete(id: LinkId, tx?: Transaction): Promise<void> {
+    const dbInstance = tx || db
+    await dbInstance.delete(linksTable).where(eq(linksTable.id, id))
+  }
+
+  async deleteExpired(ttlDays: number, tx?: Transaction): Promise<number> {
+    const dbInstance = tx || db
+    const cutoffDate = new Date()
+    cutoffDate.setDate(cutoffDate.getDate() - ttlDays)
+
+    const result = await dbInstance
+      .delete(linksTable)
+      .where(lt(linksTable.createdAt, cutoffDate))
+      .returning()
+
+    return result.length
   }
 }

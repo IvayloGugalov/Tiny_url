@@ -22,7 +22,11 @@ export function LoginForm() {
 
   const login = useAuthStore((state) => state.login)
 
-  const { control, handleSubmit, formState: { errors } } = useForm<FormData>()
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>()
 
   const onFinish = async (values: FormData) => {
     setLoading(true)
@@ -31,7 +35,7 @@ export function LoginForm() {
     console.log('🔐 Login attempt started', {
       email: values.email,
       apiUrl: import.meta.env.VITE_API_URL,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
 
     try {
@@ -44,7 +48,7 @@ export function LoginForm() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json',
         },
         body: JSON.stringify(values),
       })
@@ -52,7 +56,7 @@ export function LoginForm() {
       console.log('📡 Login response received', {
         status: res.status,
         statusText: res.statusText,
-        headers: Object.fromEntries(res.headers.entries())
+        headers: Object.fromEntries(res.headers.entries()),
       })
 
       // Check if response is JSON
@@ -61,9 +65,11 @@ export function LoginForm() {
         console.error('❌ Non-JSON response received', {
           contentType,
           status: res.status,
-          statusText: res.statusText
+          statusText: res.statusText,
         })
-        setError(`Server error: Expected JSON response but got ${contentType || 'unknown content type'}`)
+        setError(
+          `Server error: Expected JSON response but got ${contentType || 'unknown content type'}`,
+        )
         return
       }
 
@@ -75,19 +81,30 @@ export function LoginForm() {
         login(data.token)
         navigate('/analytics')
       } else {
-        console.warn('❌ Login failed', { status: res.status, error: data.error })
-        setError(data.error || data.message || `Login failed (${res.status}: ${res.statusText})`)
+        console.warn('❌ Login failed', {
+          status: res.status,
+          error: data.error,
+        })
+        setError(
+          data.error ||
+            data.message ||
+            `Login failed (${res.status}: ${res.statusText})`,
+        )
       }
     } catch (err) {
       console.error('❌ Login network error:', err)
 
       // Provide more specific error messages
       if (err instanceof TypeError && err.message.includes('fetch')) {
-        setError('Cannot connect to server. Please check if the server is running and try again.')
+        setError(
+          'Cannot connect to server. Please check if the server is running and try again.',
+        )
       } else if (err instanceof SyntaxError) {
         setError('Server returned invalid response. Please try again.')
       } else {
-        setError(`Network error: ${err instanceof Error ? err.message : 'Unknown error occurred'}`)
+        setError(
+          `Network error: ${err instanceof Error ? err.message : 'Unknown error occurred'}`,
+        )
       }
     } finally {
       setLoading(false)
@@ -115,36 +132,36 @@ export function LoginForm() {
         }}
       >
         <Box mb={3}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant='h4' gutterBottom>
             Welcome Back
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant='body1' color='text.secondary'>
             Sign in to access your dashboard
           </Typography>
         </Box>
 
         <form onSubmit={handleSubmit(onFinish)}>
           <Controller
-            name="email"
+            name='email'
             control={control}
             rules={{
               required: 'Please enter your email',
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Please enter a valid email address'
-              }
+                message: 'Please enter a valid email address',
+              },
             }}
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Email"
-                type="email"
+                label='Email'
+                type='email'
                 autoFocus
-                autoComplete="username"
+                autoComplete='username'
                 disabled={loading}
                 error={!!errors.email}
                 helperText={errors.email?.message}
-                variant="outlined"
+                variant='outlined'
                 fullWidth
                 sx={{ mb: 2 }}
               />
@@ -152,32 +169,32 @@ export function LoginForm() {
           />
 
           <Controller
-            name="password"
+            name='password'
             control={control}
             rules={{
-              required: 'Please enter your password'
+              required: 'Please enter your password',
             }}
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Password"
-                type="password"
-                autoComplete="current-password"
+                label='Password'
+                type='password'
+                autoComplete='current-password'
                 disabled={loading}
                 error={!!errors.password}
                 helperText={errors.password?.message}
-                variant="outlined"
+                variant='outlined'
                 fullWidth
                 sx={{ mb: 2 }}
               />
             )}
           />
 
-          {error && <Alert message={error} severity="error" sx={{ mb: 2 }} />}
+          {error && <Alert message={error} severity='error' sx={{ mb: 2 }} />}
 
           <Button
-            variant="contained"
-            type="submit"
+            variant='contained'
+            type='submit'
             disabled={loading}
             fullWidth
           >

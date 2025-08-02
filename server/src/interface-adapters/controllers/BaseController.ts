@@ -1,12 +1,12 @@
 import type { Context } from 'hono'
 import { DomainError } from 'domain/errors'
-import { ApiPresenter } from '../presenters/ApiPresenter'
+import { ApiPresenter } from 'interface-adapters/presenters/ApiPresenter'
 
 export abstract class BaseController {
   protected async handleRequest<T>(
     c: Context,
     handler: () => Promise<T>,
-    successStatus: number = 200
+    successStatus: number = 200,
   ): Promise<Response> {
     try {
       const result = await handler()

@@ -1,15 +1,5 @@
-import { z } from 'zod'
 import { InvalidEmailError } from '../errors'
-
-export const EmailSchema = z.string()
-  .min(1)
-  .max(254)
-  .refine((email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return emailRegex.test(email)
-  }, 'Invalid email format')
-
-export type Email = z.infer<typeof EmailSchema>
+import { EmailSchema, Email } from 'shared'
 
 export const EmailDomain = {
   create: (value: string): Email => {

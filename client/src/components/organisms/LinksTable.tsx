@@ -13,7 +13,9 @@ import { CopyButton } from '../molecules/CopyButton'
 import { linksTableStyles } from './LinksTable.styles'
 import { useLinksStore } from '@/stores/useLinksStore'
 
-const DataGrid = lazy(() => import('@mui/x-data-grid').then(module => ({ default: module.DataGrid })))
+const DataGrid = lazy(() =>
+  import('@mui/x-data-grid').then((module) => ({ default: module.DataGrid })),
+)
 
 const MAX_URL_DISPLAY_LENGTH = 50
 
@@ -40,7 +42,9 @@ export function LinksTable() {
         field: 'id',
         headerName: 'Short Code',
         width: 120,
-        renderCell: (params) => <Chip label={params.value} color='primary' size='small' />,
+        renderCell: (params) => (
+          <Chip label={params.value} color='primary' size='small' />
+        ),
       },
       {
         field: 'target',
@@ -81,7 +85,9 @@ export function LinksTable() {
         headerName: 'Actions',
         width: 120,
         sortable: false,
-        renderCell: (params) => <CopyButton text={getShortUrl(params.row.id)} />,
+        renderCell: (params) => (
+          <CopyButton text={getShortUrl(params.row.id)} />
+        ),
       },
     ],
     [formatUrl],
@@ -100,7 +106,11 @@ export function LinksTable() {
       <Alert
         severity='error'
         action={
-          <Button size='small' startIcon={<RefreshIcon />} onClick={handleRefresh}>
+          <Button
+            size='small'
+            startIcon={<RefreshIcon />}
+            onClick={handleRefresh}
+          >
             Retry
           </Button>
         }

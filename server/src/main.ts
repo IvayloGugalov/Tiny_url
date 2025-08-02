@@ -16,14 +16,18 @@ const errorMiddleware = getInjection('ErrorMiddleware')
 const loggingMiddleware = getInjection('LoggingMiddleware')
 const cleanupExpiredLinksUseCase = getInjection('CleanupExpiredLinksUseCase')
 
-app.use('*', cors({
-  origin: appConfig.server.nodeEnv === 'development'
-    ? ['http://localhost:5173', 'http://localhost:3000']
-    : ['*'],
-  credentials: true,
-  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'Authorization'],
-}))
+app.use(
+  '*',
+  cors({
+    origin:
+      appConfig.server.nodeEnv === 'development'
+        ? ['http://localhost:5173', 'http://localhost:3000']
+        : ['*'],
+    credentials: true,
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowHeaders: ['Content-Type', 'Authorization'],
+  }),
+)
 
 app.use('*', honoLogger())
 app.use('*', loggingMiddleware.handle)
@@ -47,7 +51,9 @@ const startScheduledJobs = () => {
 
   setInterval(async () => {
     try {
-      const deletedCount = await cleanupExpiredLinksUseCase.execute(appConfig.links.ttlDays)
+      const deletedCount = await cleanupExpiredLinksUseCase.execute(
+        appConfig.links.ttlDays,
+      )
       logger.info('Scheduled link cleanup completed', { deletedCount })
     } catch (error) {
       logger.error('Scheduled link cleanup failed', error)

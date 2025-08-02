@@ -51,7 +51,11 @@ export function PublicLayout({
         <Toolbar sx={publicLayoutStyles.toolbar}>
           {/* Title */}
           <Box sx={publicLayoutStyles.titleContainer}>
-            <Typography variant='h4' component='h1' sx={publicLayoutStyles.title}>
+            <Typography
+              variant='h4'
+              component='h1'
+              sx={publicLayoutStyles.title}
+            >
               {title}
             </Typography>
           </Box>

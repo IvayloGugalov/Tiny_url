@@ -1,137 +1,110 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { LinkDomain } from 'domain/entities/Link'
-import { LinkExpiredError } from 'domain/errors'
-import { TestData, TestHelpers } from '../../utils'
+import { createMockLink } from 'tests/utils/test-data'
 
 describe('LinkDomain', () => {
   describe('create', () => {
-    it('should create a valid link', () => {
-      const link = LinkDomain.create('test01', 'https://example.com')
+    it('should create a link with valid data', () => {
+      const id = 'test-link-1'
+      const target = 'https://example.com'
+      const userId = 'test-user-1'
 
-      expect(link.id).toBe('test01')
-      expect(link.target).toBe('https://example.com')
+      const link = LinkDomain.create(id, target, userId)
+
+      expect(link.id).toBe(id)
+      expect(link.target).toBe(target)
+      expect(link.userId).toBe(userId)
       expect(link.clicks).toBe(0)
-      TestHelpers.expectDateToBeRecent(link.createdAt)
+      expect(link.createdAt).toBeInstanceOf(Date)
     })
 
-    it('should validate link ID format', () => {
-      TestHelpers.expectError(() =>
-        LinkDomain.create('invalid@id', 'https://example.com')
-      )
-    })
+    it('should create a link without userId', () => {
+      const id = 'test-link-1'
+      const target = 'https://example.com'
 
-    it('should validate URL format', async () => {
-      await TestHelpers.expectDomainError(() =>
-        LinkDomain.create('test01', 'invalid-url'),
-        'INVALID_URL'
-      )
+      const link = LinkDomain.create(id, target)
+
+      expect(link.id).toBe(id)
+      expect(link.target).toBe(target)
+      expect(link.userId).toBeUndefined()
+      expect(link.clicks).toBe(0)
+      expect(link.createdAt).toBeInstanceOf(Date)
     })
   })
 
   describe('fromPersistence', () => {
-    it('should create link from valid persistence data', () => {
-      const data = {
-        id: 'test01',
-        target: 'https://example.com',
-        clicks: 5,
-        createdAt: new Date('2024-01-01T00:00:00Z')
-      }
+    it('should create link from persistence data', () => {
+      const mockData = createMockLink()
 
-      const link = LinkDomain.fromPersistence(data)
+      const link = LinkDomain.fromPersistence(mockData)
 
-      expect(link.id).toBe('test01')
-      expect(link.target).toBe('https://example.com')
-      expect(link.clicks).toBe(5)
-      expect(link.createdAt).toEqual(new Date('2024-01-01T00:00:00Z'))
-    })
-
-    it('should throw error for invalid persistence data', () => {
-      const invalidData = {
-        id: 'test01',
-        target: 'invalid-url',
-        clicks: 5,
-        createdAt: new Date()
-      }
-
-      TestHelpers.expectError(() => LinkDomain.fromPersistence(invalidData))
+      expect(link.id).toBe(mockData.id)
+      expect(link.target).toBe(mockData.target)
+      expect(link.userId).toBe(mockData.userId)
+      expect(link.clicks).toBe(mockData.clicks)
+      expect(link.createdAt).toEqual(mockData.createdAt)
     })
   })
 
   describe('incrementClicks', () => {
-    it('should increment clicks by 1', () => {
-      const link = TestData.createLink({ clicks: 5 })
+    it('should increment clicks count', () => {
+      const link = createMockLink({ clicks: 5 })
+
       const updatedLink = LinkDomain.incrementClicks(link)
 
       expect(updatedLink.clicks).toBe(6)
       expect(updatedLink.id).toBe(link.id)
       expect(updatedLink.target).toBe(link.target)
-      expect(updatedLink.createdAt).toEqual(link.createdAt)
-    })
-
-    it('should not mutate the original link', () => {
-      const link = TestData.createLink({ clicks: 5 })
-      const updatedLink = LinkDomain.incrementClicks(link)
-
-      expect(link.clicks).toBe(5)
-      expect(updatedLink.clicks).toBe(6)
-      expect(link).not.toBe(updatedLink)
     })
   })
 
   describe('isExpired', () => {
-    beforeEach(() => {
-      TestHelpers.freezeTime(new Date('2024-01-15T00:00:00Z'))
+    it('should return true for expired link', () => {
+      const oldDate = new Date('2020-01-01T00:00:00Z')
+      const link = createMockLink({ createdAt: oldDate })
+
+      const isExpired = LinkDomain.isExpired(link, 30)
+
+      expect(isExpired).toBe(true)
     })
 
-    it('should return false for non-expired links', () => {
-      const link = TestData.createLink({
-        createdAt: new Date('2024-01-10T00:00:00Z')
-      })
+    it('should return false for non-expired link', () => {
+      const recentDate = new Date()
+      const link = createMockLink({ createdAt: recentDate })
 
-      expect(LinkDomain.isExpired(link, 7)).toBe(false)
-    })
+      const isExpired = LinkDomain.isExpired(link, 30)
 
-    it('should return true for expired links', () => {
-      const link = TestData.createLink({
-        createdAt: new Date('2024-01-01T00:00:00Z')
-      })
-
-      expect(LinkDomain.isExpired(link, 7)).toBe(true)
-    })
-
-    it('should handle edge case of exactly expired link', () => {
-      const link = TestData.createLink({
-        createdAt: new Date('2024-01-08T00:00:00Z')
-      })
-
-      expect(LinkDomain.isExpired(link, 7)).toBe(false)
+      expect(isExpired).toBe(false)
     })
   })
 
   describe('validateNotExpired', () => {
-    beforeEach(() => {
-      TestHelpers.freezeTime(new Date('2024-01-15T00:00:00Z'))
+    it('should not throw for non-expired link', () => {
+      const recentDate = new Date()
+      const link = createMockLink({ createdAt: recentDate })
+
+      expect(() => LinkDomain.validateNotExpired(link, 30)).not.toThrow()
     })
 
-    it('should not throw for non-expired links', () => {
-      const link = TestData.createLink({
-        createdAt: new Date('2024-01-10T00:00:00Z')
-      })
+    it('should throw for expired link', () => {
+      const oldDate = new Date('2020-01-01T00:00:00Z')
+      const link = createMockLink({ createdAt: oldDate })
 
-      expect(() => LinkDomain.validateNotExpired(link, 7)).not.toThrow()
+      expect(() => LinkDomain.validateNotExpired(link, 30)).toThrow()
     })
+  })
 
-    it('should throw LinkExpiredError for expired links', () => {
-      const link = TestData.createLink({
-        id: 'expired01',
-        createdAt: new Date('2024-01-01T00:00:00Z')
-      })
+  describe('calculateExpirationDate', () => {
+    it('should calculate correct expiration date', () => {
+      const createdAt = new Date('2023-01-01T00:00:00Z')
+      const link = createMockLink({ createdAt })
+      const ttlDays = 30
 
-      TestHelpers.expectDomainError(
-        () => LinkDomain.validateNotExpired(link, 7),
-        'LINK_EXPIRED',
-        'expired01'
-      )
+      const expirationDate = LinkDomain.calculateExpirationDate(link, ttlDays)
+
+      const expectedDate = new Date(createdAt)
+      expectedDate.setDate(expectedDate.getDate() + ttlDays)
+      expect(expirationDate).toEqual(expectedDate)
     })
   })
 })

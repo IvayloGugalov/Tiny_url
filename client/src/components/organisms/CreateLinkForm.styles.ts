@@ -21,7 +21,8 @@ export const createLinkFormStyles = {
   title: {
     fontWeight: 700,
     textAlign: 'left',
-    background: (theme: Theme) => `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+    background: (theme: Theme) =>
+      `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     mb: 1,
@@ -36,10 +37,12 @@ export const createLinkFormStyles = {
     '& .MuiOutlinedInput-root': {
       transition: 'all 0.3s ease',
       '&:hover': {
-        boxShadow: (theme: Theme) => `0 4px 12px ${theme.palette.primary.main}1A`,
+        boxShadow: (theme: Theme) =>
+          `0 4px 12px ${theme.palette.primary.main}1A`,
       },
       '&.Mui-focused': {
-        boxShadow: (theme: Theme) => `0 4px 16px ${theme.palette.primary.main}33`,
+        boxShadow: (theme: Theme) =>
+          `0 4px 16px ${theme.palette.primary.main}33`,
       },
       '&.Mui-error': {
         boxShadow: (theme: Theme) => `0 4px 12px ${theme.palette.error.main}33`,
@@ -68,7 +71,8 @@ export const createLinkFormStyles = {
     mb: 2,
     p: 2,
     borderRadius: 2,
-    background: (theme: Theme) => `linear-gradient(135deg, ${theme.palette.success.main}1A 0%, ${theme.palette.success.main}0D 100%)`,
+    background: (theme: Theme) =>
+      `linear-gradient(135deg, ${theme.palette.success.main}1A 0%, ${theme.palette.success.main}0D 100%)`,
     border: (theme: Theme) => `1px solid ${theme.palette.success.main}33`,
   },
   copyButton: {
@@ -90,5 +94,5 @@ export const createLinkFormStyles = {
   alert: {
     mb: 2,
     borderRadius: 2,
-  }
+  },
 } as const

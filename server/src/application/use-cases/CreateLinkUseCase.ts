@@ -2,30 +2,25 @@ import { LinkDomain } from 'domain/entities/Link'
 import { UrlDomain } from 'domain/value-objects/Url'
 import { ShortLinkIdGenerator } from 'domain/services/LinkIdGenerator'
 import { ILinkRepository } from 'application/interfaces/ILinkRepository'
-
-export interface CreateLinkRequest {
-  target: string
-}
-
-export interface CreateLinkResponse {
-  id: string
-  shortUrl: string
-}
+import type { Link } from 'shared'
 
 export class CreateLinkUseCase {
   constructor(
     private linkRepository: ILinkRepository,
-    private linkIdGenerator: ShortLinkIdGenerator
+    private linkIdGenerator: ShortLinkIdGenerator,
   ) {}
 
-  async execute(request: CreateLinkRequest, baseUrl: string, userId?: string): Promise<CreateLinkResponse> {
-    const targetUrl = UrlDomain.create(request.target)
+  async execute(target: string, userId?: string): Promise<Link> {
+    const targetUrl = UrlDomain.create(target)
 
     let linkId = this.linkIdGenerator.generate()
     let attempts = 0
     const maxAttempts = 10
 
-    while (await this.linkRepository.existsById(linkId) && attempts < maxAttempts) {
+    while (
+      (await this.linkRepository.findById(linkId)) &&
+      attempts < maxAttempts
+    ) {
       linkId = this.linkIdGenerator.generate()
       attempts++
     }
@@ -35,13 +30,6 @@ export class CreateLinkUseCase {
     }
 
     const link = LinkDomain.create(linkId, targetUrl, userId)
-    await this.linkRepository.save(link)
-
-    const shortUrl = `${baseUrl.replace(/\/api\/links$/, '')}/${linkId}`
-
-    return {
-      id: linkId,
-      shortUrl
-    }
+    return await this.linkRepository.create(link)
   }
 }

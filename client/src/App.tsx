@@ -9,13 +9,19 @@ import { useThemeStore } from '@/stores/useThemeStore'
 import { PublicHomePage } from '@/pages/PublicHomePage'
 
 const AnalyticsPage = lazy(() =>
-  import('@/pages/AnalyticsPage').then((module) => ({ default: module.AnalyticsPage })),
+  import('@/pages/AnalyticsPage').then((module) => ({
+    default: module.AnalyticsPage,
+  })),
 )
 const RegistrationPage = lazy(() =>
-  import('@/pages/RegistrationPage').then((module) => ({ default: module.RegistrationPage })),
+  import('@/pages/RegistrationPage').then((module) => ({
+    default: module.RegistrationPage,
+  })),
 )
 const LoginForm = lazy(() =>
-  import('@/organisms/LoginForm').then((module) => ({ default: module.LoginForm })),
+  import('@/organisms/LoginForm').then((module) => ({
+    default: module.LoginForm,
+  })),
 )
 
 function App() {
@@ -43,17 +49,33 @@ function App() {
             <Route path='/' element={<PublicHomePage />} />
             <Route
               path='/login'
-              element={isAuthenticated ? <Navigate to='/analytics' replace /> : <LoginForm />}
+              element={
+                isAuthenticated ? (
+                  <Navigate to='/analytics' replace />
+                ) : (
+                  <LoginForm />
+                )
+              }
             />
             <Route
               path='/register'
               element={
-                isAuthenticated ? <Navigate to='/analytics' replace /> : <RegistrationPage />
+                isAuthenticated ? (
+                  <Navigate to='/analytics' replace />
+                ) : (
+                  <RegistrationPage />
+                )
               }
             />
             <Route
               path='/analytics'
-              element={isAuthenticated ? <AnalyticsPage /> : <Navigate to='/login' replace />}
+              element={
+                isAuthenticated ? (
+                  <AnalyticsPage />
+                ) : (
+                  <Navigate to='/login' replace />
+                )
+              }
             />
             <Route path='*' element={<Navigate to='/' replace />} />
           </Routes>

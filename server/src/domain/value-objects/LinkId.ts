@@ -1,11 +1,4 @@
-import { z } from 'zod'
-
-export const LinkIdSchema = z.string()
-  .min(3)
-  .max(50)
-  .regex(/^[a-zA-Z0-9_-]+$/)
-
-export type LinkId = z.infer<typeof LinkIdSchema>
+import { LinkIdSchema, LinkId } from 'shared'
 
 export const LinkIdDomain = {
   create: (value: string): LinkId => {
@@ -18,5 +11,5 @@ export const LinkIdDomain = {
 
   toString: (id: LinkId): string => {
     return id
-  }
+  },
 }

@@ -1,12 +1,12 @@
 import MuiAlert from '@mui/material/Alert'
 import type { AlertProps as MuiAlertProps } from '@mui/material/Alert'
-import { ReactNode } from 'react';
+import { ReactNode } from 'react'
 export interface AlertProps extends Omit<MuiAlertProps, 'message'> {
-  message: ReactNode;
-  description?: ReactNode;
-  showIcon?: boolean;
-  closable?: boolean;
-  onClose?: () => void;
+  message: ReactNode
+  description?: ReactNode
+  showIcon?: boolean
+  closable?: boolean
+  onClose?: () => void
 }
 
 export function Alert({
@@ -26,11 +26,7 @@ export function Alert({
       {...props}
     >
       {message}
-      {description && (
-        <div>
-          {description}
-        </div>
-      )}
+      {description && <div>{description}</div>}
     </MuiAlert>
-  );
+  )
 }

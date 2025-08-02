@@ -1,11 +1,4 @@
-import { z } from 'zod'
-
-export const UserIdSchema = z.string()
-  .min(3)
-  .max(50)
-  .regex(/^[a-zA-Z0-9_-]+$/)
-
-export type UserId = z.infer<typeof UserIdSchema>
+import { UserIdSchema, UserId } from 'shared'
 
 export const UserIdDomain = {
   create: (value: string): UserId => {
@@ -18,5 +11,5 @@ export const UserIdDomain = {
 
   toString: (id: UserId): string => {
     return id
-  }
+  },
 }

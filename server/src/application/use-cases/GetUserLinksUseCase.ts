@@ -1,6 +1,5 @@
-import type { Link } from 'domain/entities/Link'
-import type { UserId } from 'domain/value-objects/UserId'
-import { ILinkRepository } from 'application/interfaces/ILinkRepository'
+import type { Link, UserId } from 'shared'
+import type { ILinkRepository } from 'application/interfaces/ILinkRepository'
 
 export class GetUserLinksUseCase {
   constructor(private linkRepository: ILinkRepository) {}

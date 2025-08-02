@@ -1,6 +1,7 @@
 // Services
 import type { IAuthService } from 'application/interfaces/IAuthService'
 import type { ILogger } from 'infrastructure/services/ConsoleLogger'
+import type { ITransactionManagerService } from 'application/interfaces/ITransactionManagerService'
 
 // Repositories
 import type { ILinkRepository } from 'application/interfaces/ILinkRepository'
@@ -29,13 +30,13 @@ import type { LoggingMiddleware } from 'interface-adapters/middleware/LoggingMid
 import type { ShortLinkIdGenerator } from 'domain/services/LinkIdGenerator'
 
 // Infrastructure
-import type { DatabaseConnection } from 'infrastructure/database/connection'
 import type { AppConfig } from 'di/container'
 
 export const DI_SYMBOLS = {
   // Services
   IAuthService: Symbol.for('IAuthService'),
   ILogger: Symbol.for('ILogger'),
+  ITransactionManagerService: Symbol.for('ITransactionManagerService'),
 
   // Repositories
   ILinkRepository: Symbol.for('ILinkRepository'),
@@ -43,9 +44,6 @@ export const DI_SYMBOLS = {
 
   // Domain Services
   LinkIdGenerator: Symbol.for('LinkIdGenerator'),
-
-  // Infrastructure
-  DatabaseConnection: Symbol.for('DatabaseConnection'),
 
   // Use Cases
   CreateLinkUseCase: Symbol.for('CreateLinkUseCase'),
@@ -67,13 +65,14 @@ export const DI_SYMBOLS = {
   LoggingMiddleware: Symbol.for('LoggingMiddleware'),
 
   // Config
-  Config: Symbol.for('Config')
+  Config: Symbol.for('Config'),
 } as const
 
 export interface DI_RETURN_TYPES {
   // Services
   IAuthService: IAuthService
   ILogger: ILogger
+  ITransactionManagerService: ITransactionManagerService
 
   // Repositories
   ILinkRepository: ILinkRepository
@@ -81,9 +80,6 @@ export interface DI_RETURN_TYPES {
 
   // Domain Services
   LinkIdGenerator: ShortLinkIdGenerator
-
-  // Infrastructure
-  DatabaseConnection: DatabaseConnection
 
   // Use Cases
   CreateLinkUseCase: CreateLinkUseCase

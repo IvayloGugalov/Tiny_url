@@ -53,7 +53,7 @@ export function DashboardLayout({
     setTheme(newTheme)
     document.documentElement.setAttribute('data-theme', newTheme)
     localStorage.setItem('theme', newTheme)
-  handleMenuClose()
+    handleMenuClose()
   }
 
   const handleLogout = () => {
@@ -88,7 +88,11 @@ export function DashboardLayout({
           )}
 
           <Box sx={dashboardLayoutStyles.titleContainer}>
-            <Typography variant='h4' component='h1' sx={dashboardLayoutStyles.title}>
+            <Typography
+              variant='h4'
+              component='h1'
+              sx={dashboardLayoutStyles.title}
+            >
               <SplitText
                 text='🔗 TinyURL'
                 animateBy='character'

@@ -70,8 +70,16 @@ export const getThemeColors = (theme: Theme) => ({
 export const COMMON_SX = {
   fullHeight: { minHeight: '100vh' },
   flexColumn: { display: 'flex', flexDirection: 'column' },
-  flexCenter: { display: 'flex', justifyContent: 'center', alignItems: 'center' },
-  flexBetween: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  flexCenter: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  flexBetween: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   fullWidth: { width: '100%' },
   height100: { height: '100%' },
   noTextDecoration: { textDecoration: 'none' },

@@ -52,12 +52,12 @@ export const BlurText = ({
     <motion.span
       className={className}
       variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+      initial='hidden'
+      animate='visible'
       style={{
         display: 'inline-block',
         fontWeight,
-        ...style
+        ...style,
       }}
     >
       {splitText.map((char, index) => (

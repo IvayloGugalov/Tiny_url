@@ -1,6 +1,6 @@
 import type { Context, Next } from 'hono'
 import type { IAuthService } from 'application/interfaces/IAuthService'
-import { ApiPresenter } from '../presenters/ApiPresenter'
+import { ApiPresenter } from 'interface-adapters/presenters/ApiPresenter'
 
 export class AuthMiddleware {
   constructor(private authService: IAuthService) {}
@@ -10,7 +10,10 @@ export class AuthMiddleware {
       const auth = c.req.header('Authorization')
 
       if (!auth || !auth.startsWith('Bearer ')) {
-        return c.json(ApiPresenter.error('Missing or invalid authorization header'), 401)
+        return c.json(
+          ApiPresenter.error('Missing or invalid authorization header'),
+          401,
+        )
       }
 
       const token = auth.slice(7)

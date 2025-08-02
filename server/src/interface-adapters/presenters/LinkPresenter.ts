@@ -1,23 +1,26 @@
-import type { Link } from 'domain/entities/Link'
+import type { Link } from 'shared'
 
-export interface LinkResponse {
-  id: string
-  target: string
-  clicks: number
-  createdAt: string
+export interface LinkPresenter {
+  present(link: Link): {
+    id: string
+    target: string
+    clicks: number
+    createdAt: string
+  }
 }
 
-export class LinkPresenter {
-  static toResponse(link: Link): LinkResponse {
+export class ApiLinkPresenter implements LinkPresenter {
+  present(link: Link): {
+    id: string
+    target: string
+    clicks: number
+    createdAt: string
+  } {
     return {
       id: link.id,
       target: link.target,
       clicks: link.clicks,
-      createdAt: link.createdAt.toISOString()
+      createdAt: link.createdAt.toISOString(),
     }
-  }
-
-  static toResponseList(links: Link[]): LinkResponse[] {
-    return links.map(link => this.toResponse(link))
   }
 }
