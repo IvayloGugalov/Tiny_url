@@ -29,8 +29,26 @@ export const createLinkFormStyles = {
   },
   description: {
     textAlign: 'left',
-    color: (theme: Theme) => theme.palette.text.secondary,
     maxWidth: 400,
+  },
+  formContainer: {
+    px: 3,
+    py: 4,
+    background: (theme: Theme) =>
+      theme.palette.mode === 'dark'
+        ? 'linear-gradient(135deg, rgba(30, 30, 30, 0.9) 0%, rgba(40, 40, 40, 0.9) 100%)'
+        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%)',
+    transition: 'all 0.3s ease',
+    border: (theme: Theme) =>
+      theme.palette.mode === 'dark'
+        ? '1px solid rgba(255, 255, 255, 0.1)'
+        : '1px solid rgba(255, 255, 255, 0.2)',
+    borderRadius: 3,
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+    '&:hover': {
+      boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
+      transform: 'translateY(-2px)',
+    },
   },
   inputField: {
     mb: 2,
@@ -46,6 +64,24 @@ export const createLinkFormStyles = {
       },
       '&.Mui-error': {
         boxShadow: (theme: Theme) => `0 4px 12px ${theme.palette.error.main}33`,
+      },
+      '& fieldset': {
+        borderColor: (theme: Theme) =>
+          theme.palette.mode === 'dark'
+            ? theme.palette.grey[600]
+            : theme.palette.grey[300],
+      },
+      '&:hover fieldset': {
+        borderColor: (theme: Theme) =>
+          theme.palette.mode === 'dark'
+            ? theme.palette.grey[500]
+            : theme.palette.grey[400],
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: (theme: Theme) =>
+          theme.palette.mode === 'dark'
+            ? theme.palette.primary.light
+            : theme.palette.primary.main,
       },
     },
   },
@@ -86,7 +122,6 @@ export const createLinkFormStyles = {
     transition: 'all 0.3s ease',
   },
   helperText: {
-    color: (theme: Theme) => theme.palette.text.secondary,
     textAlign: 'left',
     mt: 1,
     fontStyle: 'italic',
@@ -94,5 +129,9 @@ export const createLinkFormStyles = {
   alert: {
     mb: 2,
     borderRadius: 2,
+  },
+  resultField: {
+    backgroundColor: (theme: Theme) => theme.palette.grey[800],
+    borderRadius: 1,
   },
 } as const

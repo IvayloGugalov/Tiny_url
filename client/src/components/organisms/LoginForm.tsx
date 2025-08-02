@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { Alert } from '../molecules/Alert'
 import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -9,6 +8,8 @@ import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper'
 import { useAuthStore } from '@/stores/useAuthStore'
+import { Alert } from '../molecules/Alert'
+import { EmailSchema } from 'shared'
 
 interface FormData {
   email: string
@@ -146,9 +147,12 @@ export function LoginForm() {
             control={control}
             rules={{
               required: 'Please enter your email',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Please enter a valid email address',
+              validate: (value) => {
+                const result = EmailSchema.safeParse(value)
+                if (!result.success) {
+                  return 'Please enter a valid email address'
+                }
+                return true
               },
             }}
             render={({ field }) => (

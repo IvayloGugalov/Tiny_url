@@ -19,6 +19,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Paper from '@mui/material/Paper'
 import { useTheme } from '@mui/material/styles'
 import Chip from '@mui/material/Chip'
+import { UrlSchema } from 'shared'
 
 interface FormData {
   targetUrl: string
@@ -100,32 +101,19 @@ export function CreateLinkForm() {
         </Typography>
       </Box>
 
-      <Box
-        sx={{
-          px: 3,
-          py: 4,
-          background:
-            'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%)',
-          transition: 'all 0.3s ease',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          borderRadius: 3,
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-          '&:hover': {
-            boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
-            transform: 'translateY(-2px)',
-          },
-        }}
-      >
+      <Box sx={createLinkFormStyles.formContainer}>
         <form onSubmit={handleSubmit(onFinish)}>
           <Controller
             name='targetUrl'
             control={control}
             rules={{
               required: 'Please enter a URL',
-              pattern: {
-                value: /^https?:\/\/.+/,
-                message:
-                  'Please enter a valid URL (including http:// or https://)',
+              validate: (value) => {
+                const result = UrlSchema.safeParse(value)
+                if (!result.success) {
+                  return 'Please enter a valid URL (including http:// or https://)'
+                }
+                return true
               },
             }}
             render={({ field }) => (
@@ -143,7 +131,7 @@ export function CreateLinkForm() {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position='start'>
-                      <LinkIcon color='action' />
+                      <LinkIcon />
                     </InputAdornment>
                   ),
                 }}
@@ -210,9 +198,11 @@ export function CreateLinkForm() {
                   <Box display='flex' alignItems='center' gap={1}>
                     <TextField
                       value={shortUrl}
-                      InputProps={{
-                        readOnly: true,
-                        sx: { backgroundColor: 'white', borderRadius: 1 },
+                      slotProps={{
+                        input: {
+                          readOnly: true,
+                          sx: createLinkFormStyles.resultField,
+                        },
                       }}
                       variant='outlined'
                       fullWidth

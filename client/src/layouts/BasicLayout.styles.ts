@@ -76,6 +76,12 @@ export const createBasicLayoutTheme = (isDark: boolean) => ({
     fontWeightRegular: 400,
     fontWeightMedium: 500,
     fontWeightBold: 700,
+    body1: {
+      color: isDark ? THEME_COLORS.dark.text.secondary : THEME_COLORS.light.text.secondary,
+    },
+    body2: {
+      color: isDark ? THEME_COLORS.dark.text.secondary : THEME_COLORS.light.text.secondary,
+    },
   },
   shape: {
     borderRadius: LAYOUT.borderRadius,

@@ -21,7 +21,7 @@ export const linksTableStyles = {
     alignSelf: { xs: 'center', sm: 'flex-end' },
   },
   dataGridContainer: {
-    height: HEIGHTS.mobile,
+    height: HEIGHTS.large,
   },
   dataGrid: {
     '& .MuiDataGrid-cell': {
