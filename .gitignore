@@ -41,3 +41,5 @@ pnpm-debug.log*
 bun.lockb
 
 *.sqlite
+/tasks.json
+.cursor/
