@@ -1,35 +1,13 @@
-import js from '@eslint/js'
-import tseslint from '@typescript-eslint/eslint-plugin'
-import tsparser from '@typescript-eslint/parser'
+import tseslint from 'typescript-eslint'
 import boundaries from 'eslint-plugin-boundaries'
+import { baseConfig, nodeConfig } from '../eslint.config.mjs'
 
 export default [
-  js.configs.recommended,
+  ...baseConfig,
   {
     files: ['src/**/*.ts'],
-    languageOptions: {
-      parser: tsparser,
-      parserOptions: {
-        ecmaVersion: 2022,
-        sourceType: 'module',
-      },
-      globals: {
-        console: 'readonly',
-        process: 'readonly',
-        Buffer: 'readonly',
-        setInterval: 'readonly',
-        clearInterval: 'readonly',
-        setTimeout: 'readonly',
-        clearTimeout: 'readonly',
-        Bun: 'readonly',
-        Response: 'readonly',
-        URL: 'readonly',
-        TextEncoder: 'readonly',
-        TextDecoder: 'readonly',
-      },
-    },
+    ...nodeConfig,
     plugins: {
-      '@typescript-eslint': tseslint,
       boundaries,
     },
     settings: {
