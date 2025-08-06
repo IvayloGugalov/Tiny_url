@@ -17,10 +17,10 @@ A modern, full-stack URL shortening service built with Bun, Hono, React, and Typ
 
 ## 🏗️ Architecture
 
-- **Frontend**: React 18 + Vite + TypeScript
+- **Frontend**: React 19 + Vite + TypeScript
 - **Backend**: Hono + Bun + TypeScript
 - **Database**: SQLite with Drizzle ORM
-- **Charts**: Chart.js with react-chartjs-2
+- **Charts**: @mui/x-charts
 
 ## 🚀 Quick Start
 
@@ -143,7 +143,7 @@ cd client && bun test
 ## 📈 Analytics Features
 
 - **Real-time Click Tracking**: Every visit increments the click counter
-- **Visual Analytics**: Chart.js bar chart showing top 10 most clicked links
+- **Visual Analytics**: @mui/x-charts bar chart showing top 10 most clicked links
 - **Link Management**: View all links with creation dates and click counts
 - **Copy to Clipboard**: One-click copying of short URLs
 
@@ -184,4 +184,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Hono](https://hono.dev) for the lightweight web framework
 - [Drizzle ORM](https://orm.drizzle.team) for type-safe database operations
 - [React](https://react.dev) for the user interface
-- [Chart.js](https://www.chartjs.org) for beautiful analytics
+- [@mui/x-charts](https://mui.com/x/react-charts/) for beautiful analytics

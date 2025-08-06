@@ -1,6 +1,6 @@
 # 🔗 TinyURL Client
 
-The React frontend application for the TinyURL service, built with Vite, TypeScript, and Chart.js.
+The React frontend application for the TinyURL service, built with Vite, TypeScript, and @mui/x-charts.
 
 ## 🚀 Quick Start
 
@@ -19,7 +19,7 @@ bun run dev
 ## 🎨 Features
 
 - **📊 Dashboard**: Beautiful interface for managing short links
-- **📈 Analytics**: Real-time click tracking with Chart.js visualizations
+- **📈 Analytics**: Real-time click tracking with @mui/x-charts visualizations
 - **🔗 Link Creation**: Easy form to create new short links
 - **📋 Copy to Clipboard**: One-click copying of short URLs
 - **📱 Responsive Design**: Works perfectly on all devices
@@ -33,7 +33,7 @@ client/
 │   ├── components/           # React components
 │   │   ├── LinksTable.tsx    # Table displaying all links
 │   │   ├── CreateLinkForm.tsx # Form for creating new links
-│   │   └── ClickAnalyticsChart.tsx # Chart.js analytics
+│   │   └── ClickAnalyticsChart.tsx # @mui/x-charts analytics
 │   ├── api.ts               # API client functions
 │   ├── App.tsx              # Main application component
 │   ├── App.css              # Application styles
@@ -83,8 +83,7 @@ bun test --coverage
 - **React 19**: Modern React with hooks and concurrent features
 - **Vite**: Fast build tool and dev server
 - **TypeScript**: Type safety throughout the application
-- **Chart.js**: Beautiful charts for analytics
-- **react-chartjs-2**: React wrapper for Chart.js
+- **@mui/x-charts**: Beautiful charts for analytics
 
 ### Development Dependencies
 
