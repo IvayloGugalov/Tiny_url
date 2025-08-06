@@ -1,5 +1,5 @@
-import { type Transaction, db } from 'infrastructure/database/connection'
-import { ITransactionManagerService } from 'application/interfaces/ITransactionManagerService'
+import { type Transaction, db } from '@/infrastructure/database/connection'
+import { ITransactionManagerService } from '@/application/interfaces/ITransactionManagerService'
 
 export class TransactionManagerService implements ITransactionManagerService {
   public async startTransaction<T>(

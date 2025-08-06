@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { UserDomain } from 'domain/entities/User'
+import { UserDomain } from '@/domain/entities/User'
 import { createMockUser } from 'tests/utils/test-data'
 
 describe('UserDomain', () => {

@@ -9,7 +9,7 @@ interface ThemeState {
 }
 
 export const useThemeStore = create<ThemeState>((set, get) => ({
-  theme: (localStorage.getItem('theme') as Theme) || 'light',
+  theme: localStorage.getItem('theme') as Theme,
 
   setTheme: (theme: Theme) => {
     // Update localStorage

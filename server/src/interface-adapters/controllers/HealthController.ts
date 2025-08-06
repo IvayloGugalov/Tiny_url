@@ -1,6 +1,6 @@
 import type { Context } from 'hono'
 import { BaseController } from './BaseController'
-import { healthCheck } from 'infrastructure/database/connection'
+import { healthCheck } from '@/infrastructure/database/connection'
 
 export class HealthController extends BaseController {
   healthCheck = async (c: Context): Promise<Response> => {

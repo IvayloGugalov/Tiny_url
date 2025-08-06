@@ -1,8 +1,9 @@
-import { UserDomain } from 'domain/entities/User'
-import { EmailDomain } from 'domain/value-objects/Email'
-import { DuplicateEmailError } from 'domain/errors'
-import type { IUserRepository } from 'application/interfaces/IUserRepository'
-import type { IAuthService } from 'application/interfaces/IAuthService'
+import { UserDomain } from '@/domain/entities/User'
+import { EmailDomain } from '@/domain/value-objects/Email'
+import { DuplicateEmailError } from '@/domain/errors'
+import type { IUserRepository } from '@/application/interfaces/IUserRepository'
+import type { IAuthService } from '@/application/interfaces/IAuthService'
+import { alphabet } from 'shared'
 
 export interface RegisterRequest {
   email: string
@@ -50,8 +51,6 @@ export class RegisterUserUseCase {
   }
 
   private generateUserId(): string {
-    const alphabet =
-      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     let result = ''
     for (let i = 0; i < 10; i++) {
       result += alphabet.charAt(Math.floor(Math.random() * alphabet.length))

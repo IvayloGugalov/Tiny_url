@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { Alert } from '../molecules/Alert'
 import { EmailSchema } from 'shared'
+import { API_BASE_URL } from '@/utils/constants'
 
 interface FormData {
   email: string
@@ -35,13 +36,12 @@ export function LoginForm() {
 
     console.log('🔐 Login attempt started', {
       email: values.email,
-      apiUrl: import.meta.env.VITE_API_URL,
+      API_BASE_URL,
       timestamp: new Date().toISOString(),
     })
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-      const loginUrl = `${apiUrl}/api/login`
+      const loginUrl = `${API_BASE_URL}/api/login`
 
       console.log('📡 Making login request to:', loginUrl)
 
@@ -62,14 +62,14 @@ export function LoginForm() {
 
       // Check if response is JSON
       const contentType = res.headers.get('content-type')
-      if (!contentType || !contentType.includes('application/json')) {
+      if (!contentType?.includes('application/json')) {
         console.error('❌ Non-JSON response received', {
           contentType,
           status: res.status,
           statusText: res.statusText,
         })
         setError(
-          `Server error: Expected JSON response but got ${contentType || 'unknown content type'}`,
+          `Server error: Expected JSON response but got ${contentType ?? 'unknown content type'}`,
         )
         return
       }
@@ -87,8 +87,8 @@ export function LoginForm() {
           error: data.error,
         })
         setError(
-          data.error ||
-            data.message ||
+          data.error ??
+            data.message ??
             `Login failed (${res.status}: ${res.statusText})`,
         )
       }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { UserIdDomain } from 'domain/value-objects/UserId'
+import { UserIdDomain } from '@/domain/value-objects/UserId'
 
 describe('UserIdDomain', () => {
   const validUserIds = ['user123', 'admin', 'test_user', 'user-456']

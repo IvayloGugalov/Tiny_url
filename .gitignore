@@ -43,3 +43,4 @@ bun.lockb
 *.sqlite
 /tasks.json
 .cursor/
+.turbo

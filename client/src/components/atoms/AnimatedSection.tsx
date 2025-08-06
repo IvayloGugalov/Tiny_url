@@ -36,7 +36,7 @@ export const AnimatedSection = ({
   delay = 0,
   duration = 0.8,
   className = '',
-  style = {},
+  style,
   initial = defaultInitial,
   animate = defaultAnimate,
 }: AnimatedSectionProps) => {

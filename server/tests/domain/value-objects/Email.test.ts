@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { EmailDomain } from 'domain/value-objects/Email'
+import { EmailDomain } from '@/domain/value-objects/Email'
 
 describe('EmailDomain', () => {
   const validEmails = [

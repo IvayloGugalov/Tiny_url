@@ -37,7 +37,7 @@ export const AnimatedIcon = ({
   children,
   delay = 0,
   duration = 0.6,
-  containerStyles = {},
+  containerStyles,
   className = '',
   initial = defaultInitial,
   animate = defaultAnimate,

@@ -1,9 +1,9 @@
 import { eq } from 'drizzle-orm'
 import type { Email, User, UserId } from 'shared'
-import { db, type Transaction } from 'infrastructure/database/connection'
-import { UserDomain } from 'domain/entities/User'
-import { IUserRepository } from 'application/interfaces/IUserRepository'
-import { users as usersTable } from 'infrastructure/database/schema'
+import { db, type Transaction } from '@/infrastructure/database/connection'
+import { UserDomain } from '@/domain/entities/User'
+import { IUserRepository } from '@/application/interfaces/IUserRepository'
+import { users as usersTable } from '@/infrastructure/database/schema'
 
 export class DrizzleUserRepository implements IUserRepository {
   constructor() {}

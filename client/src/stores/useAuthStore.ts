@@ -10,7 +10,7 @@ interface AuthState {
   login: (token: string) => void
   logout: () => void
   register: (email: string, name?: string) => Promise<void>
-  checkAuthStatus: () => Promise<void>
+  checkAuthStatus: () => void
   clearError: () => void
 }
 
@@ -58,7 +58,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  checkAuthStatus: async () => {
+  checkAuthStatus: () => {
     set({ isLoading: true, error: null })
 
     try {

@@ -1,9 +1,9 @@
 import type { Context } from 'hono'
 import { BaseController } from './BaseController'
-import { CreateLinkUseCase } from 'application/use-cases/CreateLinkUseCase'
-import { GetUserLinksUseCase } from 'application/use-cases/GetUserLinksUseCase'
-import { RedirectToTargetUseCase } from 'application/use-cases/RedirectToTargetUseCase'
-import { ApiLinkPresenter } from 'interface-adapters/presenters/LinkPresenter'
+import { CreateLinkUseCase } from '@/application/use-cases/CreateLinkUseCase'
+import { GetUserLinksUseCase } from '@/application/use-cases/GetUserLinksUseCase'
+import { RedirectToTargetUseCase } from '@/application/use-cases/RedirectToTargetUseCase'
+import { ApiLinkPresenter } from '@/interface-adapters/presenters/LinkPresenter'
 
 export class LinkController extends BaseController {
   constructor(

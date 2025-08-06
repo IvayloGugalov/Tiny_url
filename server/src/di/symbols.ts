@@ -1,36 +1,36 @@
 // Services
-import type { IAuthService } from 'application/interfaces/IAuthService'
-import type { ILogger } from 'infrastructure/services/ConsoleLogger'
-import type { ITransactionManagerService } from 'application/interfaces/ITransactionManagerService'
+import type { IAuthService } from '@/application/interfaces/IAuthService'
+import type { ILogger } from '@/infrastructure/services/ConsoleLogger'
+import type { ITransactionManagerService } from '@/application/interfaces/ITransactionManagerService'
 
 // Repositories
-import type { ILinkRepository } from 'application/interfaces/ILinkRepository'
-import type { IUserRepository } from 'application/interfaces/IUserRepository'
+import type { ILinkRepository } from '@/application/interfaces/ILinkRepository'
+import type { IUserRepository } from '@/application/interfaces/IUserRepository'
 
 // Use Cases
-import type { CreateLinkUseCase } from 'application/use-cases/CreateLinkUseCase'
-import type { GetAllLinksUseCase } from 'application/use-cases/GetAllLinksUseCase'
-import type { GetUserLinksUseCase } from 'application/use-cases/GetUserLinksUseCase'
-import type { RedirectToTargetUseCase } from 'application/use-cases/RedirectToTargetUseCase'
-import type { AuthenticateUserUseCase } from 'application/use-cases/AuthenticateUserUseCase'
-import type { RegisterUserUseCase } from 'application/use-cases/RegisterUserUseCase'
-import type { CleanupExpiredLinksUseCase } from 'application/use-cases/CleanupExpiredLinksUseCase'
+import type { CreateLinkUseCase } from '@/application/use-cases/CreateLinkUseCase'
+import type { GetAllLinksUseCase } from '@/application/use-cases/GetAllLinksUseCase'
+import type { GetUserLinksUseCase } from '@/application/use-cases/GetUserLinksUseCase'
+import type { RedirectToTargetUseCase } from '@/application/use-cases/RedirectToTargetUseCase'
+import type { AuthenticateUserUseCase } from '@/application/use-cases/AuthenticateUserUseCase'
+import type { RegisterUserUseCase } from '@/application/use-cases/RegisterUserUseCase'
+import type { CleanupExpiredLinksUseCase } from '@/application/use-cases/CleanupExpiredLinksUseCase'
 
 // Controllers
-import type { LinkController } from 'interface-adapters/controllers/LinkController'
-import type { AuthController } from 'interface-adapters/controllers/AuthController'
-import type { HealthController } from 'interface-adapters/controllers/HealthController'
+import type { LinkController } from '@/interface-adapters/controllers/LinkController'
+import type { AuthController } from '@/interface-adapters/controllers/AuthController'
+import type { HealthController } from '@/interface-adapters/controllers/HealthController'
 
 // Middleware
-import type { AuthMiddleware } from 'interface-adapters/middleware/AuthMiddleware'
-import type { ErrorMiddleware } from 'interface-adapters/middleware/ErrorMiddleware'
-import type { LoggingMiddleware } from 'interface-adapters/middleware/LoggingMiddleware'
+import type { AuthMiddleware } from '@/interface-adapters/middleware/AuthMiddleware'
+import type { ErrorMiddleware } from '@/interface-adapters/middleware/ErrorMiddleware'
+import type { LoggingMiddleware } from '@/interface-adapters/middleware/LoggingMiddleware'
 
 // Domain Services
-import type { ShortLinkIdGenerator } from 'domain/services/LinkIdGenerator'
+import type { ShortLinkIdGenerator } from '@/domain/services/LinkIdGenerator'
 
 // Infrastructure
-import type { AppConfig } from 'di/container'
+import type { AppConfig } from '@/di/container'
 
 export const DI_SYMBOLS = {
   // Services

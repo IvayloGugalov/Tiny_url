@@ -1,5 +1,5 @@
 import type { Context, Next } from 'hono'
-import type { ILogger } from 'infrastructure/services/ConsoleLogger'
+import type { ILogger } from '@/infrastructure/services/ConsoleLogger'
 
 export class LoggingMiddleware {
   constructor(private logger: ILogger) {}

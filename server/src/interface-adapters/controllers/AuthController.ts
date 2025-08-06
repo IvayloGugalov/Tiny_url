@@ -1,7 +1,7 @@
 import type { Context } from 'hono'
 import { BaseController } from './BaseController'
-import { AuthenticateUserUseCase } from 'application/use-cases/AuthenticateUserUseCase'
-import { RegisterUserUseCase } from 'application/use-cases/RegisterUserUseCase'
+import { AuthenticateUserUseCase } from '@/application/use-cases/AuthenticateUserUseCase'
+import { RegisterUserUseCase } from '@/application/use-cases/RegisterUserUseCase'
 
 export class AuthController extends BaseController {
   constructor(

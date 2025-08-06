@@ -45,7 +45,7 @@ export function CopyButton({
       <Button
         startIcon={<ContentCopy />}
         onClick={handleCopy}
-        disabled={disabled || copied}
+        disabled={disabled ?? copied}
         size={size}
         variant={copied ? 'contained' : 'outlined'}
         color={copied ? 'success' : 'primary'}

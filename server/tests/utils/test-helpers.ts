@@ -1,5 +1,5 @@
 import { expect, vi } from 'vitest'
-import type { DomainError } from 'domain/errors'
+import type { DomainError } from '@/domain/errors'
 
 export const TestHelpers = {
   // Error testing helpers

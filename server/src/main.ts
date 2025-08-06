@@ -3,7 +3,7 @@ import { cors } from 'hono/cors'
 import { serveStatic } from 'hono/bun'
 import { logger as honoLogger } from 'hono/logger'
 
-import { getInjection, config as appConfig } from './di/container'
+import { getInjection, config as appConfig } from '@/di/container'
 
 const app = new Hono()
 

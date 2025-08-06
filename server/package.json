@@ -1,7 +1,8 @@
 {
   "name": "server",
   "version": "0.0.1",
-  "main": "src/index.ts",
+  "main": "dist/index.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "bun build src/main.ts --outdir dist --target bun",
     "dev": "bun --watch src/main.ts",

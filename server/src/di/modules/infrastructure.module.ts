@@ -1,11 +1,11 @@
 import { createModule } from '@evyweb/ioctopus'
-import { DI_SYMBOLS, type DI_RETURN_TYPES } from 'di/symbols'
-import { DrizzleLinkRepository } from 'infrastructure/repositories/DrizzleLinkRepository'
-import { DrizzleUserRepository } from 'infrastructure/repositories/DrizzleUserRepository'
-import { JwtAuthService } from 'infrastructure/services/JwtAuthService'
-import { ConsoleLogger } from 'infrastructure/services/ConsoleLogger'
-import { TransactionManagerService } from 'infrastructure/services/TransactionManagerService'
-import type { AppConfig } from 'di/container'
+import { DI_SYMBOLS, type DI_RETURN_TYPES } from '@/di/symbols'
+import { DrizzleLinkRepository } from '@/infrastructure/repositories/DrizzleLinkRepository'
+import { DrizzleUserRepository } from '@/infrastructure/repositories/DrizzleUserRepository'
+import { JwtAuthService } from '@/infrastructure/services/JwtAuthService'
+import { ConsoleLogger } from '@/infrastructure/services/ConsoleLogger'
+import { TransactionManagerService } from '@/infrastructure/services/TransactionManagerService'
+import type { AppConfig } from '@/di/container'
 
 export const createInfrastructureModule = (
   config: AppConfig,

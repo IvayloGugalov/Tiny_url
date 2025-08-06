@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { LinkIdDomain } from 'domain/value-objects/LinkId'
+import { LinkIdDomain } from '@/domain/value-objects/LinkId'
 
 describe('LinkIdDomain', () => {
   const validLinkIds = ['abc123', 'test01', 'link_1', 'short-url']

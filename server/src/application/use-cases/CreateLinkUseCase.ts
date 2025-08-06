@@ -1,7 +1,7 @@
-import { LinkDomain } from 'domain/entities/Link'
-import { UrlDomain } from 'domain/value-objects/Url'
-import { ShortLinkIdGenerator } from 'domain/services/LinkIdGenerator'
-import { ILinkRepository } from 'application/interfaces/ILinkRepository'
+import { LinkDomain } from '@/domain/entities/Link'
+import { UrlDomain } from '@/domain/value-objects/Url'
+import { ShortLinkIdGenerator } from '@/domain/services/LinkIdGenerator'
+import { ILinkRepository } from '@/application/interfaces/ILinkRepository'
 import type { Link } from 'shared'
 
 export class CreateLinkUseCase {

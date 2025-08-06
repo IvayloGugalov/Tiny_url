@@ -13,7 +13,7 @@ import { useAuthStore } from '@/stores/useAuthStore'
 
 interface FormData {
   email: string
-  name: string
+  name?: string
 }
 
 export function RegistrationForm() {
@@ -34,7 +34,7 @@ export function RegistrationForm() {
       setLoading(true)
       setError(null)
 
-      await register(values.email, values.name || undefined)
+      await register(values.email, values.name ?? undefined)
       setSuccess(true)
 
       // Redirect to analytics page after successful registration

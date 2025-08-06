@@ -1,9 +1,9 @@
 import { eq, lt } from 'drizzle-orm'
-import { LinkDomain } from 'domain/entities/Link'
+import { LinkDomain } from '@/domain/entities/Link'
 import { Link, LinkId, UserId } from 'shared'
-import { ILinkRepository } from 'application/interfaces/ILinkRepository'
-import { db, type Transaction } from 'infrastructure/database/connection'
-import { links as linksTable } from 'infrastructure/database/schema'
+import { ILinkRepository } from '@/application/interfaces/ILinkRepository'
+import { db, type Transaction } from '@/infrastructure/database/connection'
+import { links as linksTable } from '@/infrastructure/database/schema'
 
 export class DrizzleLinkRepository implements ILinkRepository {
   async create(link: Link, tx?: Transaction): Promise<Link> {

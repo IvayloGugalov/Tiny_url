@@ -1,4 +1,4 @@
-import { ILinkRepository } from 'application/interfaces/ILinkRepository'
+import { ILinkRepository } from '@/application/interfaces/ILinkRepository'
 
 export class CleanupExpiredLinksUseCase {
   constructor(private linkRepository: ILinkRepository) {}

@@ -1,9 +1,8 @@
 import { sql } from 'drizzle-orm'
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
+import { alphabet } from 'shared'
 
 function generateId(): string {
-  const alphabet =
-    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
   let result = ''
   for (let i = 0; i < 10; i++) {
     result += alphabet.charAt(Math.floor(Math.random() * alphabet.length))

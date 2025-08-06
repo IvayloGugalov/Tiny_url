@@ -128,12 +128,14 @@ export function CreateLinkForm() {
                 variant='outlined'
                 fullWidth
                 autoFocus
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <LinkIcon />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <LinkIcon />
+                      </InputAdornment>
+                    ),
+                  },
                 }}
                 sx={createLinkFormStyles.inputField}
               />

@@ -49,10 +49,4 @@ export const nodeConfig = {
   },
 }
 
-export const browserConfig = {
-  languageOptions: {
-    globals: globals.browser,
-  },
-}
-
 export default []

@@ -1,4 +1,4 @@
-import type { Transaction } from 'infrastructure/database/connection'
+import type { Transaction } from '@/infrastructure/database/connection'
 
 export interface ITransactionManagerService {
   startTransaction<T>(

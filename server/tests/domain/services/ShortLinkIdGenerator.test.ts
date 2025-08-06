@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { ShortLinkIdGenerator } from 'domain/services/LinkIdGenerator'
+import { ShortLinkIdGenerator } from '@/domain/services/LinkIdGenerator'
 
 describe('ShortLinkIdGenerator', () => {
   let generator: ShortLinkIdGenerator

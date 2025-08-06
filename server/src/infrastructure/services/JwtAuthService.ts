@@ -1,8 +1,8 @@
 import { SignJWT, jwtVerify } from 'jose'
-import { UserIdDomain } from 'domain/value-objects/UserId'
-import { EmailDomain } from 'domain/value-objects/Email'
-import { IAuthService } from 'application/interfaces/IAuthService'
-import { IUserRepository } from 'application/interfaces/IUserRepository'
+import { UserIdDomain } from '@/domain/value-objects/UserId'
+import { EmailDomain } from '@/domain/value-objects/Email'
+import { IAuthService } from '@/application/interfaces/IAuthService'
+import { IUserRepository } from '@/application/interfaces/IUserRepository'
 import { Email, UserId } from 'shared'
 
 export class JwtAuthService implements IAuthService {

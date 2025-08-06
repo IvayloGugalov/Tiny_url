@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect, lazy, Suspense } from 'react'
+import { useCallback, useMemo, lazy, Suspense } from 'react'
 import type { GridColDef } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -22,10 +22,6 @@ const MAX_URL_DISPLAY_LENGTH = 50
 export function LinksTable() {
   const { links, loading, error, fetchLinks } = useLinksStore()
 
-  useEffect(() => {
-    fetchLinks()
-  }, [fetchLinks])
-
   const handleRefresh = useCallback(async () => {
     await fetchLinks()
   }, [fetchLinks])
@@ -36,28 +32,28 @@ export function LinksTable() {
       : url
   }, [])
 
-  const columns: GridColDef[] = useMemo(
+  const columns: GridColDef<(typeof links)[number]>[] = useMemo(
     () => [
       {
         field: 'id',
         headerName: 'Short Code',
         width: 120,
-        renderCell: (params) => (
-          <Chip label={params.value} color='primary' size='small' />
+        renderCell: ({ row }) => (
+          <Chip label={row.id} color='primary' size='small' />
         ),
       },
       {
         field: 'target',
         headerName: 'Target URL',
         flex: 0.5,
-        renderCell: (params) => (
+        renderCell: ({ row }) => (
           <Link
-            href={params.value}
+            href={row.target}
             target='_blank'
             rel='noopener noreferrer'
             sx={linksTableStyles.link}
           >
-            {formatUrl(params.value)}
+            {formatUrl(row.target)}
           </Link>
         ),
       },
@@ -66,10 +62,10 @@ export function LinksTable() {
         headerName: 'Clicks',
         flex: 0.1,
         type: 'number',
-        renderCell: (params) => (
+        renderCell: ({ row }) => (
           <Chip
-            label={params.value.toLocaleString()}
-            color={params.value > 0 ? 'success' : 'default'}
+            label={row.clicks}
+            color={row.clicks > 0 ? 'success' : 'default'}
             size='small'
           />
         ),
@@ -78,7 +74,7 @@ export function LinksTable() {
         field: 'createdAt',
         headerName: 'Created',
         flex: 0.2,
-        valueGetter: (params: string) => new Date(params),
+        valueGetter: (_ ,row) => row.createdAt.toDateString(),
       },
       {
         field: 'actions',

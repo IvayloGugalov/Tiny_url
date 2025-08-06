@@ -14,7 +14,7 @@ export const StaggeredContainer = ({
   delay = 0,
   staggerChildren = 0.1,
   className = '',
-  style = {},
+  style = undefined,
 }: StaggeredContainerProps) => {
   const containerVariants = {
     hidden: {},

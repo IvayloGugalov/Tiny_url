@@ -7,32 +7,32 @@
     "./client",
     "./shared"
   ],
+  "packageManager": "bun@1.2.18",
   "scripts": {
-    "dev:client": "cd client && bun run dev",
-    "dev:server": "cd server && bun run dev",
-    "dev:shared": "cd shared && bun run dev",
-    "dev": "concurrently \"bun run dev:shared\" \"bun run dev:server\" \"bun run dev:client\"",
-    "build:client": "cd client && bun run build",
-    "build:shared": "cd shared && bun run build",
-    "build:server": "cd server && bun run build",
-    "build": "bun run build:shared && bun run build:server && bun run build:client",
-    "postinstall": "bun run build:shared && bun run build:server",
-    "lint": "eslint client server shared"
+    "dev": "turbo dev",
+    "dev:client": "turbo dev --filter=client",
+    "dev:server": "turbo dev --filter=server",
+    "build": "turbo build",
+    "build:client": "turbo build --filter=client",
+    "build:shared": "turbo dev --filter=server",
+    "lint": "turbo lint",
+    "postinstall": "turbo build --filter=shared --filter=server"
   },
   "keywords": [
     "bun",
     "hono",
     "react",
     "vite",
-    "monorepo"
+    "monorepo",
+    "turbo"
   ],
   "devDependencies": {
     "@eslint/js": "^9.32.0",
     "bun-types": "latest",
-    "concurrently": "^9.2.0",
     "eslint-plugin-boundaries": "^5.0.1",
     "globals": "^16.3.0",
     "prettier": "^3.6.2",
+    "turbo": "^2.5.5",
     "typescript-eslint": "^8.38.0"
   },
   "peerDependencies": {

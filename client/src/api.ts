@@ -6,17 +6,15 @@ import type {
 } from 'shared'
 import { CreateLinkRequestSchema, RegisterRequestSchema } from 'shared'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-
 const apiLog = {
   info: (message: string, data?: unknown) => {
-    console.log(`[API] ${message}`, data || '')
+    console.log(`[API] ${message}`, data ?? '')
   },
   error: (message: string, error?: unknown) => {
     console.error(`[API] ${message}`, error)
   },
   warn: (message: string, data?: unknown) => {
-    console.warn(`[API] ${message}`, data || '')
+    console.warn(`[API] ${message}`, data ?? '')
   },
 }
 
@@ -36,7 +34,7 @@ async function handleApiResponse<T>(
   })
 
   const contentType = response.headers.get('content-type')
-  if (!contentType || !contentType.includes('application/json')) {
+  if (!contentType?.includes('application/json')) {
     const text = await response.text()
     apiLog.error(`Non-JSON response from ${endpoint}`, {
       contentType,
@@ -44,7 +42,7 @@ async function handleApiResponse<T>(
       body: text.substring(0, 200),
     })
     throw new Error(
-      `Server returned ${contentType || 'unknown content type'} instead of JSON`,
+      `Server returned ${contentType ?? 'unknown content type'} instead of JSON`,
     )
   }
 
@@ -53,12 +51,12 @@ async function handleApiResponse<T>(
   if (!response.ok) {
     apiLog.error(`API error from ${endpoint}`, {
       status: response.status,
-      error: data.error || data.message,
+      error: data.error ?? data.message,
       data,
     })
     throw new Error(
-      data.error ||
-        data.message ||
+      data.error ??
+        data.message ??
         `HTTP ${response.status}: ${response.statusText}`,
     )
   }

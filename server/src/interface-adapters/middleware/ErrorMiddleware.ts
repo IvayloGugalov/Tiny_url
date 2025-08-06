@@ -1,6 +1,6 @@
 import type { Context } from 'hono'
-import type { ILogger } from 'infrastructure/services/ConsoleLogger'
-import { ApiPresenter } from 'interface-adapters/presenters/ApiPresenter'
+import type { ILogger } from '@/infrastructure/services/ConsoleLogger'
+import { ApiPresenter } from '@/interface-adapters/presenters/ApiPresenter'
 
 export class ErrorMiddleware {
   constructor(private logger: ILogger) {}

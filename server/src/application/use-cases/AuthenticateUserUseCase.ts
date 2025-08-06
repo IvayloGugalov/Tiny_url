@@ -1,7 +1,7 @@
-import { EmailDomain } from 'domain/value-objects/Email'
-import { InvalidCredentialsError } from 'domain/errors'
-import type { IAuthService } from 'application/interfaces/IAuthService'
-import type { IUserRepository } from 'application/interfaces/IUserRepository'
+import { EmailDomain } from '@/domain/value-objects/Email'
+import { InvalidCredentialsError } from '@/domain/errors'
+import type { IAuthService } from '@/application/interfaces/IAuthService'
+import type { IUserRepository } from '@/application/interfaces/IUserRepository'
 
 export interface LoginRequest {
   email: string

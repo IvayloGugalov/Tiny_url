@@ -1,6 +1,6 @@
 import type { Context } from 'hono'
-import { DomainError } from 'domain/errors'
-import { ApiPresenter } from 'interface-adapters/presenters/ApiPresenter'
+import { DomainError } from '@/domain/errors'
+import { ApiPresenter } from '@/interface-adapters/presenters/ApiPresenter'
 
 export abstract class BaseController {
   protected async handleRequest<T>(

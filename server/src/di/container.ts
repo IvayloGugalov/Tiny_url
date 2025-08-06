@@ -1,9 +1,9 @@
 import { createContainer } from '@evyweb/ioctopus'
-import { DI_SYMBOLS, type DI_RETURN_TYPES } from 'di/symbols'
-import { createInfrastructureModule } from 'di/modules/infrastructure.module'
-import { createDomainModule } from 'di/modules/domain.module'
-import { createApplicationModule } from 'di/modules/application.module'
-import { createInterfaceAdaptersModule } from 'di/modules/interface-adapters.module'
+import { DI_SYMBOLS, type DI_RETURN_TYPES } from '@/di/symbols'
+import { createInfrastructureModule } from '@/di/modules/infrastructure.module'
+import { createDomainModule } from '@/di/modules/domain.module'
+import { createApplicationModule } from '@/di/modules/application.module'
+import { createInterfaceAdaptersModule } from '@/di/modules/interface-adapters.module'
 
 export interface AppConfig {
   server: {

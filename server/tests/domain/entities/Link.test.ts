@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { LinkDomain } from 'domain/entities/Link'
+import { LinkDomain } from '@/domain/entities/Link'
 import { createMockLink } from 'tests/utils/test-data'
 
 describe('LinkDomain', () => {
